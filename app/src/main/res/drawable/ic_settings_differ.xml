@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- 第一条横线 (上) -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M4,8 L20,8"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"/>
+    <!-- 第一条线上的点 (左侧) -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M8,8 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0"/>
+
+    <!-- 第二条横线 (中) -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M4,13 L20,13"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"/>
+    <!-- 第二条线上的点 (中间偏右) -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M14,13 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0"/>
+
+    <!-- 第三条横线 (下) -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M4,18 L20,18"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"/>
+    <!-- 第三条线上的点 (右侧) -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M17,18 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0"/>
+</vector>

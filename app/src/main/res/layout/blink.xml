@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@color/gray">
+
+    <ImageView
+        android:id="@+id/traceback"
+        android:src="@drawable/traceback"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginStart="44dp"
+        android:contentDescription="返回"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="闪烁效果"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_settings"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="44dp"
+        android:src="@drawable/ic_settings"
+        android:contentDescription="设置"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/card1"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="44dp"
+        android:background="@drawable/bg_rounded_corner"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SOS求救信号"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/siganl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=". . . _ _ _ . . ."
+            android:textColor="@color/white"
+            android:textSize="30sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="标准摩斯密码"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/grey"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/SOS"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:background="@drawable/bg_rounded_corner"
+            android:layout_marginTop="10dp"
+            android:text="开始SOS"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/card2"
+        android:layout_width="0dp"
+        android:layout_height="360dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/bg_rounded_corner"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/card1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⚡普通闪烁"
+            android:textColor="@color/white"
+            app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+            android:textSize="18sp"
+            tools:layout_editor_absoluteX="20dp" />
+        <TextView
+            android:id="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@id/text"
+        app:layout_constraintStart_toStartOf="@id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="闪烁频率"
+            android:textColor="@color/white"
+            android:textSize="18sp"/>
+        <LinearLayout
+            android:id="@+id/card_left"
+            android:layout_width="50dp"
+            android:layout_height="80dp"
+            android:background="@drawable/bg_rounded"
+            android:orientation="vertical"
+            android:layout_marginEnd="20dp"
+            android:gravity="center"
+            app:layout_constraintEnd_toStartOf="@+id/card_middle"
+            app:layout_constraintTop_toTopOf="@+id/card_middle">
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/bg_white" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="慢"
+                android:textSize="13sp"
+                android:textColor="@color/pure_white" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="1Hz"
+                android:textSize="10sp"
+                android:textColor="@color/pure_white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/card_middle"
+            android:layout_width="50dp"
+            android:layout_height="80dp"
+            android:background="@drawable/bg_rounded"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            android:layout_marginTop="10dp">
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/bg_white" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="中"
+                android:textSize="13sp"
+                android:textColor="@color/pure_white" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="3Hz"
+                android:textSize="10sp"
+                android:textColor="@color/pure_white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/card_right"
+            android:layout_width="50dp"
+            android:layout_height="80dp"
+            android:background="@drawable/bg_rounded"
+            android:orientation="vertical"
+            android:layout_marginStart="20dp"
+            android:gravity="center"
+            app:layout_constraintStart_toEndOf="@+id/card_middle"
+            app:layout_constraintTop_toTopOf="@+id/card_middle">
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/bg_white" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="快"
+                android:textSize="13sp"
+                android:textColor="@color/pure_white" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="5Hz"
+                android:textSize="10sp"
+                android:textColor="@color/pure_white" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/text1"
+            app:layout_constraintTop_toBottomOf="@id/card_left"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="光源选择"
+            android:textColor="@color/white"
+            android:textSize="18sp"/>
+        <LinearLayout
+            android:id="@+id/layout_blink"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_rounded"
+            app:layout_constraintEnd_toStartOf="@+id/layout_screen_light"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text1"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                app:layout_constraintTop_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="手电筒"
+                android:textColor="@color/white"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_screen_light"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="30dp"
+            android:background="@drawable/bg_rounded"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/layout_blink"
+            app:layout_constraintTop_toTopOf="@+id/layout_blink"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="屏幕"
+                android:src="@drawable/ic_phone" />
+
+            <TextView
+                app:layout_constraintTop_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="屏幕"
+                android:textColor="@color/white"
+                android:textSize="16sp"/>
+        </LinearLayout>
+        <Button
+            android:id="@+id/btn_start_blink"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:background="@drawable/bg_rounded_corner"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_blink"
+            android:text="⚡开始闪烁"
+            android:textSize="18sp">
+
+        </Button>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

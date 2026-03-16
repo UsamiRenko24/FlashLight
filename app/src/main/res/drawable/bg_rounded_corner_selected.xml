@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- 填充色：深灰色 -->
+    <solid android:color="#2C2C2C" />  <!-- 深灰色，与未选中状态相同 -->
+
+    <!-- 边框：淡蓝色 -->
+    <stroke
+        android:width="2dp"
+        android:color="#BBDDFF" />  <!-- 淡蓝色边框 -->
+
+    <!-- 圆角 -->
+    <corners android:radius="12dp" />
+
+</shape>

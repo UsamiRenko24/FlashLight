@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- 闪电外框：采用描边风格 -->
+    <path
+        android:strokeColor="#F44336"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M13,3L7,12H12L11,21L17,12H12L13,3Z" />
+
+    <!-- 内部填充：半透明 -->
+    <path
+        android:fillColor="#F44336"
+        android:pathData="M13,3L7,12H12L11,21L17,12H12L13,3Z"
+        android:fillAlpha="0.2"/>
+
+</vector>

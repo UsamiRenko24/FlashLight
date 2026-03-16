@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- 手机外框：现代圆角矩形 -->
+    <path
+        android:strokeColor="#2196F3"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M17,2H7C5.9,2 5,2.9 5,4V20C5,21.1 5.9,22 7,22H17C18.1,22 19,21.1 19,20V4C19,2.9 18.1,2 17,2Z" />
+
+    <!-- 内部屏幕区域：虚线/浅色感 -->
+    <path
+        android:fillColor="#2196F3"
+        android:pathData="M7,4H17V18H7V4Z"
+        android:fillAlpha="0.2"/>
+
+    <!-- 听筒 -->
+    <path
+        android:strokeColor="#2196F3"
+        android:strokeWidth="1.2"
+        android:strokeLineCap="round"
+        android:pathData="M10,4H14" />
+
+</vector>
