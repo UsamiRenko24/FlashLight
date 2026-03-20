@@ -1,5 +1,8 @@
 package com.name.FlashLight
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -9,15 +12,11 @@ import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import com.name.FlashLight.utils.PageConstants
-import com.name.FlashLight.utils.PageUsageRecorder
-import com.name.FlashLight.utils.StartupModeManager
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class SOSActivity : BaseActivity() {
 
@@ -25,6 +24,7 @@ class SOSActivity : BaseActivity() {
     private lateinit var tvSosPattern: TextView
     private lateinit var tvSosCycles: TextView  // 显示循环次数
     private lateinit var tvDuration: TextView   // 显示持续时间
+    private lateinit var sosHalo: View          // 【新增】定义光晕View
 
     // 手电筒控制
     private lateinit var cameraManager: CameraManager
@@ -33,7 +33,6 @@ class SOSActivity : BaseActivity() {
     // SOS闪烁控制
     private var isSosActive = false
     private var sosHandler = Handler(Looper.getMainLooper())
-    private var sosRunnable: Runnable? = null
 
     // 统计相关
     private var cycleCount = 0  // 当前会话的循环次数
@@ -45,6 +44,11 @@ class SOSActivity : BaseActivity() {
 
     private  lateinit var tvBlinkProgress: ProgressBar
 
+    private val Timerhandler = Handler(Looper.getMainLooper())
+    private lateinit var timerRunnable: Runnable
+    private var isTimerRunning = false
+
+    private var haloAnimator: AnimatorSet? = null // 【新增】动画对象引用
 
     // SOS摩斯码时序
     companion object {
@@ -73,33 +77,25 @@ class SOSActivity : BaseActivity() {
         initFlashlight()
         updateBatteryInfo()
         startBatteryMonitor()
-
+        initTimer()
         // 记录 blink 时间
         TimeRecorder.startRecording(this, "blink")
+        startRecording()
         startTime = System.currentTimeMillis()
 
         // 恢复之前保存的循环次数
-        cycleCount = TimeRecorder.getSOSCycles(this)
         tvSosCycles.text = "${cycleCount}次"
-
-        // 恢复之前保存的持续时间
-        val savedDuration = TimeRecorder.getSOSDuration(this)
-        if (savedDuration > 0) {
-            val minutes = savedDuration / 60
-            val seconds = savedDuration % 60
-            tvDuration.text = String.format("%02d:%02d", minutes, seconds)
-            // 调整 startTime 以匹配保存的持续时间
-            startTime = System.currentTimeMillis() - (savedDuration * 1000)
-        }
 
         startSOS()
         startTimer()
+        startHaloAnimation() // 【新增】开启呼吸光晕
     }
 
     private fun initViews() {
         tvSosPattern = findViewById(R.id.siganl)
         tvSosCycles = findViewById(R.id.tv_sos_cycles)
         tvDuration = findViewById(R.id.last_time)
+        sosHalo = findViewById(R.id.sos_halo) // 【修复】初始化光晕视图
 
         tvSosPattern.text = ". . . _ _ _\n. . ."
         tvSosCycles.text = "0次"
@@ -111,8 +107,157 @@ class SOSActivity : BaseActivity() {
         tvBlinkProgress = findViewById(R.id.progress_blink)
     }
 
+    private fun startHaloAnimation() {
+        if (haloAnimator != null) return
+        sosHalo.visibility = View.VISIBLE
+        sosHalo.translationZ = 4f // 低于卡片的 elevation
 
-    private fun updateBatteryInfo() {     //在这个地方扩展progressbar
+        // 缩放动画 (1.0x -> 1.15x)
+        val scaleX = ObjectAnimator.ofFloat(sosHalo, "scaleX", 1.0f, 1.15f)
+        val scaleY = ObjectAnimator.ofFloat(sosHalo, "scaleY", 1.0f, 1.15f)
+        // 透明度呼吸 (0.4 -> 0.8)
+        val alpha = ObjectAnimator.ofFloat(sosHalo, "alpha", 1.0f, 1.2f)
+
+        scaleX.repeatCount = ValueAnimator.INFINITE
+        scaleX.repeatMode = ValueAnimator.REVERSE
+        scaleY.repeatCount = ValueAnimator.INFINITE
+        scaleY.repeatMode = ValueAnimator.REVERSE
+        alpha.repeatCount = ValueAnimator.INFINITE
+        alpha.repeatMode = ValueAnimator.REVERSE
+
+        haloAnimator = AnimatorSet().apply {
+            playTogether(scaleX, scaleY, alpha)
+            duration = 1000 // 警示频率稍快
+            interpolator = AccelerateDecelerateInterpolator()
+            start()
+        }
+    }
+
+    private fun initTimer() {
+        timerRunnable = object : Runnable {
+            override fun run() {
+                if (isTimerRunning) {
+                    updateDuration()  // 更新时间显示
+                    Timerhandler.postDelayed(this, 1000)
+                }
+            }
+        }
+    }
+    private fun startRecording() {
+        startTime = System.currentTimeMillis()
+        isTimerRunning = true
+        cycleCount = 0  // 重置循环次数
+        tvSosCycles.text = "0次"
+        Timerhandler.post(timerRunnable)
+    }
+    private fun stopRecording() {
+        isTimerRunning = false
+        Timerhandler.removeCallbacks(timerRunnable)
+
+    }
+    private fun updateDuration() {
+        // 1. 计算经过的时间（秒）
+        val elapsedSeconds = (System.currentTimeMillis() - startTime) / 1000
+
+        // 2. 显示当前使用时间（用于 UI）
+        val displayMinutes = elapsedSeconds / 60
+        val displaySeconds = elapsedSeconds % 60
+        tvDuration.text = String.format("%02d:%02d", displayMinutes, displaySeconds)
+
+        // 3. 获取总时长（转换为秒）
+        val totalMinutes = getAutoOffTime()  // 例如 5
+        val totalSeconds = totalMinutes * 60  // 300秒
+
+        // 4. 计算进度（直接用秒）
+        val progress = (elapsedSeconds * 100 / totalSeconds).toInt().coerceIn(0, 100)
+        tvBlinkProgress.progress = progress
+
+        // 5. 计算剩余时间（秒转分钟:秒）
+        val remainingSeconds = (totalSeconds - elapsedSeconds).toInt().coerceAtLeast(0)
+        val remainMinutes = remainingSeconds / 60
+        val remainSeconds = remainingSeconds % 60
+        tvRemainTime.text = String.format("%02d:%02d", remainMinutes, remainSeconds)
+
+        // 6. 自动关闭
+        if (remainingSeconds <= 0) {
+            navigateToMain()
+        }
+    }
+    private fun navigateToMain() {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        finish()
+    }
+    private fun startSOS() {
+        if (cameraId == null) return
+
+        isSosActive = true
+        val sosHandler = Handler(Looper.getMainLooper())
+
+        val sosRunnable = object : Runnable {
+            var sequenceIndex = 0
+
+            override fun run() {
+                if (!isSosActive) return
+
+                val signal = sosSequence[sequenceIndex]
+
+                when (signal) {
+                    Signal.DOT -> {
+                        setFlashlightAndColor(true)
+                        sosHandler.postDelayed({
+                            setFlashlightAndColor(false)
+                            moveToNext()
+                        }, DOT_ON)
+                    }
+                    Signal.DASH -> {
+                        setFlashlightAndColor(true)
+                        sosHandler.postDelayed({
+                            setFlashlightAndColor(false)
+                            moveToNext()
+                        }, DASH_ON)
+                    }
+                    Signal.GAP -> {
+                        setFlashlightAndColor(false)
+                        moveToNextDelayed(CHAR_GAP)
+                    }
+                    Signal.CYCLE_GAP -> {
+                        setFlashlightAndColor(false)
+                        sequenceIndex = -1
+
+                        // ✅ 每次完成一个完整 SOS 循环，次数 +1
+                        runOnUiThread {
+                            cycleCount++
+                            tvSosCycles.text = "$cycleCount 次"
+                        }
+
+                        moveToNextDelayed(CYCLE_GAP)
+                    }
+                }
+            }
+
+            private fun moveToNext() {
+                sequenceIndex++
+                if (sequenceIndex < sosSequence.size) {
+                    sosHandler.post(this)
+                }
+            }
+
+            private fun moveToNextDelayed(delay: Long) {
+                sequenceIndex++
+                if (sequenceIndex < sosSequence.size) {
+                    sosHandler.postDelayed(this, delay)
+                }
+            }
+        }
+        sosHandler.post(sosRunnable)
+    }
+
+
+    private fun updateBatteryInfo() {
         val batteryIntent = registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         batteryIntent?.let { intent ->
             // 获取电池数据
@@ -142,30 +287,12 @@ class SOSActivity : BaseActivity() {
             tvBatteryPercent.text = String.format("%.0f%%", batteryPct)
             tvBatteryStatus.text = statusText
 
-            val usedTime = TimeRecorder.getTodayTime(this, "blink")  // 已使用时间
-            val totalTime = getAutoOffTime().toFloat()  // 总时长
-
-            // 计算进度百分比
-            val progress = ((usedTime / totalTime) * 100).toInt().coerceIn(0, 100)
-            tvBlinkProgress.progress = progress
-
-            tvRemainTime.text = formatTime(totalTime - usedTime)
         }
     }
     private fun getAutoOffTime(): Int {
         // ✅ 直接从 SharedPreferences 读取
         val prefs = getSharedPreferences("auto_off_settings", Context.MODE_PRIVATE)
         return prefs.getInt(AutomaticActivity.KEY_BLINK_TIME, 5)
-    }
-    private fun formatTime(minutes: Float): String {
-        val totalSeconds = (minutes * 60).toInt()
-
-        // 计算分钟和秒
-        val mins = totalSeconds / 60
-        val secs = totalSeconds % 60
-
-        // 格式化为两位数，不足补0
-        return String.format("%02d:%02d", mins, secs)
     }
     private fun initFlashlight() {
         cameraManager = getSystemService(CAMERA_SERVICE) as CameraManager
@@ -182,74 +309,6 @@ class SOSActivity : BaseActivity() {
         }
     }
 
-    private fun startSOS() {
-        if (cameraId == null) return
-
-        isSosActive = true
-
-        sosRunnable = object : Runnable {
-            var sequenceIndex = 0
-
-            override fun run() {
-                if (!isSosActive) return
-
-                val signal = sosSequence[sequenceIndex]
-
-                when (signal) {
-                    Signal.DOT -> {
-                        setFlashlightAndColor(true)
-                        sosHandler.postDelayed({
-                            setFlashlightAndColor(false)
-                            moveToNextSignal()
-                        }, DOT_ON)
-                    }
-                    Signal.DASH -> {
-                        setFlashlightAndColor(true)
-                        sosHandler.postDelayed({
-                            setFlashlightAndColor(false)
-                            moveToNextSignal()
-                        }, DASH_ON)
-                    }
-                    Signal.GAP -> {
-                        setFlashlightAndColor(false)
-                        moveToNextSignalDelayed(CHAR_GAP)
-                    }
-                    Signal.CYCLE_GAP -> {
-                        setFlashlightAndColor(false)
-                        sequenceIndex = -1
-                        cycleCount++
-
-                        runOnUiThread {
-                            tvSosCycles.text = "${cycleCount}次"
-                        }
-
-                        // ✅ 保存循环次数
-                        TimeRecorder.addSOSCycles(this@SOSActivity, 1)
-
-                        moveToNextSignalDelayed(CYCLE_GAP)
-                    }
-                }
-
-            }
-
-            private fun moveToNextSignal() {
-                sequenceIndex++
-                if (sequenceIndex < sosSequence.size) {
-                    sosHandler.post(this)
-                }
-            }
-
-            private fun moveToNextSignalDelayed(delay: Long) {
-                sequenceIndex++
-                if (sequenceIndex < sosSequence.size) {
-                    sosHandler.postDelayed(this, delay)
-                }
-            }
-        }
-
-        sosRunnable?.let { sosHandler.post(it) }
-    }
-
     private fun startTimer() {
         val timerHandler = Handler(Looper.getMainLooper())
         val timerRunnable = object : Runnable {
@@ -259,10 +318,7 @@ class SOSActivity : BaseActivity() {
                     val minutes = duration / 60
                     val seconds = duration % 60
                     tvDuration.text = String.format("%02d:%02d", minutes, seconds)
-
-                    if (duration % 10 == 0L) {
-                        TimeRecorder.saveSOSDuration(this@SOSActivity, duration)
-                    }
+                    updateDuration()
                     timerHandler.postDelayed(this, 1000)
                 }
             }
@@ -280,7 +336,7 @@ class SOSActivity : BaseActivity() {
         runOnUiThread {
             tvSosPattern.setTextColor(
                 if (on) Color.parseColor("#FFFFFF")
-                else Color.parseColor("#A0A0A0")
+                else Color.parseColor("#FF9E9E9E")
             )
         }
     }
@@ -295,11 +351,8 @@ class SOSActivity : BaseActivity() {
         handler.post(runnable)
     }
     override fun onPause() {
-        val duration = (System.currentTimeMillis() - startTime) / 1000
-        TimeRecorder.saveSOSDuration(this, duration)
-
         TimeRecorder.stopRecording(this, "blink")
-
+        stopRecording()
         super.onPause()
         isSosActive = false
         sosHandler.removeCallbacksAndMessages(null)
@@ -309,30 +362,27 @@ class SOSActivity : BaseActivity() {
             // 忽略错误
         }
     }
+    override fun onResume() {
+        super.onResume()
+        // 回到页面时重新开始记录
+        if (!isTimerRunning) {
+            startRecording()
+        }
 
+        // 重新开始 SOS
+        if (!isSosActive) {
+            startSOS()
+        }
+    }
     override fun onDestroy() {
         // ✅ 确保退出时也保存
         if (isSosActive) {
-            TimeRecorder.stopRecording(this, "blink")
-            saveSOSCycles()
+            stopRecording()
         }
 
         super.onDestroy()
         isSosActive = false
         sosHandler.removeCallbacksAndMessages(null)
-    }
-
-    private fun saveSOSCycles() {
-        val prefs = getSharedPreferences("usage_stats", Context.MODE_PRIVATE)
-        val todayKey = "sos_cycles_${getTodayDate()}"
-        val currentCycles = prefs.getInt(todayKey, 0)
-        prefs.edit().putInt(todayKey, currentCycles + cycleCount).apply()
-
-        println("✅ SOS循环次数已保存: 本次 +$cycleCount, 累计 ${currentCycles + cycleCount}")
-    }
-
-    private fun getTodayDate(): String {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        return dateFormat.format(Date())
+        haloAnimator?.cancel() // 【新增】销毁动画
     }
 }

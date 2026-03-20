@@ -29,6 +29,17 @@
             android:textColor="@color/white"
             android:textSize="24sp" />
     </LinearLayout>
+    <View
+        android:id="@+id/sos_halo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:background="@drawable/bg_sos_halo"
+        app:layout_constraintTop_toTopOf="@id/card_container1"
+        app:layout_constraintBottom_toBottomOf="@id/card_container1"
+        app:layout_constraintStart_toStartOf="@id/card_container1"
+        app:layout_constraintEnd_toEndOf="@id/card_container1"
+        android:layout_margin="-25dp"/>
     <LinearLayout
         android:id="@+id/card_container1"
         android:layout_width="0dp"
@@ -36,7 +47,7 @@
         android:layout_marginStart="44dp"
         android:layout_marginEnd="44dp"
         android:layout_marginTop="30dp"
-        android:background="@drawable/bg_rounded_corner"
+        android:background="@drawable/bg_lb_card_red"
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:paddingStart="12dp"
@@ -71,12 +82,12 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_marginTop="6dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:padding="16dp"
             android:orientation="vertical"
             android:gravity="center"
-            android:background="@drawable/bg_rounded_corner">
+            android:background="@drawable/bg_card_red">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -92,7 +103,7 @@
                 android:gravity="center_horizontal"
                 android:text="即将关机"
                 android:textSize="24sp"
-                android:textColor="@color/white"
+                android:textColor="@color/red"
                 android:layout_weight="0.8"/>
         </LinearLayout>
         <LinearLayout

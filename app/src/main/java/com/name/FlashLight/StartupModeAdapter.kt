@@ -17,7 +17,7 @@ class StartupModeAdapter(context: Context, private val items: List<String>) :
 
         // 根据当前选中的位置显示不同的文本
         textView.text = when (position) {
-            0 -> "记住上次"      // 显示简短版本
+            0 -> "上次用"        // 显示简短版本
             1 -> "主页面"        // 显示简短版本
             2 -> "最常用"        // 显示简短版本
             else -> items[position]

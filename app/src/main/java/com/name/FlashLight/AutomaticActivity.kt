@@ -52,7 +52,7 @@ class AutomaticActivity : AppCompatActivity() {
         const val TIME_1_MIN = 1
         const val TIME_5_MIN = 5
         const val TIME_10_MIN = 10
-        const val TIME_NEVER = -1  // -1 表示永不关闭
+        const val TIME_NEVER = 114514  // -1 表示永不关闭
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

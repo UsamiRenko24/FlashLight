@@ -7,7 +7,6 @@ import java.util.*
 object TimeRecorder {
 
     private const val PREFS_NAME = "usage_stats"
-    const val SOS_CYCLE_MS = 6200L
 
     // 记录开始时间
     fun startRecording(context: Context, featureType: String) {
@@ -62,37 +61,6 @@ object TimeRecorder {
         }
 
         return savedTime
-    }
-
-    // ========== SOS 循环次数记录方法 ==========
-
-    fun addSOSCycles(context: Context, cycles: Int) {
-        if (cycles <= 0) return
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val todayKey = getSOSCyclesKey()
-        val currentCycles = prefs.getInt(todayKey, 0)
-        prefs.edit().putInt(todayKey, currentCycles + cycles).apply()
-    }
-
-    fun getSOSCycles(context: Context): Int {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getInt(getSOSCyclesKey(), 0)
-    }
-
-    private fun getSOSCyclesKey(): String = "sos_cycles_${getTodayDate()}"
-
-    fun saveSOSDuration(context: Context, seconds: Long) {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        prefs.edit().putLong("sos_duration_${getTodayDate()}", seconds).apply()
-    }
-
-    fun getSOSDuration(context: Context): Long {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getLong("sos_duration_${getTodayDate()}", 0)
-    }
-
-    fun getTotalTime(context: Context): Float {
-        return listOf("flashlight", "screen_light", "blink").sumOf { getTodayTime(context, it).toDouble() }.toFloat()
     }
 
     private fun getTodayKey(featureType: String): String = "${featureType}_${getTodayDate()}"

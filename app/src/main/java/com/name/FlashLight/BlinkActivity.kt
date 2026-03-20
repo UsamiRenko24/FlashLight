@@ -1,10 +1,19 @@
 package com.name.FlashLight
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.hardware.camera2.CameraManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.MotionEvent
+import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.OvershootInterpolator
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -44,15 +53,24 @@ class BlinkActivity : BaseActivity() {
     private lateinit var cameraManager: CameraManager
     private var cameraId: String? = null
 
+    private var handler: Handler? = null
+    private var timerRunnable: Runnable? = null
+    private var isTimerRunning = false
+    private var startTime = 0L
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.blink)
+        
+        handler = Handler(Looper.getMainLooper())
+        
         initViews()
         PageUsageRecorder.recordPageVisit(this, PageConstants.PAGE_BLINK)
         StartupModeManager.recordLastPage(this, PageConstants.PAGE_BLINK)
 
         initFlashlight()
         setupClickListeners()
+        updateStats()
 
         // 默认选中中频
         selectFrequency(1)
@@ -71,104 +89,185 @@ class BlinkActivity : BaseActivity() {
 
         // 设置默认选中状态
         layoutScreenLight.setBackgroundResource(R.drawable.bg_rounded)
-        layoutBlink.setBackgroundResource(R.drawable.bg_rounded_corner_selected)  // 手电筒默认
+        layoutBlink.setBackgroundResource(R.drawable.bg_rounded_corner_selected)
     }
 
+    private fun startTimer() {
+        stopTimer()
+        startTime = System.currentTimeMillis()
+        isTimerRunning = true
+
+        timerRunnable = object : Runnable {
+            override fun run() {
+                if (isTimerRunning) {
+                    updateStats()
+                    handler?.postDelayed(this, 1000)
+                }
+            }
+        }
+        handler?.post(timerRunnable!!)
+    }
+
+    private fun stopTimer() {
+        isTimerRunning = false
+        timerRunnable?.let {
+            handler?.removeCallbacks(it)
+        }
+        timerRunnable = null
+    }
+    
+    private fun updateStats() {
+        if (!isTimerRunning || startTime == 0L) return
+        
+        val elapsedMs = System.currentTimeMillis() - startTime
+        val usedTime = elapsedMs / 60000F
+        val totalTime = getAutoOffTime().toFloat()
+        
+        if (elapsedMs < 0) {
+            stopTimer()
+            return
+        }
+        
+        if (usedTime >= totalTime) {
+            navigateToMain()
+        }
+    }
+    
+    private fun navigateToMain() {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        finish()
+    }
+    
+    private fun getAutoOffTime(): Int {
+        val prefs = getSharedPreferences("auto_off_settings", Context.MODE_PRIVATE)
+        return prefs.getInt(AutomaticActivity.KEY_BLINK_TIME, 5)
+    }
+    
     private fun initFlashlight() {
         cameraManager = getSystemService(CAMERA_SERVICE) as CameraManager
         try {
             cameraId = cameraManager.cameraIdList.firstOrNull { id ->
                 val characteristics = cameraManager.getCameraCharacteristics(id)
-                characteristics.get(android.hardware.camera2.CameraCharacteristics.FLASH_INFO_AVAILABLE) ?: false
+                val flashAvailable = characteristics.get(android.hardware.camera2.CameraCharacteristics.FLASH_INFO_AVAILABLE) ?: false
+                flashAvailable
             }
-        } catch (e: Exception) {
-            // 设备可能不支持闪光灯
-        }
+        } catch (e: Exception) { }
     }
+    
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupClickListeners() {
-        // 返回按钮
         ivTraceback.setOnClickListener {
             stopBlinking()
             handleBackPress()
         }
 
-        // 设置按钮
         ivSettings.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
-        // SOS按钮 - 直接跳转到SOSActivity
-        btnSos.setOnClickListener {
-            it.feedback()
-            if (isBlinking) {
-                Toast.makeText(this, "请先停止闪烁", Toast.LENGTH_SHORT).show()
-            } else {
-                val intent = Intent(this, SOSActivity::class.java)
-                startActivity(intent)
+        // SOS 按钮物理动效改造
+        btnSos.setOnTouchListener { view, event ->
+            val isInside = event.x >= 0 && event.x <= view.width && event.y >= 0 && event.y <= view.height
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    view.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100).setInterpolator(AccelerateDecelerateInterpolator()).start()
+                    true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val targetScale = if (isInside) 0.9f else 1.0f
+                    view.animate().scaleX(targetScale).scaleY(targetScale).setDuration(100).start()
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).setInterpolator(OvershootInterpolator()).start()
+                    if (isInside) {
+                        view.feedback()
+                        if (isBlinking) {
+                            Toast.makeText(this, "请先停止闪烁", Toast.LENGTH_SHORT).show()
+                        } else {
+                            val intent = Intent(this, SOSActivity::class.java)
+                            startActivity(intent)
+                        }
+                    }
+                    true
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).start()
+                    true
+                }
+                else -> false
             }
         }
 
-        // 屏幕补光选项
         layoutScreenLight.setOnClickListener {
-            if (!isBlinking) {
-                toggleScreenLight()
-            } else {
-                Toast.makeText(this, "请先停止闪烁", Toast.LENGTH_SHORT).show()
-            }
+            if (!isBlinking) toggleScreenLight()
+            else Toast.makeText(this, "请先停止闪烁", Toast.LENGTH_SHORT).show()
         }
 
-        // 手电筒选项
         layoutBlink.setOnClickListener {
-            if (!isBlinking) {
-                toggleFlashlight()
-            } else {
-                Toast.makeText(this, "请先停止闪烁", Toast.LENGTH_SHORT).show()
-            }
+            if (!isBlinking) toggleFlashlight()
+            else Toast.makeText(this, "请先停止闪烁", Toast.LENGTH_SHORT).show()
         }
 
-        // 低频卡片
         layoutLeft.setOnClickListener {
-            if (!isBlinking) {
-                selectFrequency(0)
-            } else {
-                Toast.makeText(this, "请先停止闪烁", Toast.LENGTH_SHORT).show()
-            }
+            if (!isBlinking) selectFrequency(0)
+            else Toast.makeText(this, "请先停止闪烁", Toast.LENGTH_SHORT).show()
         }
 
-        // 中频卡片
         layoutMiddle.setOnClickListener {
-            if (!isBlinking) {
-                selectFrequency(1)
-            } else {
-                Toast.makeText(this, "请先停止闪烁", Toast.LENGTH_SHORT).show()
-            }
+            if (!isBlinking) selectFrequency(1)
+            else Toast.makeText(this, "请先停止闪烁", Toast.LENGTH_SHORT).show()
         }
 
-        // 高频卡片
         layoutRight.setOnClickListener {
-            if (!isBlinking) {
-                selectFrequency(2)
-            } else {
-                Toast.makeText(this, "请先停止闪烁", Toast.LENGTH_SHORT).show()
-            }
+            if (!isBlinking) selectFrequency(2)
+            else Toast.makeText(this, "请先停止闪烁", Toast.LENGTH_SHORT).show()
         }
 
-        // 开始闪烁按钮
-        btnStartBlink.setOnClickListener {
-            it.feedback()
-            if (isBlinking) {
-                stopBlinking()
-                TimeRecorder.stopRecording(this, "blink")
-            } else {
-                startBlinking()
-                TimeRecorder.startRecording(this, "blink")
+        // 开始闪烁按钮物理动效改造
+        btnStartBlink.setOnTouchListener { view, event ->
+            val isInside = event.x >= 0 && event.x <= view.width && event.y >= 0 && event.y <= view.height
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    view.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100).setInterpolator(AccelerateDecelerateInterpolator()).start()
+                    true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val targetScale = if (isInside) 0.9f else 1.0f
+                    view.animate().scaleX(targetScale).scaleY(targetScale).setDuration(100).start()
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).setInterpolator(OvershootInterpolator()).start()
+                    if (isInside) {
+                        view.feedback()
+                        if (isBlinking) {
+                            stopBlinking()
+                            stopTimer()
+                            TimeRecorder.stopRecording(this, "blink")
+                        } else {
+                            startBlinking()
+                            startTimer()
+                            TimeRecorder.startRecording(this, "blink")
+                        }
+                    }
+                    true
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).start()
+                    true
+                }
+                else -> false
             }
         }
     }
 
     private fun toggleScreenLight() {
         if (isScreenLightSelected) {
-            // 尝试取消屏幕补光
             if (isFlashlightSelected) {
                 isScreenLightSelected = false
                 layoutScreenLight.setBackgroundResource(R.drawable.bg_rounded)
@@ -177,7 +276,6 @@ class BlinkActivity : BaseActivity() {
                 Toast.makeText(this, "至少需要选择一种光源", Toast.LENGTH_SHORT).show()
             }
         } else {
-            // 选中屏幕补光
             isScreenLightSelected = true
             layoutScreenLight.setBackgroundResource(R.drawable.bg_rounded_corner_selected)
             Toast.makeText(this, "屏幕补光已开启", Toast.LENGTH_SHORT).show()
@@ -186,7 +284,6 @@ class BlinkActivity : BaseActivity() {
 
     private fun toggleFlashlight() {
         if (isFlashlightSelected) {
-            // 尝试取消手电筒
             if (isScreenLightSelected) {
                 isFlashlightSelected = false
                 layoutBlink.setBackgroundResource(R.drawable.bg_rounded)
@@ -195,7 +292,6 @@ class BlinkActivity : BaseActivity() {
                 Toast.makeText(this, "至少需要选择一种光源", Toast.LENGTH_SHORT).show()
             }
         } else {
-            // 选中手电筒
             isFlashlightSelected = true
             layoutBlink.setBackgroundResource(R.drawable.bg_rounded_corner_selected)
             Toast.makeText(this, "手电筒已开启", Toast.LENGTH_SHORT).show()
@@ -204,30 +300,18 @@ class BlinkActivity : BaseActivity() {
 
     private fun selectFrequency(level: Int) {
         selectedFrequency = level
-
-        // 更新UI
         layoutLeft.setBackgroundResource(R.drawable.bg_rounded)
         layoutMiddle.setBackgroundResource(R.drawable.bg_rounded)
         layoutRight.setBackgroundResource(R.drawable.bg_rounded)
 
         when (level) {
-            0 -> {
-                layoutLeft.setBackgroundResource(R.drawable.bg_rounded_corner_selected)
-                Toast.makeText(this, "低频模式", Toast.LENGTH_SHORT).show()
-            }
-            1 -> {
-                layoutMiddle.setBackgroundResource(R.drawable.bg_rounded_corner_selected)
-                Toast.makeText(this, "中频模式", Toast.LENGTH_SHORT).show()
-            }
-            2 -> {
-                layoutRight.setBackgroundResource(R.drawable.bg_rounded_corner_selected)
-                Toast.makeText(this, "高频模式", Toast.LENGTH_SHORT).show()
-            }
+            0 -> layoutLeft.setBackgroundResource(R.drawable.bg_rounded_corner_selected)
+            1 -> layoutMiddle.setBackgroundResource(R.drawable.bg_rounded_corner_selected)
+            2 -> layoutRight.setBackgroundResource(R.drawable.bg_rounded_corner_selected)
         }
     }
 
     private fun startBlinking() {
-        // 检查是否至少选择了一种光源
         if (!isScreenLightSelected && !isFlashlightSelected) {
             Toast.makeText(this, "请至少选择一种光源", Toast.LENGTH_SHORT).show()
             return
@@ -235,89 +319,59 @@ class BlinkActivity : BaseActivity() {
 
         isBlinking = true
         btnStartBlink.text = "⬜停止闪烁"
+        btnStartBlink.alpha = 0.3f 
         btnSos.isEnabled = false
-        btnSos.alpha = 0.8f
+        btnSos.alpha = 0.3f 
 
-        // 根据频率设置闪烁间隔
         val interval = when (selectedFrequency) {
-            0 -> 1000L  // 低频：1秒
-            1 -> 500L   // 中频：0.5秒
-            2 -> 200L   // 高频：0.2秒
+            0 -> 1000L
+            1 -> 500L
+            2 -> 200L
             else -> 500L
         }
 
-        val sourceText = buildString {
-            if (isScreenLightSelected) append("屏幕补光 ")
-            if (isFlashlightSelected) append("手电筒")
-        }
-
-        Toast.makeText(this, "开始闪烁：$sourceText", Toast.LENGTH_SHORT).show()
-
-        // 创建闪烁任务
         blinkRunnable = object : Runnable {
             var isOn = false
             override fun run() {
                 if (!isBlinking) return
-
-                // 切换状态
                 isOn = !isOn
-
-                // 控制选中的光源
-                if (isScreenLightSelected) {
-                    controlScreenBrightness(isOn)
-                }
-
-                if (isFlashlightSelected) {
-                    controlFlashlight(isOn)
-                }
-
-                // 继续下一轮闪烁
+                if (isScreenLightSelected) controlScreenBrightness(isOn)
+                if (isFlashlightSelected) controlFlashlight(isOn)
                 blinkHandler.postDelayed(this, interval)
             }
         }
-
         blinkRunnable?.let { blinkHandler.post(it) }
     }
 
     private fun stopBlinking() {
         isBlinking = false
-        btnStartBlink.text = "开始闪烁"
+        btnStartBlink.text = "⚡开始闪烁"
+        btnStartBlink.alpha = 1.0f
         btnSos.isEnabled = true
         btnSos.alpha = 1.0f
-        blinkHandler.removeCallbacksAndMessages(null)
 
-        // 关闭所有光源
+        blinkHandler.removeCallbacksAndMessages(null)
         controlScreenBrightness(false)
         controlFlashlight(false)
-
-        Toast.makeText(this, "闪烁已停止", Toast.LENGTH_SHORT).show()
     }
 
     private fun controlFlashlight(on: Boolean) {
         try {
-            if (cameraId != null) {
-                cameraManager.setTorchMode(cameraId!!, on)
-            }
-        } catch (e: Exception) {
-            // 忽略错误
-        }
+            if (cameraId != null) cameraManager.setTorchMode(cameraId!!, on)
+        } catch (e: Exception) { }
     }
 
     private fun controlScreenBrightness(on: Boolean) {
         val layoutParams = window.attributes
-        if (on) {
-            layoutParams.screenBrightness = 1.0f
-        } else {
-            layoutParams.screenBrightness = -1.0f
-        }
+        layoutParams.screenBrightness = if (on) 1.0f else -1.0f
         window.attributes = layoutParams
     }
 
     override fun onPause() {
         super.onPause()
-        // 页面暂停时停止闪烁
         if (isBlinking) {
             stopBlinking()
+            stopTimer()
             TimeRecorder.stopRecording(this, "blink")
         }
     }
@@ -326,6 +380,7 @@ class BlinkActivity : BaseActivity() {
         super.onDestroy()
         if (isBlinking) {
             stopBlinking()
+            stopTimer()
             TimeRecorder.stopRecording(this, "blink")
         }
     }

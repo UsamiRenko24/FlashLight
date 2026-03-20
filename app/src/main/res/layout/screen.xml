@@ -232,21 +232,23 @@
             android:textSize="13sp"
             android:textColor="@color/pure_white" />
     </LinearLayout>
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/card2"
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_marginStart="44dp"
         android:layout_marginEnd="44dp"
         android:layout_marginTop="25dp"
-        android:background="@drawable/bg_rounded_corner"
+        android:background="@drawable/btn_light_blue_selector"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/card_middle1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="💡开启补光"
-        android:textSize="16sp">
-    </Button>
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:elevation="2dp">
+    </androidx.appcompat.widget.AppCompatButton>
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="80dp"
@@ -266,12 +268,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_clock"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:layout_weight="1"
                     android:text="自动关闭"
+                    android:layout_marginLeft="4dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"/>
                 <TextView
@@ -293,14 +301,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_eye"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:layout_weight="5"
+                    android:layout_marginLeft="4dp"
                     android:text="护眼模式" />
                 <com.name.FlashLight.SlidingButton
-                    android:id="@+id/btn_switch"
+                    android:id="@+id/sliding_auto_brightness"
                     android:layout_width="0dp"
                     android:layout_height="16dp"
                     android:layout_gravity="center"

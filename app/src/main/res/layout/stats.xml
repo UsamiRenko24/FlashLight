@@ -346,7 +346,7 @@
                 android:textSize="14sp"
                 android:layout_weight="1"/>
             <com.name.FlashLight.SlidingButton
-                android:id="@+id/btn_temperature"
+                android:id="@+id/btn_temperature_switch"
                 android:layout_width="40dp"
                 android:layout_height="20dp"
                 android:gravity="end" />

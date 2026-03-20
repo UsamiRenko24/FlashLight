@@ -37,7 +37,7 @@
         android:layout_height="75dp"
         android:layout_marginStart="44dp"
         android:layout_marginEnd="44dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/bg_rounded_corner"
         android:orientation="horizontal"
         android:gravity="center_vertical"
@@ -104,14 +104,15 @@
         </LinearLayout>
     </LinearLayout>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/flashlight"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
         app:layout_constraintTop_toBottomOf="@+id/card_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:background="@drawable/btn_flashlight_on"
+        android:backgroundTint="@null"
         android:layout_marginTop="30dp"
         android:text="手电筒"/>
 
@@ -120,7 +121,7 @@
         android:layout_width="140dp"
         android:layout_height="100dp"
         android:layout_marginTop="30dp"
-        android:background="@drawable/bg_rounded_corner"
+        android:background="@drawable/bg_grey"
         app:layout_constraintEnd_toStartOf="@+id/layout_blink"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
@@ -151,7 +152,7 @@
         android:layout_width="140dp"
         android:layout_height="100dp"
         android:layout_marginStart="30dp"
-        android:background="@drawable/bg_rounded_corner"
+        android:background="@drawable/bg_grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/layout_screen_light"
         app:layout_constraintTop_toTopOf="@+id/layout_screen_light"

@@ -102,51 +102,7 @@ object BatteryHelper {
         )
     }
 
-    /**
-     * 获取格式化的电量文本
-     */
-    fun getFormattedBatteryLevel(context: Context): String {
-        return getBatteryInfo(context).levelText
-    }
 
-    /**
-     * 获取电量百分比（浮点数）
-     */
-    fun getBatteryPercent(context: Context): Float {
-        return getBatteryInfo(context).level
-    }
-
-    /**
-     * 获取充电状态
-     */
-    fun getBatteryStatus(context: Context): String {
-        return getBatteryInfo(context).status
-    }
-
-    /**
-     * 获取充电类型详情
-     */
-    fun getChargingType(context: Context): String {
-        return getBatteryInfo(context).chargingType
-    }
-
-    /**
-     * 获取电池图标资源ID
-     */
-    fun getBatteryIconRes(context: Context): Int {
-        return getBatteryInfo(context).iconRes
-    }
-
-    /**
-     * 检查是否在充电
-     */
-    fun isCharging(context: Context): Boolean {
-        return getBatteryInfo(context).isCharging
-    }
-
-    /**
-     * 一键更新所有电池UI组件
-     */
     fun updateBatteryUI(
         context: Context,
         tvPercent: TextView? = null,
@@ -160,9 +116,6 @@ object BatteryHelper {
         ivIcon?.setImageResource(info.iconRes)
     }
 
-    /**
-     * 电池信息数据类
-     */
     data class BatteryInfo(
         val level: Float = 0f,
         val levelText: String = "0%",

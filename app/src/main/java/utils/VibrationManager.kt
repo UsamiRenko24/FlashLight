@@ -8,6 +8,7 @@ object VibrationManager {
 
     private const val PREFS_NAME = "vibration_settings"
     private const val KEY_VIBRATION_ENABLED = "vibration_enabled"
+    private val listeners = mutableListOf<(Boolean) -> Unit>()
 
     fun isVibrationEnabled(context: Context): Boolean {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -17,6 +18,7 @@ object VibrationManager {
     fun setVibrationEnabled(context: Context, enabled: Boolean) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit().putBoolean(KEY_VIBRATION_ENABLED, enabled).apply()
+        listeners.forEach { it(enabled) }
     }
 
     fun vibrate(view: View) {

@@ -18,7 +18,6 @@ import utils.VibrationManager
 
 class SettingsActivity : BaseActivity() {
 
-    // 控件定义
     private lateinit var spinnerStartupMode: Spinner
     private lateinit var ivArrowClose: ImageView
     private lateinit var ivArrowStats: ImageView
@@ -28,7 +27,6 @@ class SettingsActivity : BaseActivity() {
     private lateinit var slidingSound: SlidingButton
     private lateinit var slidingAutoBrightness: SlidingButton
 
-    // 修改：规范 RequestCode 命名，避免冲突
     private val REQ_FLASHLIGHT = 1001
     private val REQ_BLINK = 1002
     
@@ -53,7 +51,6 @@ class SettingsActivity : BaseActivity() {
         loadSetting()
         setupButton()
         
-        // 加载初始状态并设置监听器
         loadAutoBrightnessState()
         setupAutoBrightnessListener()
         
@@ -76,9 +73,24 @@ class SettingsActivity : BaseActivity() {
         slidingAutoBrightness = findViewById(R.id.sliding_auto_brightness)
     }
 
+    private fun loadSetting() {
+        slidingVibration.setCheckedSilently(VibrationManager.isVibrationEnabled(this))
+        slidingSound.setCheckedSilently(SoundManager.isSoundEnabled(this))
+    }
+
+    private fun setupButton() {
+        slidingVibration.setOnStateChangedListener { isChecked ->
+            VibrationManager.setVibrationEnabled(this, isChecked)
+            if (isChecked) VibrationManager.vibrate(slidingVibration)
+        }
+        slidingSound.setOnStateChangedListener { isChecked ->
+            SoundManager.setSoundEnabled(this, isChecked)
+            if (isChecked) SoundManager.playClickSound(this)
+        }
+    }
+
     private fun loadAutoBrightnessState() {
-        val isAuto = AutoBrightnessManager.getAutoBrightnessState(this)
-        slidingAutoBrightness.setCheckedSilently(isAuto)
+        slidingAutoBrightness.setCheckedSilently(AutoBrightnessManager.getAutoBrightnessState(this))
     }
 
     private fun setupAutoBrightnessListener() {
@@ -86,22 +98,15 @@ class SettingsActivity : BaseActivity() {
             AutoBrightnessManager.toggleAutoBrightness(
                 activity = this,
                 targetState = isChecked,
-                onSuccess = { /* 状态已由 UI 改变，无需操作 */ },
-                onFailure = {
-                    // 权限失败或设置失败，静默回滚 UI
-                    slidingAutoBrightness.setCheckedSilently(!isChecked)
-                }
+                onSuccess = { },
+                onFailure = { slidingAutoBrightness.setCheckedSilently(!isChecked) }
             )
         }
     }
 
-    // ✅ 修复：处理权限申请后的返回结果
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        
-        // 调用管理器来处理权限结果
         AutoBrightnessManager.handlePermissionResult(this, requestCode) { successState ->
-            // 如果授权成功并自动应用了设置，同步 UI 状态
             slidingAutoBrightness.setCheckedSilently(successState)
         }
     }
@@ -133,9 +138,6 @@ class SettingsActivity : BaseActivity() {
         }
     }
 
-    private val brightnessOptions = listOf("低亮度", "中亮度", "高亮度")
-    private val brightnessValues = listOf(0, 1, 2)
-
     private fun setupSpinner() {
         val startupModes = listOf("记住上次使用的功能", "总是启动到主页面", "启动到最常用功能")
         val adapter = StartupModeAdapter(this, startupModes)
@@ -144,9 +146,7 @@ class SettingsActivity : BaseActivity() {
 
         val currentMode = StartupModeManager.getStartupMode(this)
         val position = modeValues.indexOf(currentMode)
-        if (position >= 0) {
-            spinnerStartupMode.setSelection(position)
-        }
+        if (position >= 0) spinnerStartupMode.setSelection(position)
 
         spinnerStartupMode.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -157,51 +157,25 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun setupBrightnessSpinner() {
-        val adapter = WhiteTextAdapter(this, brightnessOptions)
+        val adapter = WhiteTextAdapter(this, listOf("低亮度", "中亮度", "高亮度"))
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerBrightness.adapter = adapter
 
         val prefs = getSharedPreferences("brightness_settings", Context.MODE_PRIVATE)
         val savedBrightness = prefs.getInt("default_brightness", 1)
-        val position = brightnessValues.indexOf(savedBrightness)
-        if (position >= 0) {
-            spinnerBrightness.setSelection(position)
-        }
+        val position = listOf(0, 1, 2).indexOf(savedBrightness)
+        if (position >= 0) spinnerBrightness.setSelection(position)
 
         spinnerBrightness.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                prefs.edit().putInt("default_brightness", brightnessValues[position]).apply()
+                prefs.edit().putInt("default_brightness", listOf(0, 1, 2)[position]).apply()
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
 
-    private fun loadSetting() {
-        slidingVibration.isChecked = VibrationManager.isVibrationEnabled(this)
-        slidingSound.isChecked = SoundManager.isSoundEnabled(this)
-    }
-
-    private fun setupButton() {
-        slidingVibration.setOnStateChangedListener { isChecked ->
-            VibrationManager.setVibrationEnabled(this, isChecked)
-            if (isChecked) {
-                VibrationManager.vibrate(slidingVibration)
-            }
-        }
-        slidingSound.setOnStateChangedListener { isChecked ->
-            SoundManager.setSoundEnabled(this, isChecked)
-            if (isChecked) {
-                SoundManager.playClickSound(this@SettingsActivity)
-            }
-        }
-    }
-
     private fun setupClickListeners() {
-        ivArrowClose.setOnClickListener {
-            startActivity(Intent(this, AutomaticActivity::class.java))
-        }
-        ivArrowStats.setOnClickListener {
-            startActivity(Intent(this, StatsActivity::class.java))
-        }
+        ivArrowClose.setOnClickListener { startActivity(Intent(this, AutomaticActivity::class.java)) }
+        ivArrowStats.setOnClickListener { startActivity(Intent(this, StatsActivity::class.java)) }
     }
 }

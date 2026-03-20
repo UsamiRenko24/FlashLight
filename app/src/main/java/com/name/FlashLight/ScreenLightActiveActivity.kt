@@ -3,11 +3,13 @@ package com.name.FlashLight
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 
@@ -45,11 +47,12 @@ class ScreenLightActiveActivity : AppCompatActivity() {
     private var currentColorHex = "#FFFFFFFF"  // 当前颜色值
     private var currentBrightnessValue = 70    // 当前亮度值
 
+    private var lastClickTime: Long = 0
+    private val DOUBLE_CLICK_TIME = 300
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.screen_light)
-
-        TimeRecorder.startRecording(this, "screen_light")
 
         // 接收传递过来的参数
         receiveIntentData()
@@ -60,12 +63,8 @@ class ScreenLightActiveActivity : AppCompatActivity() {
 
         // 应用接收到的参数初始化界面
         applyInitialSettings()
-    }
-    private fun updateStats() {
-        // 获取最新的数据
-        val flashlightTime = TimeRecorder.getTodayTime(this, "flashlight")
-        val screenLightTime = TimeRecorder.getTodayTime(this, "screen_light")
-        val blinkTime = TimeRecorder.getTodayTime(this, "blink")
+
+        setupBackPressedCallback()
     }
     /**
      * 接收从ScreenLightActivity传递过来的参数
@@ -162,15 +161,11 @@ class ScreenLightActiveActivity : AppCompatActivity() {
 
         // 点击设置图标
         settings.setOnClickListener {
-            TimeRecorder.stopRecording(this, "screen_light")
-            updateStats()
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
         // 点击关闭图标 - 返回上一页
         close.setOnClickListener {
-            TimeRecorder.stopRecording(this, "screen_light")
-            updateStats()
             finish()
         }
 
@@ -313,5 +308,50 @@ class ScreenLightActiveActivity : AppCompatActivity() {
         }
 
         tvTitle.text = "$colorText - ${brightnessText}亮度"
+    }
+    /**
+     * 返回设置并退出
+     */
+    private fun returnWithSettings() {
+        val resultIntent = Intent().apply {
+            putExtra("brightnessLevel", selectedBrightness)
+            putExtra("colorLevel", selectedColor)
+        }
+        setResult(RESULT_OK, resultIntent)
+        finish()
+    }
+
+    // 双击退出
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastClickTime < DOUBLE_CLICK_TIME) {
+                returnWithSettings()
+                return true
+            }
+            lastClickTime = currentTime
+        }
+        return super.onTouchEvent(event)
+    }
+
+    private fun setupBackPressedCallback() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // 返回设置并退出
+                returnWithSettings()
+                // 注意：不需要调用 finish()，系统会自动处理
+            }
+        })
+    }
+    override fun onPause() {
+        super.onPause()
+        // 页面不可见时停止记录
+        TimeRecorder.stopRecording(this, "screen_light")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // 确保退出时停止
+        TimeRecorder.stopRecording(this, "screen_light")
     }
 }

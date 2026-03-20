@@ -1,19 +1,32 @@
 package com.name.FlashLight
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.MotionEvent
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.OvershootInterpolator
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.name.FlashLight.utils.PageConstants
 import com.name.FlashLight.utils.PageUsageRecorder
 import com.name.FlashLight.utils.StartupModeManager
 import utils.AutoBrightnessManager
+import utils.SoundManager
+import utils.VibrationManager
 import utils.feedback
 
 class ScreenLightActivity : BaseActivity() {
@@ -23,6 +36,11 @@ class ScreenLightActivity : BaseActivity() {
     private lateinit var ivSettings: ImageView
 
     private lateinit var tvTitle: TextView
+
+    private var handler: Handler? = null
+    private var timerRunnable: Runnable? = null
+    private var startTime = 0L
+    private var totalTimeMinutes: Int = 0
 
     // 预览区域
     private lateinit var tvLightInfo: TextView  // "白光-亮度" 文字
@@ -48,7 +66,7 @@ class ScreenLightActivity : BaseActivity() {
 
     // 当前选择的状态
     private var currentBrightnessLevel = 1  // 0=低, 1=中, 2=高
-    private var currentBrightnessValue = 70  // 亮度百分比 40%,70%,100%
+    private var currentBrightnessValue = 70
 
     private var currentColorHex = "#FFFFFFFF"  // 对应的色值
     private var currentColorLevel = 0  // 0=纯白, 1=暖白, 2=冷白
@@ -80,6 +98,21 @@ class ScreenLightActivity : BaseActivity() {
         1 to "暖",
         2 to "冷"
     )
+    private val screenLightLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            result.data?.let { data ->
+                val newBrightness = data.getIntExtra("brightnessLevel", -1)
+                val newColor = data.getIntExtra("colorLevel", -1)
+
+                if (newBrightness != -1 && newColor != -1) {
+                    // ✅ 只更新当前显示，不保存到 Preference
+                    updateFromActiveActivity(newBrightness, newColor)
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,10 +125,28 @@ class ScreenLightActivity : BaseActivity() {
 
         // 默认选中中亮度和纯白光
         selectBrightnessCard(getSharedPreferences("brightness_settings", Context.MODE_PRIVATE).getInt("default_brightness", 1))
+        val savedLevel = getSharedPreferences("brightness_settings", Context.MODE_PRIVATE).getInt("default_brightness", 1)
+        currentBrightnessValue = brightnessMap[savedLevel] ?: 70
+        currentBrightnessLevel = savedLevel
+        handler = Handler(Looper.getMainLooper())
+        // 获取总时间（只获取一次，防止变化）
+        totalTimeMinutes = getAutoOffTime()
+
+
+        // 检查是否有正在进行的计时
+        checkExistingTimer()
+        SoundManager.initSoundPool(this)
         selectColorCard(0)
         updatePreview()  // 更新预览
         loadAutoBrightnessState()
         setupAutoBrightnessListener()
+        saveAutoOffTime(totalTimeMinutes)
+    }
+    private fun saveAutoOffTime(time: Int) {
+        getSharedPreferences("timer_prefs", MODE_PRIVATE)
+            .edit()
+            .putInt("auto_off_time", time)
+            .apply()
     }
 
     private fun initViews() {
@@ -125,9 +176,10 @@ class ScreenLightActivity : BaseActivity() {
         // 开启补光按钮
         btnStart = findViewById(R.id.card2)
         ScreenTime = findViewById(R.id.tv_screen_time)
-        slidingAutoBrightness = findViewById(R.id.btn_switch)
+        slidingAutoBrightness = findViewById(R.id.sliding_auto_brightness)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupClickListeners() {
         // 返回按钮
         ivTraceback.setOnClickListener { handleBackPress() }
@@ -187,44 +239,168 @@ class ScreenLightActivity : BaseActivity() {
             Toast.makeText(this, "已选择冷白光", Toast.LENGTH_SHORT).show()
         }
 
-        // 开启补光按钮
-        btnStart.setOnClickListener {
-            it.feedback()
-            // 获取当前混合后的颜色
-            val mixedColor = getCurrentMixedColor()
+            // 【改造核心】开启补光按钮：改用 TouchListener 实现持续缩小回弹效果
+        btnStart.setOnTouchListener { view, event ->
+            // 实时计算手指是否在按钮范围内
+            val isInside = event.x >= 0 && event.x <= view.width && event.y >= 0 && event.y <= view.height
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    // 按下：缩小
+                    view.animate()
+                        .scaleX(0.92f)
+                        .scaleY(0.92f)
+                        .setDuration(100)
+                        .setInterpolator(AccelerateDecelerateInterpolator())
+                        .start()
+                    true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val targetScale = if (isInside) 0.9f else 1.0f
+                    view.animate()
+                        .scaleX(targetScale)
+                        .scaleY(targetScale)
+                        .setDuration(100)
+                        .start()
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    if (event.action == MotionEvent.ACTION_UP) {
+                        view.animate()
+                            .scaleX(1.0f)
+                            .scaleY(1.0f)
+                            .setDuration(200)
+                            .setInterpolator(OvershootInterpolator())
+                            .start()
 
-            // 创建Intent跳转到补光效果页面
-            val intent = Intent(this, ScreenLightActiveActivity::class.java)
+                        // 核心修复：只有在抬起且在范围内时才触发
+                        if (isInside) {
+                            view.feedback()
+                            view.feedback()
+                            // 执行原本的开启逻辑
+                            startTime = System.currentTimeMillis()
+                            getSharedPreferences("timer_prefs", MODE_PRIVATE)
+                                .edit()
+                                .putLong("timer_start_time_${totalTimeMinutes}", startTime)
+                                .apply()
 
-            // 传递所有必要的数据
-            intent.putExtra("colorHex", mixedColor)
-            intent.putExtra("brightnessLevel", currentBrightnessLevel)
-            intent.putExtra("colorLevel", currentColorLevel)
+                            startTimer()
+                            TimeRecorder.startRecording(this, "screen_light")
 
-            // 启动Activity
-            startActivity(intent)
-
+                            val intent = Intent(this, ScreenLightActiveActivity::class.java).apply {
+                                putExtra("brightnessLevel", currentBrightnessLevel)
+                                putExtra("colorLevel", currentColorLevel)
+                                putExtra("colorHex", getCurrentMixedColor())
+                            }
+                            screenLightLauncher.launch(intent)
+                        }
+                    }
+                    true
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).start()
+                    true
+                }
+                else -> false
+            }
         }
     }
     private fun loadAutoBrightnessState() {
-        val isAuto = AutoBrightnessManager.getAutoBrightnessState(this)
-        slidingAutoBrightness.setCheckedSilently(isAuto)
+        slidingAutoBrightness.setCheckedSilently(AutoBrightnessManager.getAutoBrightnessState(this))
     }
+
 
     private fun setupAutoBrightnessListener() {
         slidingAutoBrightness.setOnStateChangedListener { isChecked ->
+            // 1. 振动反馈
+            VibrationManager.setVibrationEnabled(this, isChecked)
+
+            // 2. 声音反馈
+            SoundManager.setSoundEnabled(this, isChecked)
+
+            // 3. 自动亮度逻辑
+
             AutoBrightnessManager.toggleAutoBrightness(
                 activity = this,
                 targetState = isChecked,
                 onSuccess = { /* 状态已由 UI 改变，无需操作 */ },
                 onFailure = {
-                    // 权限失败或设置失败，静默回滚 UI
                     slidingAutoBrightness.setCheckedSilently(!isChecked)
                 }
             )
         }
     }
+    private fun updateFromActiveActivity(brightness: Int, color: Int) {
+        // ✅ 更新亮度（只影响当前，不保存到 Preference）
+        currentBrightnessLevel = brightness
+        currentBrightnessValue = brightnessMap[brightness] ?: 70
 
+        // ✅ 更新色温
+        currentColorLevel = color
+        currentColorHex = colorMap[color] ?: "#FFFFFFFF"
+
+        // ✅ 更新 UI
+        selectBrightnessCard(brightness)
+        selectColorCard(color)
+        updatePreview()
+
+        println("📥 从 ActiveActivity 接收: brightness=$brightness, color=$color")
+    }
+    private fun checkExistingTimer() {
+        val prefs = getSharedPreferences("timer_prefs", MODE_PRIVATE)
+        val savedStartTime = prefs.getLong("timer_start_time_${totalTimeMinutes}", 0)
+
+        if (savedStartTime > 0) {
+            val elapsed = System.currentTimeMillis() - savedStartTime
+            if (elapsed >= totalTimeMinutes * 60 * 1000) {
+                prefs.edit().remove("timer_start_time_${totalTimeMinutes}").apply()
+                startTime = 0L
+            } else {
+                startTime = savedStartTime
+                startTimer()
+            }
+        }
+    }
+
+    private fun startTimer() {
+        if (totalTimeMinutes <= 0 || startTime == 0L) return
+        stopTimer()
+        timerRunnable = object : Runnable {
+            override fun run() {
+                try {
+                    val elapsed = System.currentTimeMillis() - startTime
+                    if (elapsed >= totalTimeMinutes * 60 * 1000) {
+                        getSharedPreferences("timer_prefs", MODE_PRIVATE)
+                            .edit()
+                            .remove("timer_start_time_${totalTimeMinutes}")
+                            .apply()
+                        navigateToMain()
+                        return
+                    }
+                    handler?.postDelayed(this, 1000)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+        handler?.post(timerRunnable!!)
+    }
+
+    private fun stopTimer() {
+        timerRunnable?.let {
+            handler?.removeCallbacks(it)
+        }
+        timerRunnable = null
+    }
+
+    private fun navigateToMain() {
+        stopTimer()  // 停止计时器
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        finish()
+    }
     // ✅ 修复：处理权限申请后的返回结果
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -242,15 +418,34 @@ class ScreenLightActivity : BaseActivity() {
      */
     private fun updatePreview() {
         // 1. 更新文字
-        tvLightInfo.text = "${colorTextMap[currentColorLevel]}白色 - ${brightnessTextMap[currentBrightnessLevel]}亮度"
+        tvLightInfo.text = "${colorTextMap[currentColorLevel]}白光 - ${brightnessTextMap[currentBrightnessLevel]}亮度"
 
         // 2. 根据色温和亮度共同决定预览卡片的背景色
         val mixedColor = mixColorWithBrightness(currentColorHex, currentBrightnessValue)
         previewCard.setBackgroundColor(Color.parseColor(mixedColor))
 
-        ScreenTime.text = formatMinutes(getAutoOffTime())
-    }
+        // 3. 创建带边框的 GradientDrawable
+        previewCard.background = createCardBackground(mixedColor)
 
+        ScreenTime.text = formatMinutes(totalTimeMinutes)
+    }
+    private fun createCardBackground(colorHex: String): GradientDrawable {
+        val drawable = GradientDrawable()
+
+        // 设置背景色
+        drawable.setColor(Color.parseColor(colorHex))
+
+        // 设置圆角
+        drawable.cornerRadius = dpToPx(12).toFloat()
+
+        // 设置边框（宽度和颜色）
+        drawable.setStroke(dpToPx(2), Color.parseColor("#374151"))
+
+        return drawable
+    }
+    private fun dpToPx(dp: Int): Int {
+        return (dp * resources.displayMetrics.density).toInt()
+    }
     private fun mixColorWithBrightness(colorHex: String, brightnessPercent: Int): String {
         // 将亮度从百分比转换为 0-255 的值
         val brightness = (brightnessPercent * 2.55).toInt()  // 40% -> 102, 70% -> 178, 100% -> 255

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- 圆角设置 -->
+    <corners
+        android:radius="8dp"/>
+
+    <!-- 边框设置 - 中灰色 -->
+    <stroke
+        android:width="2dp"
+        android:color="#5A6478" />  <!-- 暖灰色边框 -->
+
+    <!-- 填充颜色 - 烟灰色 -->
+    <solid android:color="#38405F"/>  <!-- 明显的灰色，不是黑色 -->
+
+    <!-- 内边距 -->
+    <padding
+        android:left="10dp"
+        android:top="10dp"
+        android:right="10dp"
+        android:bottom="10dp"/>
+
+</shape>

@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:background="@color/black">
+
     <ImageView
         android:id="@+id/traceback"
         android:src="@drawable/traceback"
@@ -24,7 +25,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:text="手电筒"
-
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +59,6 @@
         app:layout_constraintTop_toBottomOf="@id/tv_title"
         >
 
-        <!-- 左边：电池图标 -->
         <ImageView
             android:id="@+id/iv_battery_icon"
             android:layout_width="40dp"
@@ -67,7 +66,6 @@
             android:src="@drawable/ic_battery_75"
             android:layout_marginEnd="12dp"/>
 
-        <!-- 中间：左侧信息组 -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -91,7 +89,6 @@
                 android:textSize="12sp"/>
         </LinearLayout>
 
-        <!-- 右边：时间显示组 -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -108,23 +105,37 @@
                 android:id="@+id/tv_flashlight_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="00:15"
+                android:text="00:00"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold"/>
         </LinearLayout>
     </LinearLayout>
 
+    <!-- 光晕层：放在按钮下方，通过约束对齐按钮中心 -->
+    <View
+        android:id="@+id/view_halo"
+        android:layout_width="260dp"
+        android:layout_height="260dp"
+        android:alpha="0"
+        android:visibility="gone"
+        android:background="@drawable/bg_flashlight_halo"
+        app:layout_constraintTop_toTopOf="@id/btn_flashlight"
+        app:layout_constraintBottom_toBottomOf="@id/btn_flashlight"
+        app:layout_constraintStart_toStartOf="@id/btn_flashlight"
+        app:layout_constraintEnd_toEndOf="@id/btn_flashlight" />
+
+    <!-- 按钮：恢复原始约束，确保位置不变 -->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_flashlight"
         android:layout_width="160dp"
         android:layout_height="160dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/btn_flashlight_off"
+        android:text="关闭"
         app:layout_constraintTop_toBottomOf="@+id/card_container"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="@drawable/btn_flashlight_off"
-        android:layout_marginTop="30dp"
-        android:text="关闭" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView"
@@ -137,7 +148,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_flashlight" />
-
 
     <LinearLayout
         android:id="@+id/card_left"
@@ -157,9 +167,6 @@
             android:gravity="center"
             android:textSize="15dp"/>
     </LinearLayout>
-
-
-
 
     <LinearLayout
         android:id="@+id/card_middle"
@@ -182,8 +189,6 @@
             android:textSize="15dp"/>
     </LinearLayout>
 
-
-
     <LinearLayout
         android:id="@+id/card_right"
         android:layout_width="70dp"
@@ -203,8 +208,6 @@
             android:textSize="15dp"/>
     </LinearLayout>
 
-    <!-- 设置打包居中 -->
-
     <LinearLayout
         android:id="@+id/card"
         android:layout_width="0dp"
@@ -221,10 +224,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_clock"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="自动关闭"
+                android:layout_marginLeft="4dp"
                 android:layout_weight="1"
                 android:textColor="@color/white"/>
             <TextView
@@ -233,7 +242,6 @@
                 android:layout_height="wrap_content"
                 android:text="5分钟"
                 android:textColor="@color/grey"
-                android:layout_weight="1"
                 android:gravity="end"/>
         </LinearLayout>
         <FrameLayout
@@ -252,27 +260,49 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="0分钟"
+                android:text="00:00"
                 android:textColor="@color/grey"
                 android:layout_weight="1"
                 android:gravity="end"/>
         </FrameLayout>
     </LinearLayout>
+
     <LinearLayout
+        android:id="@+id/temperature_container"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginStart="44dp"
         android:layout_marginEnd="44dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/bg_rounded_corner"
-        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/card"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
-
+        <ImageView
+            android:id="@+id/iv_temperature"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/temperature" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginStart="4dp">
+            <TextView
+                android:id="@+id/tv_temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设备温度正常"
+                android:textColor="@color/white"
+                android:textSize="14sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="长时间使用请注意散热"
+                android:textColor="@color/grey"
+                android:textSize="12sp"/>
+        </LinearLayout>
     </LinearLayout>
-
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

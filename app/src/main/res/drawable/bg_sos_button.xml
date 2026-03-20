@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">  <!-- 矩形形状 -->
+
+    <!-- 圆角设置 -->
+    <corners
+        android:radius="12dp"/>
+
+    <!-- 填充颜色（你可以点击左侧出现的色块来快速换色） -->
+    <gradient
+        android:startColor="#CE3434"
+        android:endColor="#920808"/>
+
+
+</shape>

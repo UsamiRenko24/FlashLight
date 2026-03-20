@@ -1,5 +1,6 @@
 package com.name.FlashLight
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -24,6 +25,7 @@ class MainActivity : BaseActivity() {
     private lateinit var ivBatteryIcon: ImageView
     private lateinit var tvFlashlightTime: TextView
     private lateinit var slidingVibration: SlidingButton
+    private lateinit var tvTotalTime: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,8 +52,30 @@ class MainActivity : BaseActivity() {
         ivBatteryIcon = findViewById(R.id.iv_battery_icon)
         tvFlashlightTime = findViewById(R.id.tv_flashlight_time)
         slidingVibration = findViewById(R.id.btn_switch)
+        tvTotalTime =findViewById(R.id.tv_time)
+    }
+    // 在 initViews 之后
+    private fun syncVibrationUI() {
+        val enabled = VibrationManager.isVibrationEnabled(this)
+        slidingVibration.setCheckedSilently(enabled)
     }
 
+    override fun onResume() {
+        super.onResume()
+        syncVibrationUI() // 确保从别的页面回来时，UI 是最新的
+    }
+    private fun formatMinutes(minutes: Int): String {
+        return if (minutes >= 60) {
+            "${minutes / 60}小时${minutes % 60}分钟"
+        } else {
+            "${minutes}分钟"
+        }
+    }
+    private fun getAutoOffTime(): Int {
+        // ✅ 直接从 SharedPreferences 读取
+        val prefs = getSharedPreferences("auto_off_settings", Context.MODE_PRIVATE)
+        return prefs.getInt(AutomaticActivity.KEY_FLASHLIGHT_TIME, 5)
+    }
     private fun setupBottomNavigation() {
         bottomNav.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
@@ -122,6 +146,7 @@ class MainActivity : BaseActivity() {
         // 获取各功能今日使用时间（分钟）
         val flashlightTime = TimeRecorder.getTodayTime(this, "flashlight")
         tvFlashlightTime.text = formatTime(flashlightTime)
+        tvTotalTime.text = formatMinutes(getAutoOffTime())
     }
     private fun formatTime(minutes: Float): String {
         val totalSeconds = (minutes * 60).toInt()

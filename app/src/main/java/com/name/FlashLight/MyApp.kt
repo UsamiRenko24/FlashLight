@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Intent
 import com.name.FlashLight.utils.StartupModeManager
 import utils.SoundManager
+import utils.TemperatureManager
 
 class MyApp : Application() {
 
@@ -12,13 +13,11 @@ class MyApp : Application() {
 
         // 启动每日重置任务
         ResetScheduler.scheduleDailyReset(this)
-
+        TemperatureManager.init(this)
         // 可选：启动时检查是否需要重置（防止应用长时间未启动）
         checkAndResetIfNeeded()
+        TemperatureManager.init(this)
         SoundManager.initSoundPool(this)
-    }
-    fun getStartupIntent(): Intent {
-        return StartupModeManager.getStartupIntent(this)
     }
     private fun checkAndResetIfNeeded() {
         val prefs = getSharedPreferences("usage_stats", MODE_PRIVATE)

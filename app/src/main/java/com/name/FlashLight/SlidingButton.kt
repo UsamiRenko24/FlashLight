@@ -7,13 +7,14 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
+import utils.SoundManager
+import utils.VibrationManager
 
 class SlidingButton @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-
     // 状态
     var isChecked: Boolean
         get() = _isChecked
@@ -21,6 +22,11 @@ class SlidingButton @JvmOverloads constructor(
             if (_isChecked != value) {
                 _isChecked = value
                 animateToState(value)
+                // 振动反馈
+                VibrationManager.vibrate(this)
+                // 声音反馈
+                SoundManager.playClickSound(context)
+
                 listener?.onStateChanged(value)
                 invalidate()
             }
