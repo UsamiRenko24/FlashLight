@@ -1,19 +1,21 @@
 package com.name.FlashLight
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import utils.TimeRecorder
 
-class ScreenLightActiveActivity : AppCompatActivity() {
+class ScreenLightActiveActivity : BaseActivity() {
 
     // 主背景
     private lateinit var mainPage: ConstraintLayout
@@ -50,18 +52,32 @@ class ScreenLightActiveActivity : AppCompatActivity() {
     private var lastClickTime: Long = 0
     private val DOUBLE_CLICK_TIME = 300
 
+    private var handler: Handler? = null
+    private var timerRunnable: Runnable? = null
+    private var startTime = 0L
+    private var totalTimeMinutes: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.screen_light)
 
-        // 接收传递过来的参数
+        // 1. 【核心修复】首先初始化 Handler 和 获取自动关闭时长
+        handler = Handler(Looper.getMainLooper())
+        totalTimeMinutes = getAutoOffTime()
+
+        // 2. 接收 Intent 参数
         receiveIntentData()
 
+        // 3. 数据就绪后，再启动计时和记录
+        startTimer()
+        TimeRecorder.startRecording(this, "screen_light")
+
+        // 4. 初始化视图和点击监听
         initViews()
         setupInitialState()
         setupClickListeners()
 
-        // 应用接收到的参数初始化界面
+        // 5. 应用初始设置
         applyInitialSettings()
 
         setupBackPressedCallback()
@@ -81,22 +97,6 @@ class ScreenLightActiveActivity : AppCompatActivity() {
             else -> 70
         }
 
-        // 可以显示接收到的数据（用于调试）
-        val brightnessText = when (selectedBrightness) {
-            0 -> "低"
-            1 -> "中"
-            2 -> "高"
-            else -> "中"
-        }
-        val colorText = when (selectedColor) {
-            0 -> "纯白光"
-            1 -> "暖白光"
-            2 -> "冷白光"
-            else -> "纯白光"
-        }
-
-        // 可选：显示接收到的参数
-        Toast.makeText(this, "收到参数: $colorText - $brightnessText 亮度", Toast.LENGTH_SHORT).show()
     }
 
     /**
@@ -166,39 +166,40 @@ class ScreenLightActiveActivity : AppCompatActivity() {
 
         // 点击关闭图标 - 返回上一页
         close.setOnClickListener {
+            returnWithSettings()
             finish()
         }
 
         // 亮度选择
         sun1.setOnClickListener {
             selectBrightness(0)
-            Toast.makeText(this, "已选择低亮度", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "已选择低亮度", Toast.LENGTH_SHORT).show()
         }
 
         sun2.setOnClickListener {
             selectBrightness(1)
-            Toast.makeText(this, "已选择中亮度", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "已选择中亮度", Toast.LENGTH_SHORT).show()
         }
 
         sun3.setOnClickListener {
             selectBrightness(2)
-            Toast.makeText(this, "已选择高亮度", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "已选择高亮度", Toast.LENGTH_SHORT).show()
         }
 
         // 色温选择
         color1.setOnClickListener {
             selectColor(0)
-            Toast.makeText(this, "已选择纯白光", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "已选择纯白光", Toast.LENGTH_SHORT).show()
         }
 
         color2.setOnClickListener {
             selectColor(1)
-            Toast.makeText(this, "已选择暖白光", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "已选择暖白光", Toast.LENGTH_SHORT).show()
         }
 
         color3.setOnClickListener {
             selectColor(2)
-            Toast.makeText(this, "已选择冷白光", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "已选择冷白光", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -294,25 +295,56 @@ class ScreenLightActiveActivity : AppCompatActivity() {
 
     private fun updateTitleText() {
         val brightnessText = when (selectedBrightness) {
-            0 -> "低"
-            1 -> "中"
-            2 -> "高"
-            else -> "中"
+            0 -> getString(R.string.brightness_low)
+            1 -> getString(R.string.brightness_medium)
+            2 -> getString(R.string.brightness_high)
+            else -> getString(R.string.brightness_medium)
         }
 
         val colorText = when (selectedColor) {
-            0 -> "纯白光"
-            1 -> "暖白光"
-            2 -> "冷白光"
-            else -> "纯白光"
+            0 -> getString(R.string.color_pure)
+            1 -> getString(R.string.color_warm)
+            2 -> getString(R.string.color_cold)
+            else -> getString(R.string.color_pure)
         }
 
-        tvTitle.text = "$colorText - ${brightnessText}亮度"
+        tvTitle.text = "$colorText - ${brightnessText}"
     }
     /**
      * 返回设置并退出
      */
-    private fun returnWithSettings() {
+    private fun startTimer() {
+        // 如果设置为永不关闭 (114514) 或无效时间，则不启动倒计时任务
+        if (totalTimeMinutes >= 114514 || totalTimeMinutes <= 0) return
+
+        startTime = System.currentTimeMillis()
+        // 保存开始时间供返回时校验
+        getSharedPreferences("timer_prefs", MODE_PRIVATE).edit()
+            .putLong("timer_start_time_${totalTimeMinutes}", startTime).apply()
+
+        stopTimer()
+        timerRunnable = object : Runnable {
+            override fun run() {
+                val elapsed = System.currentTimeMillis() - startTime
+                if (elapsed >= totalTimeMinutes * 60 * 1000) {
+                    navigateToMain()
+                } else {
+                    handler?.postDelayed(this, 1000)
+                }
+            }
+        }
+        handler?.post(timerRunnable!!)
+    }
+
+    private fun stopTimer() { timerRunnable?.let { handler?.removeCallbacks(it) }; timerRunnable = null }
+
+    private fun navigateToMain() {
+        stopTimer()
+        startActivity(Intent(this, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK })
+        finish()
+    }
+    private fun getAutoOffTime() = getSharedPreferences("auto_off_settings", MODE_PRIVATE).getInt(AutomaticActivity.KEY_SCREEN_LIGHT_TIME, 5)
+        private fun returnWithSettings() {
         val resultIntent = Intent().apply {
             putExtra("brightnessLevel", selectedBrightness)
             putExtra("colorLevel", selectedColor)
@@ -337,9 +369,7 @@ class ScreenLightActiveActivity : AppCompatActivity() {
     private fun setupBackPressedCallback() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                // 返回设置并退出
                 returnWithSettings()
-                // 注意：不需要调用 finish()，系统会自动处理
             }
         })
     }
@@ -353,5 +383,6 @@ class ScreenLightActiveActivity : AppCompatActivity() {
         super.onDestroy()
         // 确保退出时停止
         TimeRecorder.stopRecording(this, "screen_light")
+        stopTimer()
     }
 }

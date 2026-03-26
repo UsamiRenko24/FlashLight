@@ -13,7 +13,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import com.name.FlashLight.utils.PageUsageRecorder
 import com.name.FlashLight.utils.StartupModeManager
 
-class LowBatteryActivity : AppCompatActivity() {
+class LowBatteryActivity : BaseActivity() {
     private lateinit var sosHalo: View
     private var haloAnimator: AnimatorSet? = null // 【新增】动画对象引用
     override fun onCreate(savedInstanceState: Bundle?) {

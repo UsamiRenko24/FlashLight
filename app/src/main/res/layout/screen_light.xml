@@ -9,8 +9,8 @@
     android:background="@color/gray">
     <LinearLayout
         android:id="@+id/card"
-        android:layout_width="120dp"
-        android:layout_height="40dp"
+        android:layout_width="160dp"
+        android:layout_height="60dp"
         android:layout_marginTop="45dp"
         android:background="@drawable/bg_rounded_corner"
         android:orientation="vertical"
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:text="纯白光-中亮度"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="14sp" />
     </LinearLayout>
 
     <LinearLayout

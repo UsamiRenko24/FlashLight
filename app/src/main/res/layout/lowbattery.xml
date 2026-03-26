@@ -24,7 +24,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="低电量警告"
+            android:text="@string/title_low_battery"
             android:layout_marginStart="6dp"
             android:textColor="@color/white"
             android:textSize="24sp" />
@@ -75,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="电量严重不足"
+            android:text="@string/low_battery_reminder"
             android:layout_weight="0.2"
             android:textColor="@color/grey"/>
         <LinearLayout
@@ -92,7 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:gravity="center_horizontal"
-                android:text="预计剩余使用时间"
+                android:text="@string/time_remaining_estimate"
                 android:textSize="14sp"
                 android:textColor="@color/grey"
                 android:layout_weight="0.8"/>
@@ -101,7 +101,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:gravity="center_horizontal"
-                android:text="即将关机"
+                android:text="@string/low_battery_alert"
                 android:textSize="24sp"
                 android:textColor="@color/red"
                 android:layout_weight="0.8"/>
@@ -131,7 +131,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="功能受限"
+                    android:text="@string/function_restricted_alert"
                     android:textColor="@color/white"/>
             </LinearLayout>
             <LinearLayout
@@ -151,7 +151,7 @@
                     android:id="@+id/tv_health"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="需要充电"
+                    android:text="@string/battery_status_alert"
                     android:layout_marginTop="6dp"
                     android:textColor="@color/white"/>
             </LinearLayout>
@@ -180,7 +180,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_settings"
+                android:src="@drawable/ic_bulb"
                 android:textColor="@color/white" />
 
             <TextView
@@ -188,7 +188,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:text="节能建议"
+                android:text="@string/energy_saving_tips"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 
@@ -206,7 +206,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="已自动降低亮度至30%"
+                android:text="@string/brightness_automatically_reduced_to_30percent"
                 android:layout_marginStart="4dp"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
@@ -225,7 +225,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                    android:text="已启动低电量保护模式"
+                android:text="@string/low_power_protection_mode_enabled"
                 android:layout_marginStart="4dp"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
@@ -244,7 +244,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="建议关闭不必要功能"
+                android:text="@string/suggested_to_turn_off_unnecessary_features"
                 android:layout_marginStart="4dp"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
@@ -263,7 +263,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="建议尽快连接充电器"
+                android:text="@string/please_connect_the_charger_as_soon_as_possible"
                 android:layout_marginStart="4dp"
                 android:textColor="@color/white"
                 android:textSize="14sp" />

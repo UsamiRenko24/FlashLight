@@ -9,10 +9,10 @@
     <!-- 边框设置 - 中灰色 -->
     <stroke
         android:width="2dp"
-        android:color="#5A6478" />  <!-- 暖灰色边框 -->
+        android:color="#515151" />  <!-- 暖灰色边框 -->
 
     <!-- 填充颜色 - 烟灰色 -->
-    <solid android:color="#38405F"/>  <!-- 明显的灰色，不是黑色 -->
+    <solid android:color="#252525"/>  <!-- 明显的灰色，不是黑色 -->
 
     <!-- 内边距 -->
     <padding

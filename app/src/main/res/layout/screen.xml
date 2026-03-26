@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="屏幕补光"
+        android:text="@string/title_screen_light"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +47,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="效果预览"
+        android:text="@string/title_preview"
         android:textColor="@color/white"
         android:layout_marginTop="25dp"
         android:textSize="16sp"/>
@@ -85,7 +85,7 @@
         app:layout_constraintTop_toBottomOf="@id/card1"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="44dp"
-        android:text="效果预览"
+        android:text="@string/title_preview"
         android:textColor="@color/white"
         android:layout_marginTop="25dp"
         android:textSize="16sp"/>
@@ -102,7 +102,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="低\n40%"
+        android:text="@string/brightness_card_low"
         android:textColor="@color/white"
         android:gravity="center"
         android:textSize="15sp"/>
@@ -124,7 +124,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="中\n70%"
+            android:text="@string/brightness_card_medium"
             android:textColor="@color/white"
             android:gravity="center"
             android:textSize="15sp"/>
@@ -143,7 +143,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="高\n100%"
+            android:text="@string/brightness_card_high"
             android:textColor="@color/white"
             android:gravity="center"
             android:textSize="15sp"/>
@@ -155,7 +155,7 @@
         app:layout_constraintTop_toBottomOf="@id/card_left"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="44dp"
-        android:text="色彩选择"
+        android:text="@string/title_color"
         android:textColor="@color/white"
         android:layout_marginTop="25dp"
         android:textSize="16sp"/>
@@ -178,7 +178,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="纯白光"
+            android:text="@string/color_pure"
             android:textSize="13sp"
             android:textColor="@color/pure_white" />
     </LinearLayout>
@@ -205,7 +205,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="暖白光"
+            android:text="@string/color_warm"
             android:textSize="13sp"
             android:textColor="@color/pure_white" />
     </LinearLayout>
@@ -228,7 +228,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="冷白光"
+            android:text="@string/color_cold"
             android:textSize="13sp"
             android:textColor="@color/pure_white" />
     </LinearLayout>
@@ -244,14 +244,14 @@
         app:layout_constraintTop_toBottomOf="@+id/card_middle1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="💡开启补光"
+        android:text="@string/btn_screen"
         android:textSize="16sp"
         android:textColor="@color/white"
         android:elevation="2dp">
     </androidx.appcompat.widget.AppCompatButton>
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="80dp"
+        android:layout_height="100dp"
         android:layout_marginStart="44dp"
         android:layout_marginEnd="44dp"
         android:layout_marginTop="20dp"
@@ -260,6 +260,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:orientation="vertical"
+        android:gravity="center_vertical"
         app:layout_constraintTop_toBottomOf="@+id/card2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -267,7 +268,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_weight="1">
                 <ImageView
                     android:layout_width="18dp"
                     android:layout_height="18dp"
@@ -278,8 +280,9 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:layout_weight="1"
-                    android:text="自动关闭"
+                    android:text="@string/setting_auto_off"
                     android:layout_marginLeft="4dp"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"/>
                 <TextView
@@ -287,12 +290,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="5分钟"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:gravity="end"
-                    android:textSize="12sp"
                     android:textColor="#8E8E93 "
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="10dp"
                     app:layout_constraintBaseline_toTopOf="@id/btn_switch"
                     app:layout_constraintEnd_toEndOf="@id/btn_switch" />
             </LinearLayout>
@@ -300,7 +301,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_weight="1">
                 <ImageView
                     android:layout_width="18dp"
                     android:layout_height="18dp"
@@ -312,7 +314,8 @@
                     android:textColor="@color/white"
                     android:layout_weight="5"
                     android:layout_marginLeft="4dp"
-                    android:text="护眼模式" />
+                    android:text="@string/eye_protection_mode"
+                    android:layout_gravity="center_vertical"/>
                 <com.name.FlashLight.SlidingButton
                     android:id="@+id/sliding_auto_brightness"
                     android:layout_width="0dp"

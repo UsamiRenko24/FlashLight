@@ -33,7 +33,6 @@ class ResetStatsWorker(context: Context, params: WorkerParameters) : Worker(cont
             }
 
             editor.apply()
-            println("✅ 每日自动清理完成，已移除 $deleteCount 条过期记录")
             Result.success()
         } catch (e: Exception) {
             e.printStackTrace()

@@ -2,6 +2,7 @@ package com.name.FlashLight
 
 import android.content.Context
 import android.graphics.Color
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -10,34 +11,37 @@ import android.widget.TextView
 class StartupModeAdapter(context: Context, private val items: List<String>) :
     ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, items) {
 
-    // 控制未展开时显示的视图
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = super.getView(position, convertView, parent)
         val textView = view as TextView
-
-        // 根据当前选中的位置显示不同的文本
         textView.text = when (position) {
-            0 -> "上次用"        // 显示简短版本
-            1 -> "主页面"        // 显示简短版本
-            2 -> "最常用"        // 显示简短版本
+            0 -> context.getString(R.string.remember_last_usage_short)
+            1 -> context.getString(R.string.main_page_short)
+            2 -> context.getString(R.string.most_usage_short)
             else -> items[position]
         }
-        textView.gravity = android.view.Gravity.CENTER
+        textView.gravity = Gravity.CENTER
         textView.setTextColor(Color.WHITE)
         textView.setTextSize(12F)
+        // 保持未展开状态也有微量左右边距，防止贴边
+        textView.setPadding(10, 0, 10, 0)
         return view
     }
 
-    // 控制下拉菜单中显示的视图
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val view = super.getDropDownView(position, convertView, parent)
-        val textView = view as TextView
+        val textView = TextView(context).apply {
+            text = items[position]
+            gravity = Gravity.CENTER
+            setTextColor(Color.WHITE)
+            setBackgroundColor(Color.parseColor("#1E293B"))
+            setPadding(20, 35, 20, 35)
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            textSize = 14f
+        }
 
-        // 下拉菜单显示完整文本
-        textView.text = items[position]
-        textView.setTextColor(Color.WHITE)
-        textView.setBackgroundColor(Color.parseColor("#2C2C2C"))
-
-        return view
+        return textView
     }
 }

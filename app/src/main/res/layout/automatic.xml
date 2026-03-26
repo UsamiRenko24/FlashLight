@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="自动关闭时间"
+        android:text="@string/auto_off_time"
 
         android:textColor="@color/white"
         android:textSize="20sp"
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="手电筒自动关闭"
+            android:text="@string/flashlight_auto_off"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/white"
@@ -67,7 +67,7 @@
                 android:id="@+id/flash1min"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="1分钟"
+                android:text="@string/auto_off_1"
                 android:layout_weight="1"
                 android:textColor="@color/white"
                 android:padding="6dp"/>
@@ -76,17 +76,17 @@
                 android:id="@+id/flash5min"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="5分钟"
+                android:text="@string/auto_off_5"
                 android:layout_weight="1"
                 android:textColor="@color/white"
                 android:padding="6dp"
-                android:checked="true"/>  <!-- 默认选中5分钟 -->
+                android:checked="true"/>
 
             <RadioButton
                 android:id="@+id/flash10min"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="10分钟"
+                android:text="@string/auto_off_10"
                 android:layout_weight="1"
                 android:textColor="@color/white"
                 android:padding="6dp"/>
@@ -96,7 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
-                android:text="永不关闭"
+                android:text="@string/auto_off_never"
                 android:layout_weight="1"
                 android:padding="6dp"/>
 
@@ -123,7 +123,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="屏幕补光自动关闭"
+            android:text="@string/screen_auto_off"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/white"
@@ -139,7 +139,7 @@
                 android:id="@+id/screen1min"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="1分钟"
+                android:text="@string/auto_off_1"
                 android:layout_weight="1"
                 android:textColor="@color/white"
                 android:padding="6dp"/>
@@ -148,17 +148,17 @@
                 android:id="@+id/screen5min"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="5分钟"
+                android:text="@string/auto_off_5"
                 android:layout_weight="1"
                 android:textColor="@color/white"
                 android:padding="6dp"
-                android:checked="true"/>  <!-- 默认选中5分钟 -->
+                android:checked="true"/>
 
             <RadioButton
                 android:id="@+id/screen10min"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="10分钟"
+                android:text="@string/auto_off_10"
                 android:layout_weight="1"
                 android:textColor="@color/white"
                 android:padding="6dp"/>
@@ -168,7 +168,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
-                android:text="永不关闭"
+                android:text="@string/auto_off_never"
                 android:layout_weight="1"
                 android:padding="6dp"/>
 
@@ -195,7 +195,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="闪烁效果自动关闭"
+                android:text="@string/blink_auto_off"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/white"
@@ -211,7 +211,7 @@
                     android:id="@+id/blink1min"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="1分钟"
+                    android:text="@string/auto_off_1"
                     android:layout_weight="1"
                     android:textColor="@color/white"
                     android:padding="6dp"/>
@@ -220,17 +220,17 @@
                     android:id="@+id/blink5min"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="5分钟"
+                    android:text="@string/auto_off_5"
                     android:layout_weight="1"
                     android:textColor="@color/white"
                     android:padding="6dp"
-                    android:checked="true"/>  <!-- 默认选中5分钟 -->
+                    android:checked="true"/>
 
                 <RadioButton
                     android:id="@+id/blink10min"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="10分钟"
+                    android:text="@string/auto_off_10"
                     android:layout_weight="1"
                     android:textColor="@color/white"
                     android:padding="6dp"/>
@@ -240,7 +240,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:text="永不关闭"
+                    android:text="@string/auto_off_never"
                     android:layout_weight="1"
                     android:padding="6dp"/>
 

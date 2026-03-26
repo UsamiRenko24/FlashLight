@@ -4,20 +4,39 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.os.BatteryManager
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.TaskStackBuilder
+import utils.LanguageManager
 import utils.LowBatteryManager
 
 abstract class BaseActivity : AppCompatActivity() {
     private lateinit var batteryReceiver: BroadcastReceiver
     private var stopFeaturesReceiver: BroadcastReceiver? = null
 
+    // 【核心修复】重写 attachBaseContext，这是多语言生效的关键钩子
+    override fun attachBaseContext(newBase: Context) {
+        val languageCode = LanguageManager.getCurrentLanguage(newBase)
+        // 必须将 applyLanguage 返回的 Context 传给 super
+        val context = LanguageManager.applyLanguage(newBase, languageCode)
+        super.attachBaseContext(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        // 已经通过 attachBaseContext 处理，此处无需再调用 applyLanguageBeforeCreate
         super.onCreate(savedInstanceState)
+        findViewById<ViewGroup>(android.R.id.content).getChildAt(0)?.let { root ->
+            root.setFitsSystemWindows(true)
+        }
+
+        enableEdgeToEdge(statusBarStyle= SystemBarStyle.dark(Color.TRANSPARENT), navigationBarStyle= SystemBarStyle.dark(Color.TRANSPARENT))
 
         if (shouldBuildBackStack()) {
             buildBackStack()
@@ -32,11 +51,8 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // 核心功能 1：回到页面时检查，如果处于低电量模式，强制锁定 30% 亮度
-        if (LowBatteryManager.isLowBatteryModeActive()) {
+        if (LowBatteryManager.isLowBatteryModeActive(this)) {
             LowBatteryManager.applyLowBatteryBrightness(this)
-            
-            // 核心功能 2：如果不在低电量页，强制跳转过去
             if (this !is LowBatteryActivity) {
                 val intent = Intent(this, LowBatteryActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -96,7 +112,6 @@ abstract class BaseActivity : AppCompatActivity() {
 
                     if (level >= 0 && scale > 0) {
                         val batteryPct = level * 100 / scale
-                        // 15% 阈值检查
                         LowBatteryManager.checkBatteryLevel(this@BaseActivity, batteryPct)
                     }
                 }
@@ -113,10 +128,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 }
             }
         }
-        // 使用标准广播注册，解决 Unresolved reference 报错
         val filter = IntentFilter("ACTION_STOP_ALL_FEATURES")
-        
-        // 兼容 Android 14+ 安全规范
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(stopFeaturesReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
         } else {
@@ -126,7 +138,6 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     open fun stopAllFeatures() {
-        // 由子类实现具体停止逻辑
     }
 
     override fun onDestroy() {

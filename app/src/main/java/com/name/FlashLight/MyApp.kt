@@ -1,8 +1,11 @@
 package com.name.FlashLight
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import com.name.FlashLight.utils.StartupModeManager
+import utils.LanguageManager
+import utils.ResetScheduler
 import utils.SoundManager
 import utils.TemperatureManager
 
@@ -18,6 +21,14 @@ class MyApp : Application() {
         checkAndResetIfNeeded()
         TemperatureManager.init(this)
         SoundManager.initSoundPool(this)
+    }
+    override fun attachBaseContext(base: Context) {
+        println("📱 attachBaseContext 开始")
+        val languageCode = LanguageManager.getCurrentLanguage(base)
+        println("读取到的语言: $languageCode")
+        val newContext = LanguageManager.applyLanguage(base, languageCode)
+        super.attachBaseContext(newContext)
+        println("📱 attachBaseContext 结束")
     }
     private fun checkAndResetIfNeeded() {
         val prefs = getSharedPreferences("usage_stats", MODE_PRIVATE)
@@ -51,7 +62,6 @@ class MyApp : Application() {
         }
 
         editor.apply()
-        println("📅 检测到新的一天，已重置数据")
     }
 
     private fun getYesterdayDate(): String {

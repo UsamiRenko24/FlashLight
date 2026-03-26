@@ -1,15 +1,20 @@
 package com.name.FlashLight
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.MotionEvent
+import android.view.animation.OvershootInterpolator
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import utils.BatteryHelper
+import utils.TimeRecorder
 import utils.VibrationManager
 import utils.feedback
 
@@ -52,9 +57,9 @@ class MainActivity : BaseActivity() {
         ivBatteryIcon = findViewById(R.id.iv_battery_icon)
         tvFlashlightTime = findViewById(R.id.tv_flashlight_time)
         slidingVibration = findViewById(R.id.btn_switch)
-        tvTotalTime =findViewById(R.id.tv_time)
+        tvTotalTime = findViewById(R.id.tv_time)
     }
-    // 在 initViews 之后
+
     private fun syncVibrationUI() {
         val enabled = VibrationManager.isVibrationEnabled(this)
         slidingVibration.setCheckedSilently(enabled)
@@ -62,20 +67,22 @@ class MainActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        syncVibrationUI() // 确保从别的页面回来时，UI 是最新的
+        syncVibrationUI() 
     }
+
     private fun formatMinutes(minutes: Int): String {
         return if (minutes >= 60) {
-            "${minutes / 60}小时${minutes % 60}分钟"
+            "${minutes / 60}${getString(R.string.hour)}${minutes % 60}${getString(R.string.minute)}"
         } else {
-            "${minutes}分钟"
+            "${minutes}${getString(R.string.minute)}"
         }
     }
+
     private fun getAutoOffTime(): Int {
-        // ✅ 直接从 SharedPreferences 读取
         val prefs = getSharedPreferences("auto_off_settings", Context.MODE_PRIVATE)
         return prefs.getInt(AutomaticActivity.KEY_FLASHLIGHT_TIME, 5)
     }
+
     private fun setupBottomNavigation() {
         bottomNav.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
@@ -86,7 +93,6 @@ class MainActivity : BaseActivity() {
                     false
                 }
                 R.id.nav_blink -> {
-                    // ✅ 修复：先创建 intent 变量
                     val intent = Intent(this, BlinkActivity::class.java)
                     startActivityForResult(intent, REQUEST_CODE2)
                     false
@@ -103,6 +109,7 @@ class MainActivity : BaseActivity() {
             }
         }
     }
+
     private fun loadVibrationSetting() {
         slidingVibration.isChecked = VibrationManager.isVibrationEnabled(this)
     }
@@ -115,60 +122,87 @@ class MainActivity : BaseActivity() {
             }
         }
     }
+
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupClickListeners() {
-        // 点击中间的大手电筒按钮
-        findViewById<Button>(R.id.flashlight).setOnClickListener {
-            it.feedback()
-            val intent = Intent(this, FlashlightActivity::class.java)
-            startActivityForResult(intent, REQUEST_CODE1)
+        val button = findViewById<Button>(R.id.flashlight)
+
+        // 【修复】集成物理动效与 Accessibility 支持
+        button.setOnTouchListener { view, event ->
+            val isInside = event.x >= 0 && event.x <= view.width && event.y >= 0 && event.y <= view.height
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    view.animate().scaleX(0.92f).scaleY(0.92f).setDuration(100).start()
+                    true // 开始拦截触摸流
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val targetScale = if (isInside) 0.92f else 1.0f
+                    view.animate().scaleX(targetScale).scaleY(targetScale).setDuration(100).start()
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    view.animate().scaleX(1f).scaleY(1f).setDuration(200)
+                        .setInterpolator(OvershootInterpolator()).start()
+                    if (isInside) {
+                        // 【核心修复】手动触发 performClick 以支持无障碍并执行 setOnClickListener
+                        view.performClick()
+                    }
+                    true
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    view.animate().scaleX(1f).scaleY(1f).setDuration(200).start()
+                    true
+                }
+                else -> false
+            }
         }
 
-        // 点击屏幕补光卡片
+        // 点击监听逻辑保持不变
+        button.setOnClickListener {
+            it.feedback()
+            startActivity(Intent(this, FlashlightActivity::class.java))
+        }
+
         findViewById<LinearLayout>(R.id.layout_screen_light).setOnClickListener {
             it.feedback()
             startActivity(Intent(this, ScreenLightActivity::class.java))
         }
 
-        // 点击闪烁卡片
         findViewById<LinearLayout>(R.id.layout_blink).setOnClickListener {
             it.feedback()
-            // ✅ 修复：先创建 intent 变量
             val intent = Intent(this, BlinkActivity::class.java)
             startActivityForResult(intent, REQUEST_CODE2)
         }
 
-        // 点击设置按钮
         findViewById<ImageView>(R.id.iv_settings).setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
     }
+
     private fun updateStats() {
-        // 获取各功能今日使用时间（分钟）
         val flashlightTime = TimeRecorder.getTodayTime(this, "flashlight")
         tvFlashlightTime.text = formatTime(flashlightTime)
-        tvTotalTime.text = formatMinutes(getAutoOffTime())
+        if (getAutoOffTime() >= 114514) {
+            tvTotalTime.text = getString(R.string.auto_off_never)
+        }
     }
+
     private fun formatTime(minutes: Float): String {
         val totalSeconds = (minutes * 60).toInt()
-
-        // 计算分钟和秒
-        val mins = totalSeconds / 60
-        val secs = totalSeconds % 60
-
-        // 格式化为两位数，不足补0
-        return String.format("%02d:%02d", mins, secs)
+        return String.format("%02d:%02d", totalSeconds / 60, totalSeconds % 60)
     }
+
     private fun updateBatteryDisplay() {
-        // ✅ 一行代码更新所有电池UI
         BatteryHelper.updateBatteryUI(this, tvBatteryPercent, tvBatteryStatus, ivBatteryIcon)
     }
+
     private fun startBatteryMonitor() {
         val handler = Handler(Looper.getMainLooper())
         val runnable = object : Runnable {
             override fun run() {
                 updateBatteryDisplay()
                 updateStats()
-                handler.postDelayed(this, 5000) // 每5秒更新一次
+                handler.postDelayed(this, 5000)
             }
         }
         handler.post(runnable)

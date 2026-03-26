@@ -17,6 +17,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import utils.TimeRecorder
 
 class SOSActivity : BaseActivity() {
 
@@ -84,7 +85,7 @@ class SOSActivity : BaseActivity() {
         startTime = System.currentTimeMillis()
 
         // 恢复之前保存的循环次数
-        tvSosCycles.text = "${cycleCount}次"
+        tvSosCycles.text = "${cycleCount}"+getString(R.string.times)
 
         startSOS()
         startTimer()
@@ -98,7 +99,7 @@ class SOSActivity : BaseActivity() {
         sosHalo = findViewById(R.id.sos_halo) // 【修复】初始化光晕视图
 
         tvSosPattern.text = ". . . _ _ _\n. . ."
-        tvSosCycles.text = "0次"
+        tvSosCycles.text = "0"+getString(R.string.times)
         tvDuration.text = "00:00"
 
         tvBatteryPercent = findViewById(R.id.tv_battery_percent)
@@ -147,7 +148,7 @@ class SOSActivity : BaseActivity() {
         startTime = System.currentTimeMillis()
         isTimerRunning = true
         cycleCount = 0  // 重置循环次数
-        tvSosCycles.text = "0次"
+        tvSosCycles.text = "0"+getString(R.string.times)
         Timerhandler.post(timerRunnable)
     }
     private fun stopRecording() {
@@ -163,24 +164,24 @@ class SOSActivity : BaseActivity() {
         val displayMinutes = elapsedSeconds / 60
         val displaySeconds = elapsedSeconds % 60
         tvDuration.text = String.format("%02d:%02d", displayMinutes, displaySeconds)
-
-        // 3. 获取总时长（转换为秒）
-        val totalMinutes = getAutoOffTime()  // 例如 5
-        val totalSeconds = totalMinutes * 60  // 300秒
-
-        // 4. 计算进度（直接用秒）
-        val progress = (elapsedSeconds * 100 / totalSeconds).toInt().coerceIn(0, 100)
-        tvBlinkProgress.progress = progress
-
-        // 5. 计算剩余时间（秒转分钟:秒）
-        val remainingSeconds = (totalSeconds - elapsedSeconds).toInt().coerceAtLeast(0)
-        val remainMinutes = remainingSeconds / 60
-        val remainSeconds = remainingSeconds % 60
-        tvRemainTime.text = String.format("%02d:%02d", remainMinutes, remainSeconds)
-
-        // 6. 自动关闭
-        if (remainingSeconds <= 0) {
-            navigateToMain()
+        if (getAutoOffTime() >= 114514) {
+            tvRemainTime.text = getString(R.string.auto_off_never)
+        } else {
+            // 3. 获取总时长（转换为秒）
+            val totalMinutes = getAutoOffTime()  // 例如 5
+            val totalSeconds = totalMinutes * 60  // 300秒
+            // 4. 计算进度（直接用秒）
+            val progress = (elapsedSeconds * 100 / totalSeconds).toInt().coerceIn(0, 100)
+            tvBlinkProgress.progress = progress
+            // 5. 计算剩余时间（秒转分钟:秒）
+            val remainingSeconds = (totalSeconds - elapsedSeconds).toInt().coerceAtLeast(0)
+            val remainMinutes = remainingSeconds / 60
+            val remainSeconds = remainingSeconds % 60
+            tvRemainTime.text = String.format("%02d:%02d", remainMinutes, remainSeconds)
+            // 6. 自动关闭
+            if (remainingSeconds <= 0) {
+                navigateToMain()
+            }
         }
     }
     private fun navigateToMain() {
@@ -231,7 +232,7 @@ class SOSActivity : BaseActivity() {
                         // ✅ 每次完成一个完整 SOS 循环，次数 +1
                         runOnUiThread {
                             cycleCount++
-                            tvSosCycles.text = "$cycleCount 次"
+                            tvSosCycles.text = "$cycleCount "+getString(R.string.times)
                         }
 
                         moveToNextDelayed(CYCLE_GAP)
@@ -278,9 +279,9 @@ class SOSActivity : BaseActivity() {
 
             // 生成状态文本
             val statusText = when {
-                status == BatteryManager.BATTERY_STATUS_FULL -> "已充满"
-                isCharging -> "充电中"
-                else -> "未充电"
+                status == BatteryManager.BATTERY_STATUS_FULL -> getString(R.string.battery_status_full)
+                isCharging -> getString(R.string.battery_charging)
+                else -> getString(R.string.battery_not_charging)
             }
 
             // 更新UI

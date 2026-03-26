@@ -1,8 +1,9 @@
-package com.name.FlashLight
+package utils
 
 import android.content.Context
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 object TimeRecorder {
 
@@ -18,7 +19,6 @@ object TimeRecorder {
             putBoolean("${featureType}_active", true)
             apply()
         }
-        println("▶️ 开始记录时间: $featureType")
     }
 
     // 停止记录并保存时长

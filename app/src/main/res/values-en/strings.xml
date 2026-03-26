@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Flashlight</string>
+    <string name="language">Language</string>
+    <string-array name="languages">
+        <item>简体中文</item>
+        <item>English</item>
+    </string-array>
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_flashlight">Flashlight</string>
+    <string name="nav_blink">Blink</string>
+    <string name="nav_stats">Stats</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Button Text -->
+    <string name="btn_on">On</string>
+    <string name="btn_off">Off</string>
+    <string name="btn_screen">Start Light</string>
+    <string name="btn_sos">Start SOS</string>
+    <string name="btn_blink">Start Blink</string>
+
+    <!-- Status Toast -->
+    <string name="toast_on">Flashlight turned on</string>
+    <string name="toast_off">Flashlight turned off</string>
+    <string name="toast_success">Saved successfully</string>
+    <string name="toast_failed">Operation failed, please try again</string>
+
+    <!-- Brightness Levels -->
+    <string name="brightness_low">Low</string>
+    <string name="brightness_medium">Medium</string>
+    <string name="brightness_high">High</string>
+
+    <!-- Card Text -->
+    <string name="brightness_card_low">Low\n40%</string>
+    <string name="brightness_card_medium">Medium\n70%</string>
+    <string name="brightness_card_high">High\n100%</string>
+    <string name="frequency_low">Slow</string>
+    <string name="frequency_medium">Medium</string>
+    <string name="frequency_high">Fast</string>
+
+    <!-- Color Temperature Options -->
+    <string name="color_pure">Pure White</string>
+    <string name="color_warm">Warm White</string>
+    <string name="color_cold">Cool White</string>
+
+    <!-- Formatted Text -->
+    <string name="time_to_full">Estimated time\nto full</string>
+    <string name="time_remaining">Estimated remaining\ntime</string>
+    <string name="calculating">Calculating</string>
+
+    <!-- Dynamic Text -->
+    <string name="battery_status_full">Fully charged</string>
+    <string name="battery_plugged_usb">Charging via USB</string>
+    <string name="battery_plugged_ac">Charging via AC</string>
+    <string name="battery_plugged_wireless">Wireless charging</string>
+    <string name="battery_charging">Charging</string>
+    <string name="battery_not_charging">Not charging</string>
+    <string name="please_stop_blink">Please stop blinking first</string>
+    <string name="screen_light_started">Screen light started</string>
+    <string name="screen_light_ended">Screen light stopped</string>
+    <string name="at_least_choose_one_light_source">Please select at least one light source</string>
+    <string name="overheat_reminder">Temperature too high, please pause usage</string>
+    <string name="normal_temperature">Device temperature normal</string>
+    <string name="hour">hour</string>
+    <string name="minute">minute</string>
+    <string name="second">second</string>
+    <string name="times">times</string>
+    <string name="brightness">Brightness</string>
+    <string name="remember_last_usage">Remember last used</string>
+    <string name="main_page">Always start to home</string>
+    <string name="most_usage">Start to most used</string>
+    <string name="remember_last_usage_short">Last used</string>
+    <string name="main_page_short">Home</string>
+    <string name="most_usage_short">Most used</string>
+
+    <!-- Settings Page -->
+    <string name="basic_settings">Basic Settings</string>
+    <string name="setting_auto_off">Auto Off</string>
+    <string name="allow_for_ventilation">Allow for proper ventilation during extended use</string>
+    <string name="set_auto_off_time">Set auto-off time for each feature</string>
+    <string name="setting_startup_mode">Startup Mode</string>
+    <string name="set_startup_behaviour">Default behavior when app starts</string>
+    <string name="setting_brightness">Default Brightness</string>
+    <string name="set_brightness">Default brightness settings for each feature</string>
+    <string name="page_settings">Interface Settings</string>
+    <string name="language_settings">Language Settings</string>
+    <string name="choose_display_language">Select app display language</string>
+    <string name="setting_vibration">Vibration Feedback</string>
+    <string name="vibration_feedback">Provides vibration feedback on operation</string>
+    <string name="setting_sound">Sound Feedback</string>
+    <string name="sound_feedback">Plays sound effects on operation</string>
+    <string name="eye_protection_mode">Eye Protection Mode</string>
+    <string name="auto_brightness_adjustment">Auto brightness adjustment to protect eyesight</string>
+    <string name="data_management">Data Management</string>
+    <string name="usage_stats">Usage Statistics</string>
+    <string name="check_usage_situation">View usage statistics of each feature</string>
+    <string name="about_application">About</string>
+    <string name="version_info">Version Info</string>
+
+    <!-- Statistics Information -->
+    <string name="battery_health">Battery Health</string>
+    <string name="usage_time">Usage Time</string>
+    <string name="today_usage">Today\'s Usage Statistics</string>
+    <string name="total_usage">Total Usage Time</string>
+    <string name="battery_management">Battery Management</string>
+    <string name="low_battery_protection">Low Battery Protection</string>
+    <string name="intelligent_brightness_adjustment">Intelligent Brightness Adjustment</string>
+    <string name="temperature_monitor">Temperature Monitor</string>
+
+    <!-- Title Text -->
+    <string name="battery_health_critical">crital</string>
+    <string name="title_fill_light">LED Fill Light</string>
+    <string name="title_flashlight">Flashlight</string>
+    <string name="title_screen_light">Screen Light</string>
+    <string name="title_preview">Preview</string>
+    <string name="title_color">Color Selection</string>
+    <string name="title_blink">Blink Effect</string>
+    <string name="title_sos">SOS Signal in Progress</string>
+    <string name="sos_signal">Emergency SOS Signal</string>
+    <string name="title_sos_signal">SOS Distress Signal</string>
+    <string name="title_morse_code">Morse Code</string>
+    <string name="morse_code">Standard Morse Code</string>
+    <string name="short_signal">. . .\nShort\nSignal</string>
+    <string name="long_signal">_ _ _\nLong\nSignal</string>
+    <string name="last_time">Duration</string>
+    <string name="signal_loop">Signal Cycles</string>
+    <string name="battery_status">Battery Status</string>
+    <string name="auto_stop_countdown">Auto Stop Countdown</string>
+    <string name="common_blink">Normal Blink</string>
+    <string name="blink_frequency">Blink Frequency</string>
+    <string name="light_source_selection">Light Source Selection</string>
+    <string name="screen">Screen</string>
+    <string name="title_stats">Statistics</string>
+    <string name="title_battery_monitor">Battery Monitor</string>
+    <string name="title_low_battery">Low Battery Warning</string>
+    <string name="title_settings">Settings</string>
+
+    <!-- Other -->
+    <string name="auto_off_time">auto-off time</string>
+    <string name="quick_settings">Quick Settings</string>
+    <string name="soft_fill_light">Soft Fill Light</string>
+    <string name="signal_alert">Signal Alert</string>
+    <string name="brightness_level">Brightness Level</string>
+    <string name="low_battery_reminder">Low Battery Alert</string>
+    <string name="time_remaining_estimate">Estimated remaining time</string>
+    <string name="low_battery_alert">Shutting down soon</string>
+    <string name="function_restricted_alert">Features Restricted</string>
+    <string name="battery_status_alert">Need to charge</string>
+    <string name="energy_saving_tips">Energy Saving Tips</string>
+    <string name="brightness_automatically_reduced_to_30percent">Brightness automatically reduced to 30%</string>
+    <string name="low_power_protection_mode_enabled">Low power protection mode enabled</string>
+    <string name="suggested_to_turn_off_unnecessary_features">Recommended to turn off unnecessary features</string>
+    <string name="please_connect_the_charger_as_soon_as_possible">Please connect charger as soon as possible</string>
+    <string name="flashlight_auto_off">Flashlight Auto Off</string>
+    <string name="screen_auto_off">Screen Light Auto Off</string>
+    <string name="blink_auto_off">Blink Effect Auto Off</string>
+    <string name="auto_off_1">1 minute</string>
+    <string name="auto_off_5">5 minutes</string>
+    <string name="auto_off_10">10 minutes</string>
+    <string name="auto_off_never">Never turn off</string>
+    <string name="battery_health_excellent">excellent</string>
+    <string name="battery_health_good">good</string>
+    <string name="battery_health_fair">fair</string>
+    <string name="battery_health_poor">poor</string>
+</resources>

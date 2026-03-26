@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="电池监控"
+        android:text="@string/title_battery_monitor"
 
         android:textColor="@color/white"
         android:textSize="20sp"
@@ -51,7 +51,7 @@
         android:layout_marginTop="40dp"
         android:background="@drawable/bg_rounded_corner"
         android:orientation="vertical"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:gravity="center">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,7 +98,8 @@
                     android:id="@+id/tv_state"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="预计充满时间"
+                    android:gravity="center"
+                    android:text="@string/time_to_full"
                     android:textColor="@color/grey"/>
                 <TextView
                     android:id="@+id/tv_time_to_full"
@@ -116,13 +117,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="电池健康"
+                    android:text="@string/battery_health"
                     android:textColor="@color/grey"/>
                 <TextView
                     android:id="@+id/tv_health"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="良好"
+                    android:text="@string/battery_health_excellent"
                     android:textColor="@color/white"/>
             </LinearLayout>
 
@@ -146,7 +147,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="今日使用统计"
+            android:text="@string/today_usage"
             android:textColor="@color/white"
             android:textSize="18sp"/>
         <LinearLayout
@@ -157,7 +158,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="手电筒"
+                android:text="@string/title_flashlight"
                 android:layout_margin="8dp"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
@@ -186,7 +187,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="屏幕补光"
+                android:text="@string/title_screen_light"
                 android:layout_margin="8dp"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
@@ -215,7 +216,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="闪烁效果"
+                android:text="@string/title_blink"
                 android:layout_margin="8dp"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
@@ -251,7 +252,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="总使用时间"
+                android:text="@string/total_usage"
                 android:textColor="@color/grey"
                 android:textSize="12sp"/>
             <TextView
@@ -292,7 +293,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="电量管理"
+                android:text="@string/battery_management"
                 android:layout_marginStart="4dp"
                 android:textColor="@color/white"
                 android:textSize="14sp"/>
@@ -305,7 +306,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="低电量保护"
+                android:text="@string/low_battery_protection"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:layout_weight="1"/>
@@ -323,7 +324,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="智能亮度调节"
+                android:text="@string/intelligent_brightness_adjustment"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:layout_weight="1"/>
@@ -341,7 +342,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="温度监控"
+                android:text="@string/temperature_monitor"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:layout_weight="1"/>

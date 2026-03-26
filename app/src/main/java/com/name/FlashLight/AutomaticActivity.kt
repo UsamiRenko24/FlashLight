@@ -1,7 +1,6 @@
 package com.name.FlashLight
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.ImageView
@@ -9,9 +8,8 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 
-class AutomaticActivity : AppCompatActivity() {
+class AutomaticActivity : BaseActivity() {
 
     // UI 组件
     private lateinit var ivTraceback: ImageView
@@ -182,7 +180,7 @@ class AutomaticActivity : AppCompatActivity() {
             else -> TIME_5_MIN
         }
         prefs.edit().putInt(KEY_FLASHLIGHT_TIME, timeValue).apply()
-        showSaveToast("手电筒", timeValue)
+        showSaveToast(getString(R.string.title_flashlight), timeValue)
     }
 
     private fun saveScreenLightSetting(checkedId: Int) {
@@ -194,7 +192,7 @@ class AutomaticActivity : AppCompatActivity() {
             else -> TIME_5_MIN
         }
         prefs.edit().putInt(KEY_SCREEN_LIGHT_TIME, timeValue).apply()
-        showSaveToast("屏幕补光", timeValue)
+        showSaveToast(getString(R.string.title_screen_light), timeValue)
     }
 
     private fun saveBlinkSetting(checkedId: Int) {
@@ -206,7 +204,7 @@ class AutomaticActivity : AppCompatActivity() {
             else -> TIME_5_MIN
         }
         prefs.edit().putInt(KEY_BLINK_TIME, timeValue).apply()
-        showSaveToast("闪烁", timeValue)
+        showSaveToast(getString(R.string.title_blink), timeValue)
     }
 
     private fun saveAllSettings() {
@@ -222,7 +220,7 @@ class AutomaticActivity : AppCompatActivity() {
             apply()
         }
 
-        Toast.makeText(this, "设置已保存", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.toast_success), Toast.LENGTH_SHORT).show()
     }
 
     private fun getTimeFromRadioGroup(radioGroup: RadioGroup): Int {
@@ -238,11 +236,11 @@ class AutomaticActivity : AppCompatActivity() {
 
     private fun showSaveToast(feature: String, timeValue: Int) {
         val timeText = when (timeValue) {
-            TIME_1_MIN -> "1分钟"
-            TIME_5_MIN -> "5分钟"
-            TIME_10_MIN -> "10分钟"
-            TIME_NEVER -> "永不"
-            else -> "5分钟"
+            TIME_1_MIN -> getString(R.string.auto_off_1)
+            TIME_5_MIN -> getString(R.string.auto_off_5)
+            TIME_10_MIN -> getString(R.string.auto_off_10)
+            TIME_NEVER -> getString(R.string.auto_off_never)
+            else -> getString(R.string.auto_off_5)
         }
         Toast.makeText(this, "$feature 已设为 $timeText", Toast.LENGTH_SHORT).show()
     }

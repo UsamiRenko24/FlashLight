@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="设置"
+        android:text="@string/title_settings"
 
         android:textColor="@color/white"
         android:textSize="20sp"
@@ -65,7 +65,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="基础设置"
+                android:text="@string/basic_settings"
                 android:textSize="12sp"
                 android:textColor="@color/white"
                 android:layout_marginStart="6dp"
@@ -102,13 +102,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="自动关闭时间"
+                        android:text="@string/setting_auto_off"
                         android:textColor="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="设置各功能自动关闭时间"
+                        android:text="@string/set_auto_off_time"
+                        android:textSize="12sp"
                         android:textColor="@color/grey" />
                 </LinearLayout>
                 <ImageView
@@ -148,24 +149,26 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="启动设置"
+                        android:text="@string/setting_startup_mode"
                         android:textColor="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="应用启动时的默认行为"
+                        android:text="@string/set_startup_behaviour"
                         android:textColor="@color/grey"
                         android:textSize="12sp"/>
                 </LinearLayout>
 
                 <Spinner
                     android:id="@+id/spinner_startup_mode"
-                    android:layout_width="80dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
                     android:gravity="center"
+                    android:layout_gravity="center"
                     android:background="@drawable/bg_rounded_corner"
                     android:dropDownSelector="@drawable/spinner_selector"
                     android:popupBackground="@drawable/bg_rounded_corner" />
@@ -180,8 +183,7 @@
                 android:background="@drawable/bg_rounded_bottom"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
+                android:padding="12dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/card_container2">
@@ -201,23 +203,25 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="默认亮度"
+                        android:text="@string/setting_brightness"
                         android:textColor="@color/white" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="各功能的默认亮度设置"
+                        android:text="@string/set_brightness"
                         android:textColor="@color/grey"
                         android:textSize="12sp"/>
                 </LinearLayout>
                 <Spinner
                     android:id="@+id/spinner_brightness"
-                    android:layout_width="80dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
                     android:gravity="center"
+                    android:layout_gravity="center"
                     android:background="@drawable/bg_rounded_corner"
                     android:dropDownSelector="@drawable/spinner_selector"
                     android:popupBackground="@drawable/bg_rounded_corner" />
@@ -234,7 +238,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="界面设置"
+                android:text="@string/page_settings"
                 android:textSize="12sp"
                 android:textColor="@color/white"
                 android:layout_marginStart="6dp"
@@ -323,25 +327,28 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="语言设置"
+                        android:text="@string/language_settings"
                         android:textColor="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="选择应用显示语言"
+                        android:text="@string/choose_display_language"
                         android:textColor="@color/grey"
                         android:textSize="12sp"/>
                 </LinearLayout>
-                <TextView
-                    android:id="@+id/language"
-                    android:layout_width="wrap_content"
+                <Spinner
+                    android:id="@+id/spinner_language"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="简体中文"
-                    android:textSize="12sp"
-                    android:textColor="@color/white"
+                    android:layout_weight="0.6"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:gravity="center"
+                    android:layout_gravity="center"
                     android:background="@drawable/bg_rounded_corner"
-                    android:layout_marginStart="12dp"/>
+                    android:dropDownSelector="@drawable/spinner_selector"
+                    android:popupBackground="@drawable/bg_rounded_corner" />
 
             </LinearLayout>
             <LinearLayout
@@ -444,13 +451,13 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="振动反馈"
+                        android:text="@string/setting_vibration"
                         android:textColor="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="操作时提供振动反馈"
+                        android:text="@string/vibration_feedback"
                         android:textColor="@color/grey"
                         android:textSize="12sp"/>
                 </LinearLayout>
@@ -493,13 +500,13 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="声音提示"
+                        android:text="@string/setting_sound"
                         android:textColor="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="操作时播放提示音"
+                        android:text="@string/sound_feedback"
                         android:textColor="@color/grey"
                         android:textSize="12sp"/>
                 </LinearLayout>
@@ -541,13 +548,13 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="护眼模式"
+                        android:text="@string/eye_protection_mode"
                         android:textColor="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="自动调节亮度保护视力"
+                        android:text="@string/auto_brightness_adjustment"
                         android:textColor="@color/grey"
                         android:textSize="12sp"/>
                 </LinearLayout>
@@ -568,7 +575,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="数据管理"
+                android:text="@string/data_management"
                 android:textSize="12sp"
                 android:textColor="@color/white"
                 android:layout_marginStart="6dp"
@@ -606,14 +613,15 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="使用统计"
+                        android:text="@string/usage_stats"
                         android:textColor="@color/white" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="查看各功能使用情况"
-                        android:textColor="@color/grey" />
+                        android:text="@string/check_usage_situation"
+                        android:textColor="@color/grey"
+                        android:textSize="12sp"/>
                 </LinearLayout>
 
                 <ImageView
@@ -668,7 +676,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="关于应用"
+                android:text="@string/about_application"
                 android:textSize="12sp"
                 android:textColor="@color/white"
                 android:layout_marginStart="6dp"
@@ -696,7 +704,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="版本信息"
+                    android:text="@string/version_info"
                     android:gravity="center"
                     android:layout_weight="1"
                     android:textSize="16sp"
@@ -726,7 +734,7 @@
             </LinearLayout>
             <View
                 android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="20dp"
                 app:layout_constraintTop_toBottomOf="@id/card_container14"
                 app:layout_constraintStart_toStartOf="parent"

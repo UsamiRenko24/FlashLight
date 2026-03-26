@@ -1,9 +1,12 @@
-package com.name.FlashLight
+package utils
 
 import android.content.Context
 import androidx.work.Constraints
-import androidx.work.*
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import com.name.FlashLight.ResetStatsWorker
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
@@ -11,7 +14,7 @@ object ResetScheduler {
 
     // 启动每日重置任务
     fun scheduleDailyReset(context: Context) {
-        val workManager = WorkManager.getInstance(context)
+        val workManager = WorkManager.Companion.getInstance(context)
 
         // 计算到明天0点的延迟时间
         val delay = calculateDelayToMidnight()
@@ -33,10 +36,6 @@ object ResetScheduler {
             ExistingPeriodicWorkPolicy.UPDATE,  // 如果已存在就更新
             resetRequest
         )
-
-        val hours = delay / (1000 * 60 * 60)
-        val minutes = (delay % (1000 * 60 * 60)) / (1000 * 60)
-        println("📅 每日重置任务已安排，将在 ${hours}小时${minutes}分钟后首次执行（明天0点）")
     }
 
     // 计算到明天0点的毫秒数

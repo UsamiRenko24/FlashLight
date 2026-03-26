@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="44dp"
         android:layout_marginTop="28dp"
-        android:text="LED补光灯"
+        android:text="@string/title_fill_light"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,7 +90,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="使用时间"
+                android:text="@string/usage_time"
                 android:textColor="#8E8E93 "
                 android:textSize="14sp"/>
             <TextView
@@ -114,7 +114,9 @@
         android:background="@drawable/btn_flashlight_on"
         android:backgroundTint="@null"
         android:layout_marginTop="30dp"
-        android:text="手电筒"/>
+        android:text="@string/title_flashlight"
+        android:textColor="@color/white"
+        android:textSize="16sp"/>
 
     <LinearLayout
         android:id="@+id/layout_screen_light"
@@ -136,14 +138,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="屏幕补光"
+            android:text="@string/title_screen_light"
             android:textColor="@color/white"
             android:textSize="14sp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#8E8E93 "
-            android:text="柔和补光"
+            android:text="@string/soft_fill_light"
             android:textSize="12sp"/>
     </LinearLayout>
 
@@ -166,14 +168,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="闪烁"
+            android:text="@string/title_blink"
             android:textColor="@color/white"
             android:textSize="14sp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#8E8E93 "
-            android:text="信号提醒"
+            android:text="@string/signal_alert"
             android:textSize="12sp"/>
     </LinearLayout>
 
@@ -209,7 +211,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:text="快速设置"
+                    android:text="@string/quick_settings"
                     android:layout_marginStart="4dp"
                     android:textSize="14sp"/>
             </LinearLayout>
@@ -225,7 +227,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:layout_weight="1"
-                    android:text="自动关闭"
+                    android:text="@string/setting_auto_off"
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"/>
@@ -252,7 +254,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:layout_weight="7"
-                    android:text="振动反馈" />
+                    android:text="@string/setting_vibration" />
                 <com.name.FlashLight.SlidingButton
                     android:id="@+id/btn_switch"
                     android:layout_width="0dp"

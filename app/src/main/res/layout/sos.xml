@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="SOS信号进行中"
+        android:text="@string/title_sos"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,7 +62,7 @@
             android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="紧急求救信号"
+            android:text="@string/sos_signal"
             android:textColor="#FF4B4B"
             android:textStyle="bold"
             android:textSize="18sp" />
@@ -71,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="标准摩斯密码"
+            android:text="@string/morse_code"
             android:layout_marginTop="10dp"
             android:textColor="@color/grey"
             android:textSize="14sp" />
@@ -95,7 +95,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text=". . .\n短信号"
+                android:text="@string/short_signal"
                 android:layout_marginEnd="28dp"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toStartOf="@+id/middle"
@@ -106,7 +106,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="_ _ _\n长信号"
+                android:text="@string/long_signal"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -116,7 +116,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text=". . .\n短信号"
+                android:text="@string/short_signal"
                 android:layout_marginStart="28dp"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toEndOf="@+id/middle"
@@ -148,7 +148,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="持续时间"
+                android:text="@string/last_time"
                 android:textColor="@color/white"
                 android:textSize="16sp"/>
 
@@ -170,7 +170,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="信号循环"
+                android:text="@string/signal_loop"
                 android:textColor="@color/white"
                 android:textSize="16sp"/>
 
@@ -192,7 +192,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="电池状态"
+                android:text="@string/battery_status"
                 android:textColor="@color/white"
                 android:textSize="16sp"/>
 
@@ -224,7 +224,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="自动停止倒计时"
+                android:text="@string/auto_stop_countdown"
                 android:textColor="@color/grey"
                 android:textSize="12sp"/>
 
