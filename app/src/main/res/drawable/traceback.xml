@@ -4,7 +4,7 @@
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24"
-    android:tint="@color/white">
+    android:tint="#FFFFFF">
 
     <!-- 纯小于号，无横线 -->
     <path

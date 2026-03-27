@@ -8,35 +8,42 @@ import android.graphics.Color
 import android.os.BatteryManager
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.TaskStackBuilder
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.viewbinding.ViewBinding
 import utils.LanguageManager
 import utils.LowBatteryManager
 
-abstract class BaseActivity : AppCompatActivity() {
-    private lateinit var batteryReceiver: BroadcastReceiver
+abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
+    private var batteryReceiver: BroadcastReceiver? = null
     private var stopFeaturesReceiver: BroadcastReceiver? = null
 
-    // 【核心修复】重写 attachBaseContext，这是多语言生效的关键钩子
+    protected lateinit var binding:VB
+
+    protected abstract fun createBinding():VB
+
     override fun attachBaseContext(newBase: Context) {
         val languageCode = LanguageManager.getCurrentLanguage(newBase)
-        // 必须将 applyLanguage 返回的 Context 传给 super
         val context = LanguageManager.applyLanguage(newBase, languageCode)
         super.attachBaseContext(context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // 已经通过 attachBaseContext 处理，此处无需再调用 applyLanguageBeforeCreate
         super.onCreate(savedInstanceState)
-        findViewById<ViewGroup>(android.R.id.content).getChildAt(0)?.let { root ->
-            root.setFitsSystemWindows(true)
-        }
+        enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT), navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
 
-        enableEdgeToEdge(statusBarStyle= SystemBarStyle.dark(Color.TRANSPARENT), navigationBarStyle= SystemBarStyle.dark(Color.TRANSPARENT))
+        binding= createBinding()
+        setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            view.setPadding(0, statusBarHeight, 0, 0)
+            insets
+        }
 
         if (shouldBuildBackStack()) {
             buildBackStack()
@@ -47,6 +54,13 @@ abstract class BaseActivity : AppCompatActivity() {
         setupBackHandler()
         registerBatteryReceiver()
         registerStopFeaturesReceiver()
+    }
+
+    /**
+     * 当电池状态发生物理变化时触发，子类可重写此方法以实时更新 UI
+     */
+    open fun onBatteryStatusChanged() {
+        // 子类可选实现
     }
 
     override fun onResume() {
@@ -109,10 +123,15 @@ abstract class BaseActivity : AppCompatActivity() {
                 intent?.let {
                     val level = it.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
                     val scale = it.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+                    val status = it.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+                    val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
+                            status == BatteryManager.BATTERY_STATUS_FULL
 
                     if (level >= 0 && scale > 0) {
                         val batteryPct = level * 100 / scale
-                        LowBatteryManager.checkBatteryLevel(this@BaseActivity, batteryPct)
+                        LowBatteryManager.checkBatteryLevel(this@BaseActivity, batteryPct, isCharging)
+                        // 核心优化：电池变化时，立即通知子类更新 UI
+                        onBatteryStatusChanged()
                     }
                 }
             }
@@ -143,7 +162,7 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         try {
-            unregisterReceiver(batteryReceiver)
+            batteryReceiver?.let { unregisterReceiver(it) }
             stopFeaturesReceiver?.let { unregisterReceiver(it) }
         } catch (e: Exception) {
             e.printStackTrace()

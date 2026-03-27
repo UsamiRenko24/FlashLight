@@ -115,6 +115,7 @@
         android:backgroundTint="@null"
         android:layout_marginTop="30dp"
         android:text="@string/title_flashlight"
+        android:gravity="center"
         android:textColor="@color/white"
         android:textSize="16sp"/>
 
@@ -213,7 +214,7 @@
                     android:textColor="@color/white"
                     android:text="@string/quick_settings"
                     android:layout_marginStart="4dp"
-                    android:textSize="14sp"/>
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -228,6 +229,7 @@
                     android:textColor="@color/white"
                     android:layout_weight="1"
                     android:text="@string/setting_auto_off"
+                    android:textSize="14sp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"/>
@@ -240,7 +242,7 @@
                     android:gravity="end"
                     android:text="5分钟"
                     android:textColor="#8E8E93 "
-                    android:textSize="12sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -254,6 +256,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:layout_weight="7"
+                    android:textSize="14sp"
                     android:text="@string/setting_vibration" />
                 <com.name.FlashLight.SlidingButton
                     android:id="@+id/btn_switch"

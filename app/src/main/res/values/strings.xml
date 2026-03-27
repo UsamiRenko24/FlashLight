@@ -85,6 +85,7 @@
     <string name="page_settings">界面设置</string>
     <string name="language_settings">语言设置</string>
     <string name="choose_display_language">选择应用显示语言</string>
+    <string name="function_setting">功能设置</string>
     <string name="setting_vibration">振动反馈</string>
     <string name="vibration_feedback">操作时提供振动反馈</string>
     <string name="setting_sound">声音反馈</string>

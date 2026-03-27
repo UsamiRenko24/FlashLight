@@ -8,7 +8,6 @@ android {
             minorApiLevel = 1
         }
     }
-
     defaultConfig {
         applicationId = "com.name.FlashLight"
         minSdk = 29
@@ -32,6 +31,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -54,10 +57,7 @@ dependencies {
 // Lifecycle
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
-// ViewBinding
-    implementation("androidx.databinding:databinding-runtime:8.2.0")
 // Activity Result API
     implementation("androidx.activity:activity-ktx:1.8.0")
     implementation("androidx.fragment:fragment-ktx:1.6.1")
 }
-

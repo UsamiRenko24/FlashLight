@@ -3,90 +3,40 @@ package com.name.FlashLight
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.RadioButton
 import android.widget.RadioGroup
-import android.widget.TextView
 import android.widget.Toast
+import com.name.FlashLight.databinding.AutomaticBinding
+import com.name.FlashLight.databinding.SettingsBinding
 
-class AutomaticActivity : BaseActivity() {
+class AutomaticActivity : BaseActivity<AutomaticBinding>() {
 
-    // UI 组件
-    private lateinit var ivTraceback: ImageView
-    private lateinit var tvTitle: TextView
-
-    // 手电筒 RadioGroup
-    private lateinit var flashRadioGroup: RadioGroup
-    private lateinit var flash1min: RadioButton
-    private lateinit var flash5min: RadioButton
-    private lateinit var flash10min: RadioButton
-    private lateinit var flashNever: RadioButton
-
-    // 屏幕补光 RadioGroup
-    private lateinit var screenRadioGroup: RadioGroup
-    private lateinit var screen1min: RadioButton
-    private lateinit var screen5min: RadioButton
-    private lateinit var screen10min: RadioButton
-    private lateinit var screenNever: RadioButton
-
-    // 闪烁 RadioGroup
-    private lateinit var blinkRadioGroup: RadioGroup
-    private lateinit var blink1min: RadioButton
-    private lateinit var blink5min: RadioButton
-    private lateinit var blink10min: RadioButton
-    private lateinit var blinkNever: RadioButton
-
-    // SharedPreferences
     private lateinit var prefs: SharedPreferences
     private val PREFS_NAME = "auto_off_settings"
 
     companion object {
-        // 键名常量
         const val KEY_FLASHLIGHT_TIME = "flashlight_auto_off"
         const val KEY_SCREEN_LIGHT_TIME = "screen_light_auto_off"
         const val KEY_BLINK_TIME = "blink_auto_off"
 
-        // 时间值常量（分钟）
         const val TIME_1_MIN = 1
         const val TIME_5_MIN = 5
         const val TIME_10_MIN = 10
-        const val TIME_NEVER = 114514  // -1 表示永不关闭
+        const val TIME_NEVER = 114514
+    }
+
+    override fun createBinding():AutomaticBinding{
+        return AutomaticBinding.inflate(layoutInflater)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.automatic)
+        
+        // 1. 初始化 ViewBinding
+        binding = AutomaticBinding.inflate(layoutInflater)
 
-        initViews()
         initSharedPreferences()
         loadSavedSettings()
         setupClickListeners()
-    }
-
-    private fun initViews() {
-        ivTraceback = findViewById(R.id.traceback)
-        tvTitle = findViewById(R.id.tv_title)
-
-        // 手电筒
-        flashRadioGroup = findViewById(R.id.flash_radio_group)  // 需要在布局中添加这个ID
-        flash1min = findViewById(R.id.flash1min)
-        flash5min = findViewById(R.id.flash5min)
-        flash10min = findViewById(R.id.flash10min)
-        flashNever = findViewById(R.id.flashNever)
-
-        // 屏幕补光
-        screenRadioGroup = findViewById(R.id.screen_radio_group)  // 需要在布局中添加这个ID
-        screen1min = findViewById(R.id.screen1min)
-        screen5min = findViewById(R.id.screen5min)
-        screen10min = findViewById(R.id.screen10min)
-        screenNever = findViewById(R.id.screenNever)
-
-        // 闪烁
-        blinkRadioGroup = findViewById(R.id.blink_radio_group)  // 需要在布局中添加这个ID
-        blink1min = findViewById(R.id.blink1min)
-        blink5min = findViewById(R.id.blink5min)
-        blink10min = findViewById(R.id.blink10min)
-        blinkNever = findViewById(R.id.blinkNever)
     }
 
     private fun initSharedPreferences() {
@@ -96,48 +46,48 @@ class AutomaticActivity : BaseActivity() {
     private fun loadSavedSettings() {
         // 加载手电筒设置
         val flashTime = prefs.getInt(KEY_FLASHLIGHT_TIME, TIME_5_MIN)
-        selectRadioButton(flashRadioGroup, flashTime)
+        selectRadioButton(binding.flashRadioGroup, flashTime)
 
         // 加载屏幕补光设置
         val screenTime = prefs.getInt(KEY_SCREEN_LIGHT_TIME, TIME_5_MIN)
-        selectRadioButton(screenRadioGroup, screenTime)
+        selectRadioButton(binding.screenRadioGroup, screenTime)
 
         // 加载闪烁设置
         val blinkTime = prefs.getInt(KEY_BLINK_TIME, TIME_5_MIN)
-        selectRadioButton(blinkRadioGroup, blinkTime)
+        selectRadioButton(binding.blinkRadioGroup, blinkTime)
     }
 
     private fun selectRadioButton(radioGroup: RadioGroup, timeValue: Int) {
         val radioButtonId = when (timeValue) {
             TIME_1_MIN -> {
                 when (radioGroup) {
-                    flashRadioGroup -> R.id.flash1min
-                    screenRadioGroup -> R.id.screen1min
-                    blinkRadioGroup -> R.id.blink1min
+                    binding.flashRadioGroup -> R.id.flash1min
+                    binding.screenRadioGroup -> R.id.screen1min
+                    binding.blinkRadioGroup -> R.id.blink1min
                     else -> null
                 }
             }
             TIME_5_MIN -> {
                 when (radioGroup) {
-                    flashRadioGroup -> R.id.flash5min
-                    screenRadioGroup -> R.id.screen5min
-                    blinkRadioGroup -> R.id.blink5min
+                    binding.flashRadioGroup -> R.id.flash5min
+                    binding.screenRadioGroup -> R.id.screen5min
+                    binding.blinkRadioGroup -> R.id.blink5min
                     else -> null
                 }
             }
             TIME_10_MIN -> {
                 when (radioGroup) {
-                    flashRadioGroup -> R.id.flash10min
-                    screenRadioGroup -> R.id.screen10min
-                    blinkRadioGroup -> R.id.blink10min
+                    binding.flashRadioGroup -> R.id.flash10min
+                    binding.screenRadioGroup -> R.id.screen10min
+                    binding.blinkRadioGroup -> R.id.blink10min
                     else -> null
                 }
             }
             TIME_NEVER -> {
                 when (radioGroup) {
-                    flashRadioGroup -> R.id.flashNever
-                    screenRadioGroup -> R.id.screenNever
-                    blinkRadioGroup -> R.id.blinkNever
+                    binding.flashRadioGroup -> R.id.flashNever
+                    binding.screenRadioGroup -> R.id.screenNever
+                    binding.blinkRadioGroup -> R.id.blinkNever
                     else -> null
                 }
             }
@@ -150,23 +100,20 @@ class AutomaticActivity : BaseActivity() {
     }
 
     private fun setupClickListeners() {
-        // 返回按钮
-        ivTraceback.setOnClickListener {
-            // 返回前保存设置
+        binding.traceback.setOnClickListener {
             saveAllSettings()
             finish()
         }
 
-        // 设置 RadioGroup 的选中监听
-        flashRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+        binding.flashRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             saveFlashlightSetting(checkedId)
         }
 
-        screenRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+        binding.screenRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             saveScreenLightSetting(checkedId)
         }
 
-        blinkRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+        binding.blinkRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             saveBlinkSetting(checkedId)
         }
     }
@@ -208,10 +155,9 @@ class AutomaticActivity : BaseActivity() {
     }
 
     private fun saveAllSettings() {
-        // 获取当前选中的值并保存
-        val flashTime = getTimeFromRadioGroup(flashRadioGroup)
-        val screenTime = getTimeFromRadioGroup(screenRadioGroup)
-        val blinkTime = getTimeFromRadioGroup(blinkRadioGroup)
+        val flashTime = getTimeFromRadioGroup(binding.flashRadioGroup)
+        val screenTime = getTimeFromRadioGroup(binding.screenRadioGroup)
+        val blinkTime = getTimeFromRadioGroup(binding.blinkRadioGroup)
 
         prefs.edit().apply {
             putInt(KEY_FLASHLIGHT_TIME, flashTime)
@@ -243,11 +189,5 @@ class AutomaticActivity : BaseActivity() {
             else -> getString(R.string.auto_off_5)
         }
         Toast.makeText(this, "$feature 已设为 $timeText", Toast.LENGTH_SHORT).show()
-    }
-
-    // 在 Activity 销毁时保存
-    override fun onDestroy() {
-        super.onDestroy()
-        // 已经在点击返回时保存，这里可以不再保存
     }
 }

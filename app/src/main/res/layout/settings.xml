@@ -103,6 +103,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/setting_auto_off"
+                        android:textSize="14sp"
                         android:textColor="@color/white" />
 
                     <TextView
@@ -150,6 +151,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/setting_startup_mode"
+                        android:textSize="14sp"
                         android:textColor="@color/white" />
 
                     <TextView
@@ -204,6 +206,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/setting_brightness"
+                        android:textSize="14sp"
                         android:textColor="@color/white" />
 
                     <TextView
@@ -276,6 +279,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="主题选择"
+                        android:textSize="14sp"
                         android:textColor="@color/white" />
 
                     <TextView
@@ -328,6 +332,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/language_settings"
+                        android:textSize="14sp"
                         android:textColor="@color/white" />
 
                     <TextView
@@ -383,6 +388,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="字体大小"
+                        android:textSize="14sp"
                         android:textColor="@color/white" />
 
                     <TextView
@@ -452,6 +458,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/setting_vibration"
+                        android:textSize="14sp"
                         android:textColor="@color/white" />
 
                     <TextView
@@ -501,6 +508,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/setting_sound"
+                        android:textSize="14sp"
                         android:textColor="@color/white" />
 
                     <TextView
@@ -549,6 +557,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/eye_protection_mode"
+                        android:textSize="14sp"
                         android:textColor="@color/white" />
 
                     <TextView
@@ -614,6 +623,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/usage_stats"
+                        android:textSize="14sp"
                         android:textColor="@color/white" />
 
                     <TextView
@@ -713,6 +723,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="v1.0.0"
+                    android:textSize="14sp"
                     android:textColor="@color/grey"/>
             </LinearLayout>
 

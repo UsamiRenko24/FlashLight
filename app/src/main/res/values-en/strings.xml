@@ -86,6 +86,7 @@
     <string name="page_settings">Interface Settings</string>
     <string name="language_settings">Language Settings</string>
     <string name="choose_display_language">Select app display language</string>
+    <string name="function_setting">Function Settings</string>
     <string name="setting_vibration">Vibration Feedback</string>
     <string name="vibration_feedback">Provides vibration feedback on operation</string>
     <string name="setting_sound">Sound Feedback</string>

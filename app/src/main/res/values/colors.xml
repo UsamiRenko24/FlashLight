@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+
+    <!-- 补光灯专用色 (保持物理色感) -->
+    <color name="white">#FFFFFF</color>
+    <color name="pure_white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!-- 语义化适配色 (日间模式 - 浅色) -->
     <color name="gray">#111111</color>
-    <color name="gray_dark">#080808</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="red">#FF3636</color>
-    <color name="pure_white">#FFFFFFFF</color>
-    <color name="warm_white">#FFFFF8DC</color>
-    <color name="cold_white">#FFF0F8FF</color>
-    <color name="grey">#FF9E9E9E</color>
+    <color name="grey">#8E8E93</color>
+    <color name="red">#C12424</color>
+    <color name="main_bg">#040404</color>        <!-- 浅灰背景 -->
+    <color name="card_bg">#191D23</color>          <!-- 纯白卡片 -->
+    <color name="card_bg_border">#374151</color>   <!-- 深蓝色边框 -->
+    <color name="card_bg_differ">#252525</color>   <!-- 另一种白色卡片 -->
+    <color name="card_bg_border_differ">#515151</color>   <!-- 灰色边框 -->
+    <color name="selector">#1E293B</color>
+    <color name="selector_selected">#1A1D21</color>
+    <color name="nav_bg">#8E8E93</color>
+    <color name="nav_selected_bg">#2196F3</color>
+    <color name="text_primary">#4786EF</color>
+    <color name="text_secondary">#8E8E93</color>   <!-- 辅助灰色文字 -->
+    <color name="accent_blue">#2563EB</color>      <!-- 品牌蓝色 -->
+    <color name="divider_line">#374151</color>     <!-- 浅色分割线 -->
+    <color name="icon_color">#FDFDFD</color>       <!-- 图标深灰色 -->
 </resources>

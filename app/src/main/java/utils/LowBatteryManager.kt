@@ -29,14 +29,22 @@ object LowBatteryManager {
         }
     }
 
-    fun checkBatteryLevel(context: Context, level: Int) {
+    /**
+     * 检查电量及充电状态
+     * @param isCharging 是否正在充电。如果是，则不进入或退出低电量模式。
+     */
+    fun checkBatteryLevel(context: Context, level: Int, isCharging: Boolean = false) {
         if (!isProtectionEnabled(context)) return
 
         val isActive = isLowBatteryModeActive(context)
-        if (level <= LOW_BATTERY_THRESHOLD && !isActive) {
-            enterLowBatteryMode(context, level)
-        } else if (level > LOW_BATTERY_THRESHOLD && isActive) {
+        
+        // 退出条件：电量高于阈值 OR 正在充电
+        if ((level > LOW_BATTERY_THRESHOLD || isCharging) && isActive) {
             exitLowBatteryMode(context)
+        } 
+        // 进入条件：电量低于等于阈值 AND 不在充电 AND 当前未激活
+        else if (level <= LOW_BATTERY_THRESHOLD && !isCharging && !isActive) {
+            enterLowBatteryMode(context, level)
         }
     }
 
@@ -59,7 +67,9 @@ object LowBatteryManager {
         restoreSystemBrightness(context)
         
         // 发送通知，让 LowBatteryActivity 知道该自动关闭了
-        context.sendBroadcast(Intent("ACTION_EXIT_LOW_BATTERY_DISPLAY"))
+        val intent = Intent("ACTION_EXIT_LOW_BATTERY_DISPLAY")
+        intent.setPackage(context.packageName)
+        context.sendBroadcast(intent)
     }
 
     /**

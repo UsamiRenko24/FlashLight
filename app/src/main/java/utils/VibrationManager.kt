@@ -8,27 +8,27 @@ object VibrationManager {
 
     private const val PREFS_NAME = "vibration_settings"
     private const val KEY_VIBRATION_ENABLED = "vibration_enabled"
-    private val listeners = mutableListOf<(Boolean) -> Unit>()
+    
+    // 建议：统一默认值为 true (或者你想要的默认状态)
+    private const val DEFAULT_VALUE = true
 
     fun isVibrationEnabled(context: Context): Boolean {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getBoolean(KEY_VIBRATION_ENABLED, false)
+        return prefs.getBoolean(KEY_VIBRATION_ENABLED, DEFAULT_VALUE)
     }
 
     fun setVibrationEnabled(context: Context, enabled: Boolean) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit().putBoolean(KEY_VIBRATION_ENABLED, enabled).apply()
-        listeners.forEach { it(enabled) }
     }
 
     fun vibrate(view: View) {
-        // 如果震动关闭，直接返回
         if (!isVibrationEnabled(view.context)) return
 
         try {
             view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
         } catch (e: Exception) {
-            // 忽略错误
+            e.printStackTrace()
         }
     }
 }

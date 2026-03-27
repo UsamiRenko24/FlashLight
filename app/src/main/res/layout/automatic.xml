@@ -68,6 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/auto_off_1"
+                android:textSize="14sp"
                 android:layout_weight="1"
                 android:textColor="@color/white"
                 android:padding="6dp"/>
@@ -77,6 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/auto_off_5"
+                android:textSize="14sp"
                 android:layout_weight="1"
                 android:textColor="@color/white"
                 android:padding="6dp"
@@ -87,6 +89,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/auto_off_10"
+                android:textSize="14sp"
                 android:layout_weight="1"
                 android:textColor="@color/white"
                 android:padding="6dp"/>
@@ -97,6 +100,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:text="@string/auto_off_never"
+                android:textSize="14sp"
                 android:layout_weight="1"
                 android:padding="6dp"/>
 
@@ -140,6 +144,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/auto_off_1"
+                android:textSize="14sp"
                 android:layout_weight="1"
                 android:textColor="@color/white"
                 android:padding="6dp"/>
@@ -149,6 +154,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/auto_off_5"
+                android:textSize="14sp"
                 android:layout_weight="1"
                 android:textColor="@color/white"
                 android:padding="6dp"
@@ -159,6 +165,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/auto_off_10"
+                android:textSize="14sp"
                 android:layout_weight="1"
                 android:textColor="@color/white"
                 android:padding="6dp"/>
@@ -169,6 +176,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:text="@string/auto_off_never"
+                android:textSize="14sp"
                 android:layout_weight="1"
                 android:padding="6dp"/>
 
@@ -212,6 +220,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/auto_off_1"
+                    android:textSize="14sp"
                     android:layout_weight="1"
                     android:textColor="@color/white"
                     android:padding="6dp"/>
@@ -221,6 +230,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/auto_off_5"
+                    android:textSize="14sp"
                     android:layout_weight="1"
                     android:textColor="@color/white"
                     android:padding="6dp"
@@ -231,6 +241,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/auto_off_10"
+                    android:textSize="14sp"
                     android:layout_weight="1"
                     android:textColor="@color/white"
                     android:padding="6dp"/>
@@ -241,6 +252,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:text="@string/auto_off_never"
+                    android:textSize="14sp"
                     android:layout_weight="1"
                     android:padding="6dp"/>
 

@@ -13,35 +13,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.name.FlashLight.databinding.ScreenBinding
+import com.name.FlashLight.databinding.ScreenLightBinding
+import com.name.FlashLight.databinding.SettingsBinding
 import utils.TimeRecorder
 
-class ScreenLightActiveActivity : BaseActivity() {
+class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
 
-    // 主背景
-    private lateinit var mainPage: ConstraintLayout
-
-    // 顶部卡片
-    private lateinit var card: LinearLayout
-    private lateinit var tvTitle: TextView
-
-    // 底部主控制卡片
-    private lateinit var card1: LinearLayout
-    private lateinit var sun: ImageView
-    private lateinit var palette: ImageView
-    private lateinit var settings: ImageView
-    private lateinit var close: ImageView
-
-    // 亮度选择卡片（三个太阳）
-    private lateinit var card2: LinearLayout
-    private lateinit var sun1: ImageView
-    private lateinit var sun2: ImageView
-    private lateinit var sun3: ImageView
-
-    // 色温选择卡片（三个颜色）
-    private lateinit var card3: LinearLayout
-    private lateinit var color1: ImageView
-    private lateinit var color2: ImageView
-    private lateinit var color3: ImageView
+//    private lateinit var binding: ScreenLightBinding
 
     // 当前选中的状态
     private var selectedBrightness = 1  // 0=低, 1=中, 2=高
@@ -57,9 +36,14 @@ class ScreenLightActiveActivity : BaseActivity() {
     private var startTime = 0L
     private var totalTimeMinutes: Int = 0
 
+    override fun createBinding():ScreenLightBinding{
+        return ScreenLightBinding.inflate(layoutInflater)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.screen_light)
+
+        binding = ScreenLightBinding.inflate(layoutInflater)
 
         // 1. 【核心修复】首先初始化 Handler 和 获取自动关闭时长
         handler = Handler(Looper.getMainLooper())
@@ -72,8 +56,6 @@ class ScreenLightActiveActivity : BaseActivity() {
         startTimer()
         TimeRecorder.startRecording(this, "screen_light")
 
-        // 4. 初始化视图和点击监听
-        initViews()
         setupInitialState()
         setupClickListeners()
 
@@ -114,112 +96,85 @@ class ScreenLightActiveActivity : BaseActivity() {
         updateColorSelection()
     }
 
-    private fun initViews() {
-        // 主背景
-        mainPage = findViewById(R.id.mainPage)
-
-        // 顶部卡片
-        card = findViewById(R.id.card)
-        tvTitle = findViewById(R.id.tv_title)
-
-        // 底部主控制卡片
-        card1 = findViewById(R.id.card1)
-        sun = findViewById(R.id.sun)
-        palette = findViewById(R.id.palette)
-        settings = findViewById(R.id.settings)
-        close = findViewById(R.id.close)
-
-        // 亮度选择卡片
-        card2 = findViewById(R.id.card2)
-        sun1 = findViewById(R.id.sun1)
-        sun2 = findViewById(R.id.sun2)
-        sun3 = findViewById(R.id.sun3)
-
-        // 色温选择卡片
-        card3 = findViewById(R.id.card3)
-        color1 = findViewById(R.id.color1)
-        color2 = findViewById(R.id.color2)
-        color3 = findViewById(R.id.color3)
-    }
 
     private fun setupInitialState() {
         // 开始时隐藏所有需要隐藏的组件
-        card2.visibility = View.GONE
-        card3.visibility = View.GONE
+        binding.card2.visibility = View.GONE
+        binding.card3.visibility = View.GONE
     }
 
     private fun setupClickListeners() {
         // 点击太阳图标 - 显示亮度选择卡片
-        sun.setOnClickListener {
+        binding.sun.setOnClickListener {
             toggleCard2()
         }
 
         // 点击调色板图标 - 显示色温选择卡片
-        palette.setOnClickListener {
+        binding.palette.setOnClickListener {
             toggleCard3()
         }
 
         // 点击设置图标
-        settings.setOnClickListener {
+        binding.settings.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
         // 点击关闭图标 - 返回上一页
-        close.setOnClickListener {
+        binding.close.setOnClickListener {
             returnWithSettings()
             finish()
         }
 
         // 亮度选择
-        sun1.setOnClickListener {
+        binding.sun1.setOnClickListener {
             selectBrightness(0)
 //            Toast.makeText(this, "已选择低亮度", Toast.LENGTH_SHORT).show()
         }
 
-        sun2.setOnClickListener {
+        binding.sun2.setOnClickListener {
             selectBrightness(1)
 //            Toast.makeText(this, "已选择中亮度", Toast.LENGTH_SHORT).show()
         }
 
-        sun3.setOnClickListener {
+        binding.sun3.setOnClickListener {
             selectBrightness(2)
 //            Toast.makeText(this, "已选择高亮度", Toast.LENGTH_SHORT).show()
         }
 
         // 色温选择
-        color1.setOnClickListener {
+        binding.color1.setOnClickListener {
             selectColor(0)
 //            Toast.makeText(this, "已选择纯白光", Toast.LENGTH_SHORT).show()
         }
 
-        color2.setOnClickListener {
+        binding.color2.setOnClickListener {
             selectColor(1)
 //            Toast.makeText(this, "已选择暖白光", Toast.LENGTH_SHORT).show()
         }
 
-        color3.setOnClickListener {
+        binding.color3.setOnClickListener {
             selectColor(2)
 //            Toast.makeText(this, "已选择冷白光", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun toggleCard2() {
-        if (card2.visibility == View.GONE) {
-            card2.visibility = View.VISIBLE
-            card3.visibility = View.GONE
+        if (binding.card2.visibility == View.GONE) {
+            binding.card2.visibility = View.VISIBLE
+            binding.card3.visibility = View.GONE
             updateSunSelection()
         } else {
-            card2.visibility = View.GONE
+            binding.card2.visibility = View.GONE
         }
     }
 
     private fun toggleCard3() {
-        if (card3.visibility == View.GONE) {
-            card3.visibility = View.VISIBLE
-            card2.visibility = View.GONE
+        if (binding.card3.visibility == View.GONE) {
+            binding.card3.visibility = View.VISIBLE
+            binding.card2.visibility = View.GONE
             updateColorSelection()
         } else {
-            card3.visibility = View.GONE
+            binding.card3.visibility = View.GONE
         }
     }
 
@@ -254,7 +209,7 @@ class ScreenLightActiveActivity : BaseActivity() {
      */
     private fun updateBackgroundColor() {
         val mixedColor = mixColorWithBrightness(currentColorHex, currentBrightnessValue)
-        mainPage.setBackgroundColor(Color.parseColor(mixedColor))
+        binding.mainPage.setBackgroundColor(Color.parseColor(mixedColor))
     }
 
     /**
@@ -270,26 +225,26 @@ class ScreenLightActiveActivity : BaseActivity() {
     }
 
     private fun updateSunSelection() {
-        sun1.alpha = 0.5f
-        sun2.alpha = 0.5f
-        sun3.alpha = 0.5f
+        binding.sun1.alpha = 0.5f
+        binding.sun2.alpha = 0.5f
+        binding.sun3.alpha = 0.5f
 
         when (selectedBrightness) {
-            0 -> sun1.alpha = 1.0f
-            1 -> sun2.alpha = 1.0f
-            2 -> sun3.alpha = 1.0f
+            0 -> binding.sun1.alpha = 1.0f
+            1 -> binding.sun2.alpha = 1.0f
+            2 -> binding.sun3.alpha = 1.0f
         }
     }
 
     private fun updateColorSelection() {
-        color1.alpha = 0.5f
-        color2.alpha = 0.5f
-        color3.alpha = 0.5f
+        binding.color1.alpha = 0.5f
+        binding.color2.alpha = 0.5f
+        binding.color3.alpha = 0.5f
 
         when (selectedColor) {
-            0 -> color1.alpha = 1.0f
-            1 -> color2.alpha = 1.0f
-            2 -> color3.alpha = 1.0f
+            0 -> binding.color1.alpha = 1.0f
+            1 -> binding.color2.alpha = 1.0f
+            2 -> binding.color3.alpha = 1.0f
         }
     }
 
@@ -308,7 +263,7 @@ class ScreenLightActiveActivity : BaseActivity() {
             else -> getString(R.string.color_pure)
         }
 
-        tvTitle.text = "$colorText - ${brightnessText}"
+        binding.tvTitle.text = "$colorText - ${brightnessText}"
     }
     /**
      * 返回设置并退出

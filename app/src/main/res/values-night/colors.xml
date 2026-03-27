@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 补光灯专用色 (保持物理色感) -->
+    <color name="white">#FFFFFF</color>
+    <color name="pure_white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!-- 语义化适配色 (夜间模式 - 深色) -->
+    <color name="main_bg">#0F172A</color>          <!-- 深蓝色背景 -->
+    <color name="card_bg">#1E293B</color>          <!-- 深蓝灰色卡片 -->
+    <color name="card_bg_border">#252525</color>   <!-- 深蓝色边框 -->
+    <color name="card_bg_differ">#252525</color>   <!-- 另一种灰色卡片 -->
+    <color name="card_bg_border_differ">#515151</color>   <!-- 灰色边框 -->
+    <color name="text_primary">#F8FAFC</color>     <!-- 极浅色文字 -->
+    <color name="text_secondary">#9BA2AE</color>   <!-- 辅助灰色文字 -->
+    <color name="accent_blue">#3B82F6</color>      <!-- 亮蓝色高亮 -->
+    <color name="divider_line">#334155</color>     <!-- 深色分割线 -->
+    <color name="icon_color">#CBD5E1</color>       <!-- 图标浅灰色 -->
+</resources>

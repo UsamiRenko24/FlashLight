@@ -9,10 +9,10 @@
     <!-- 边框设置 -->
     <stroke
         android:width="2dp"
-        android:color="#374151" />
+        android:color="@color/card_bg_border" />
 
     <!-- 填充颜色（你可以点击左侧出现的色块来快速换色） -->
-    <solid android:color="#191D23"/>
+    <solid android:color="@color/card_bg"/>
 
     <!-- 内边距 -->
     <padding

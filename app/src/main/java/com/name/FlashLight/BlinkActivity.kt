@@ -11,28 +11,20 @@ import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.OvershootInterpolator
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import com.name.FlashLight.databinding.BlinkBinding
 import com.name.FlashLight.utils.PageConstants
 import com.name.FlashLight.utils.PageUsageRecorder
 import com.name.FlashLight.utils.StartupModeManager
 import utils.TimeRecorder
 import utils.feedback
 
-class BlinkActivity : BaseActivity() {
+class BlinkActivity : BaseActivity<BlinkBinding>() {
 
-    private lateinit var ivTraceback: ImageView
-    private lateinit var ivSettings: ImageView
-    private lateinit var btnSos: Button
-    private lateinit var btnStartBlink: Button
-    private lateinit var layoutScreenLight: LinearLayout
-    private lateinit var layoutBlink: LinearLayout
-    private lateinit var layoutLeft: LinearLayout
-    private lateinit var layoutMiddle: LinearLayout
-    private lateinit var layoutRight: LinearLayout
+    // 不需要再声明 binding 变量，Base 已经有了
 
     private var isScreenLightSelected = false
     private var isFlashlightSelected = true   
@@ -51,60 +43,50 @@ class BlinkActivity : BaseActivity() {
 
     private val selectedBlueColor = Color.parseColor("#4786EF")
 
+    // 实现 Base 方法，返回正确的绑定类
+    override fun createBinding(): BlinkBinding {
+        return BlinkBinding.inflate(layoutInflater)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.blink)
         
         handler = Handler(Looper.getMainLooper())
-        initViews()
         PageUsageRecorder.recordPageVisit(this, PageConstants.PAGE_BLINK)
         StartupModeManager.recordLastPage(this, PageConstants.PAGE_BLINK)
 
         initFlashlight()
         setupClickListeners()
 
-        // 核心修复：初始状态 - 选中中频和手电筒
         selectFrequency(1)
-        layoutBlink.isSelected = true
-        updateSourceLayoutUI(layoutBlink, true)
-        layoutScreenLight.isSelected = false
-        updateSourceLayoutUI(layoutScreenLight, false)
-    }
-
-    private fun initViews() {
-        ivTraceback = findViewById(R.id.traceback)
-        ivSettings = findViewById(R.id.iv_settings)
-        btnSos = findViewById(R.id.SOS)
-        btnStartBlink = findViewById(R.id.btn_start_blink)
-        layoutScreenLight = findViewById(R.id.layout_screen_light)
-        layoutBlink = findViewById(R.id.layout_blink)
-        layoutLeft = findViewById(R.id.card_left)
-        layoutMiddle = findViewById(R.id.card_middle)
-        layoutRight = findViewById(R.id.card_right)
+        binding.layoutBlink.isSelected = true
+        updateSourceLayoutUI(binding.layoutBlink, true)
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupClickListeners() {
-        ivTraceback.setOnClickListener { stopBlinking(); handleBackPress() }
-        ivSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
+        binding.traceback.setOnClickListener { stopBlinking(); handleBackPress() }
+        binding.ivSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
 
-        // SOS 按钮物理动效
-        btnSos.setOnTouchListener { view, event ->
-            handleTouch(view, event) {
-                if (isBlinking) Toast.makeText(this, getString(R.string.please_stop_blink), Toast.LENGTH_SHORT).show()
-                else startActivity(Intent(this, SOSActivity::class.java))
+        binding.SOS.setOnTouchListener { v: View, event: MotionEvent ->
+            handleTouch(v, event) {
+                if (isBlinking) {
+                    Toast.makeText(this, getString(R.string.please_stop_blink), Toast.LENGTH_SHORT).show()
+                } else {
+                    startActivity(Intent(this, SOSActivity::class.java))
+                }
             }
         }
 
-        layoutScreenLight.setOnClickListener { if (!isBlinking) toggleScreenLight() }
-        layoutBlink.setOnClickListener { if (!isBlinking) toggleFlashlight() }
+        binding.layoutScreenLight.setOnClickListener { if (!isBlinking) toggleScreenLight() }
+        binding.layoutBlink.setOnClickListener { if (!isBlinking) toggleFlashlight() }
 
-        layoutLeft.setOnClickListener { if (!isBlinking) selectFrequency(0) }
-        layoutMiddle.setOnClickListener { if (!isBlinking) selectFrequency(1) }
-        layoutRight.setOnClickListener { if (!isBlinking) selectFrequency(2) }
+        binding.cardLeft.setOnClickListener { if (!isBlinking) selectFrequency(0) }
+        binding.cardMiddle.setOnClickListener { if (!isBlinking) selectFrequency(1) }
+        binding.cardRight.setOnClickListener { if (!isBlinking) selectFrequency(2) }
 
-        btnStartBlink.setOnTouchListener { view, event ->
-            handleTouch(view, event) {
+        binding.btnStartBlink.setOnTouchListener { v: View, event: MotionEvent ->
+            handleTouch(v, event) {
                 if (isBlinking) {
                     stopBlinking()
                     stopTimer()
@@ -112,7 +94,7 @@ class BlinkActivity : BaseActivity() {
                 } else {
                     startBlinking()
                     startTimer()
-                    TimeRecorder.startRecording(this, "blink")
+                    TimeRecorder.stopRecording(this, "blink")
                 }
             }
         }
@@ -123,7 +105,7 @@ class BlinkActivity : BaseActivity() {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> { view.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100).start(); return true }
             MotionEvent.ACTION_MOVE -> { 
-                val targetScale = if (isInside) 0.9f else 1.0f
+                val targetScale = if (isInside) 0.92f else 1.0f
                 view.animate().scaleX(targetScale).scaleY(targetScale).setDuration(100).start()
                 return true
             }
@@ -138,25 +120,23 @@ class BlinkActivity : BaseActivity() {
     }
 
     private fun toggleScreenLight() {
-        // 【关键保护】：如果要取消当前选中的光源，必须确保手电筒仍被选中
         if (isScreenLightSelected && !isFlashlightSelected) {
             Toast.makeText(this, getString(R.string.at_least_choose_one_light_source), Toast.LENGTH_SHORT).show()
             return
         }
         isScreenLightSelected = !isScreenLightSelected
-        layoutScreenLight.isSelected = isScreenLightSelected
-        updateSourceLayoutUI(layoutScreenLight, isScreenLightSelected)
+        binding.layoutScreenLight.isSelected = isScreenLightSelected
+        updateSourceLayoutUI(binding.layoutScreenLight, isScreenLightSelected)
     }
 
     private fun toggleFlashlight() {
-        // 【关键保护】：如果要取消当前选中的光源，必须确保屏幕补光仍被选中
         if (isFlashlightSelected && !isScreenLightSelected) {
             Toast.makeText(this, getString(R.string.at_least_choose_one_light_source), Toast.LENGTH_SHORT).show()
             return
         }
         isFlashlightSelected = !isFlashlightSelected
-        layoutBlink.isSelected = isFlashlightSelected
-        updateSourceLayoutUI(layoutBlink, isFlashlightSelected)
+        binding.layoutBlink.isSelected = isFlashlightSelected
+        updateSourceLayoutUI(binding.layoutBlink, isFlashlightSelected)
     }
 
     private fun updateSourceLayoutUI(layout: LinearLayout, selected: Boolean) {
@@ -169,7 +149,7 @@ class BlinkActivity : BaseActivity() {
 
     private fun selectFrequency(level: Int) {
         selectedFrequency = level
-        val cards = listOf(layoutLeft, layoutMiddle, layoutRight)
+        val cards = listOf(binding.cardLeft, binding.cardMiddle, binding.cardRight)
         cards.forEachIndexed { index, layout ->
             layout.isSelected = (index == level)
             for (i in 0 until layout.childCount) {
@@ -184,10 +164,10 @@ class BlinkActivity : BaseActivity() {
     private fun startBlinking() {
         if (!isScreenLightSelected && !isFlashlightSelected) return
         isBlinking = true
-        btnStartBlink.text = "⬜" + getString(R.string.btn_blink).replace("⚡", "")
-        btnStartBlink.alpha = 0.3f 
-        btnSos.isEnabled = false
-        btnSos.alpha = 0.3f 
+        binding.btnStartBlink.text = "⬜ " + getString(R.string.btn_blink)
+        binding.btnStartBlink.alpha = 0.3f 
+        binding.SOS.isEnabled = false
+        binding.SOS.alpha = 0.3f 
 
         val interval = when (selectedFrequency) { 0 -> 1000L; 1 -> 500L; 2 -> 200L; else -> 500L }
         blinkRunnable = object : Runnable {
@@ -205,10 +185,10 @@ class BlinkActivity : BaseActivity() {
 
     private fun stopBlinking() {
         isBlinking = false
-        btnStartBlink.text = getString(R.string.btn_blink)
-        btnStartBlink.alpha = 1.0f
-        btnSos.isEnabled = true
-        btnSos.alpha = 1.0f
+        binding.btnStartBlink.text = getString(R.string.btn_blink)
+        binding.btnStartBlink.alpha = 1.0f
+        binding.SOS.isEnabled = true
+        binding.SOS.alpha = 1.0f
         blinkHandler.removeCallbacksAndMessages(null)
         controlScreenBrightness(false)
         controlFlashlight(false)
@@ -237,13 +217,11 @@ class BlinkActivity : BaseActivity() {
     private fun stopTimer() { 
         isTimerRunning = false
         timerRunnable?.let { handler?.removeCallbacks(it) }
-        startTime = 0L // 停止时清零，防止判定失效
+        startTime = 0L 
     }
 
     private fun updateStats() {
-        // 【核心修复】：必须正在闪烁且有有效开始时间
         if (!isBlinking || !isTimerRunning || startTime == 0L) return
-
         val usedTime = (System.currentTimeMillis() - startTime) / 60000F
         if (usedTime >= getAutoOffTime().toFloat()) navigateToMain()
     }
