@@ -6,16 +6,10 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.MotionEvent
 import android.view.animation.OvershootInterpolator
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
-import com.name.FlashLight.databinding.FlashlightBinding
 import com.name.FlashLight.databinding.ScreenBinding
 import com.name.FlashLight.utils.PageConstants
 import com.name.FlashLight.utils.PageUsageRecorder
@@ -26,8 +20,6 @@ import utils.VibrationManager
 import utils.feedback
 
 class ScreenLightActivity : BaseActivity<ScreenBinding>() {
-
-//    private lateinit var binding: ScreenBinding
 
     private var currentBrightnessLevel = 1  
     private var currentBrightnessValue = 70
@@ -56,8 +48,6 @@ class ScreenLightActivity : BaseActivity<ScreenBinding>() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = ScreenBinding.inflate(layoutInflater)
         
         // 关键修复：在资源环境就绪后初始化映射表
         brightnessTextMap = mapOf(

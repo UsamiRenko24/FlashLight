@@ -1,6 +1,5 @@
 package com.name.FlashLight
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -8,19 +7,11 @@ import android.os.Handler
 import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.name.FlashLight.databinding.ScreenBinding
 import com.name.FlashLight.databinding.ScreenLightBinding
-import com.name.FlashLight.databinding.SettingsBinding
 import utils.TimeRecorder
 
 class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
-
-//    private lateinit var binding: ScreenLightBinding
 
     // 当前选中的状态
     private var selectedBrightness = 1  // 0=低, 1=中, 2=高
@@ -42,8 +33,6 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = ScreenLightBinding.inflate(layoutInflater)
 
         // 1. 【核心修复】首先初始化 Handler 和 获取自动关闭时长
         handler = Handler(Looper.getMainLooper())

@@ -14,13 +14,10 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.widget.Toast
 import com.name.FlashLight.databinding.SosBinding
 import utils.TimeRecorder
 
 class SOSActivity : BaseActivity<SosBinding>() {
-
-//    private lateinit var binding: SosBinding
 
     // 手电筒控制
     private lateinit var cameraManager: CameraManager
@@ -64,9 +61,6 @@ class SOSActivity : BaseActivity<SosBinding>() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // 1. 初始化 ViewBinding
-        binding = SosBinding.inflate(layoutInflater)
 
         initViews()
         initFlashlight()

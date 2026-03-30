@@ -10,7 +10,6 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
-import com.name.FlashLight.databinding.FlashlightBinding
 import com.name.FlashLight.databinding.LowbatteryBinding
 import com.name.FlashLight.utils.PageConstants
 import com.name.FlashLight.utils.PageUsageRecorder

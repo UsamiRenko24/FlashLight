@@ -2,8 +2,6 @@ package com.name.FlashLight
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
-import com.name.FlashLight.utils.StartupModeManager
 import utils.LanguageManager
 import utils.ResetScheduler
 import utils.SoundManager

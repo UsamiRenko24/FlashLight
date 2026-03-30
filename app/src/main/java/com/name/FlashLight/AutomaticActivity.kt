@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.widget.RadioGroup
 import android.widget.Toast
 import com.name.FlashLight.databinding.AutomaticBinding
-import com.name.FlashLight.databinding.SettingsBinding
 
 class AutomaticActivity : BaseActivity<AutomaticBinding>() {
 
@@ -30,9 +29,6 @@ class AutomaticActivity : BaseActivity<AutomaticBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
-        // 1. 初始化 ViewBinding
-        binding = AutomaticBinding.inflate(layoutInflater)
 
         initSharedPreferences()
         loadSavedSettings()

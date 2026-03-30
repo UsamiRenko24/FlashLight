@@ -20,7 +20,6 @@ import android.view.animation.OvershootInterpolator
 import android.widget.TextView
 import android.widget.Toast
 import com.name.FlashLight.databinding.FlashlightBinding
-import com.name.FlashLight.databinding.SettingsBinding
 import com.name.FlashLight.utils.PageConstants
 import com.name.FlashLight.utils.PageUsageRecorder
 import com.name.FlashLight.utils.StartupModeManager
@@ -33,10 +32,7 @@ import utils.feedback
 class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager.TemperatureListener {
 
     private var isFlashlightOn = false
-    private var currentBrightnessLevel = 0  
-    
-    // 修正：绑定类名应为 FlashlightBinding (对应 flashlight.xml)
-//    private lateinit var binding: FlashlightBinding
+    private var currentBrightnessLevel = 0
     
     private lateinit var cameraManager: CameraManager
     private var cameraId: String? = null

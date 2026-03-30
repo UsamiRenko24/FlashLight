@@ -8,7 +8,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.OvershootInterpolator
 import com.name.FlashLight.databinding.ActivityMainBinding
-import com.name.FlashLight.databinding.LowbatteryBinding
 import utils.BatteryHelper
 import utils.TimeRecorder
 import utils.VibrationManager
