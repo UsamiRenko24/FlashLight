@@ -1,16 +1,15 @@
 package com.name.FlashLight
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.RadioGroup
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.name.FlashLight.databinding.AutomaticBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import utils.DataStoreManager
 
 class AutomaticActivity : BaseActivity<AutomaticBinding>() {
-
-    private lateinit var prefs: SharedPreferences
-    private val PREFS_NAME = "auto_off_settings"
 
     companion object {
         const val KEY_FLASHLIGHT_TIME = "flashlight_auto_off"
@@ -30,27 +29,35 @@ class AutomaticActivity : BaseActivity<AutomaticBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initSharedPreferences()
-        loadSavedSettings()
+        // 1. 【核心：监听】使用 DataStore 实时同步 UI
+        observeSettings()
+
+        // 2. 设置点击监听
         setupClickListeners()
     }
 
-    private fun initSharedPreferences() {
-        prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-    }
-
-    private fun loadSavedSettings() {
-        // 加载手电筒设置
-        val flashTime = prefs.getInt(KEY_FLASHLIGHT_TIME, TIME_5_MIN)
-        selectRadioButton(binding.flashRadioGroup, flashTime)
-
-        // 加载屏幕补光设置
-        val screenTime = prefs.getInt(KEY_SCREEN_LIGHT_TIME, TIME_5_MIN)
-        selectRadioButton(binding.screenRadioGroup, screenTime)
-
-        // 加载闪烁设置
-        val blinkTime = prefs.getInt(KEY_BLINK_TIME, TIME_5_MIN)
-        selectRadioButton(binding.blinkRadioGroup, blinkTime)
+    /**
+     * 响应式监听：从 DataStore 读取数据并自动勾选 RadioButton
+     */
+    private fun observeSettings() {
+        // 监听手电筒自动关闭时间
+        lifecycleScope.launch {
+            DataStoreManager.getFlashlightAutoOffTime(this@AutomaticActivity).collectLatest { time ->
+                selectRadioButton(binding.flashRadioGroup, time)
+            }
+        }
+        // 监听屏幕补光自动关闭时间
+        lifecycleScope.launch {
+            DataStoreManager.getScreenAutoOffTime(this@AutomaticActivity).collectLatest { time ->
+                selectRadioButton(binding.screenRadioGroup, time)
+            }
+        }
+        // 监听闪烁自动关闭时间
+        lifecycleScope.launch {
+            DataStoreManager.getBlinkAutoOffTime(this@AutomaticActivity).collectLatest { time ->
+                selectRadioButton(binding.blinkRadioGroup, time)
+            }
+        }
     }
 
     private fun selectRadioButton(radioGroup: RadioGroup, timeValue: Int) {
@@ -97,84 +104,50 @@ class AutomaticActivity : BaseActivity<AutomaticBinding>() {
 
     private fun setupClickListeners() {
         binding.traceback.setOnClickListener {
-            saveAllSettings()
             finish()
         }
 
         binding.flashRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-            saveFlashlightSetting(checkedId)
+            saveSetting(KEY_TYPE_FLASH, checkedId)
         }
 
         binding.screenRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-            saveScreenLightSetting(checkedId)
+            saveSetting(KEY_TYPE_SCREEN, checkedId)
         }
 
         binding.blinkRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-            saveBlinkSetting(checkedId)
+            saveSetting(KEY_TYPE_BLINK, checkedId)
         }
     }
 
-    private fun saveFlashlightSetting(checkedId: Int) {
+    private fun saveSetting(type: Int, checkedId: Int) {
         val timeValue = when (checkedId) {
-            R.id.flash1min -> TIME_1_MIN
-            R.id.flash5min -> TIME_5_MIN
-            R.id.flash10min -> TIME_10_MIN
-            R.id.flashNever -> TIME_NEVER
-            else -> TIME_5_MIN
-        }
-        prefs.edit().putInt(KEY_FLASHLIGHT_TIME, timeValue).apply()
-        showSaveToast(getString(R.string.title_flashlight), timeValue)
-    }
-
-    private fun saveScreenLightSetting(checkedId: Int) {
-        val timeValue = when (checkedId) {
-            R.id.screen1min -> TIME_1_MIN
-            R.id.screen5min -> TIME_5_MIN
-            R.id.screen10min -> TIME_10_MIN
-            R.id.screenNever -> TIME_NEVER
-            else -> TIME_5_MIN
-        }
-        prefs.edit().putInt(KEY_SCREEN_LIGHT_TIME, timeValue).apply()
-        showSaveToast(getString(R.string.title_screen_light), timeValue)
-    }
-
-    private fun saveBlinkSetting(checkedId: Int) {
-        val timeValue = when (checkedId) {
-            R.id.blink1min -> TIME_1_MIN
-            R.id.blink5min -> TIME_5_MIN
-            R.id.blink10min -> TIME_10_MIN
-            R.id.blinkNever -> TIME_NEVER
-            else -> TIME_5_MIN
-        }
-        prefs.edit().putInt(KEY_BLINK_TIME, timeValue).apply()
-        showSaveToast(getString(R.string.title_blink), timeValue)
-    }
-
-    private fun saveAllSettings() {
-        val flashTime = getTimeFromRadioGroup(binding.flashRadioGroup)
-        val screenTime = getTimeFromRadioGroup(binding.screenRadioGroup)
-        val blinkTime = getTimeFromRadioGroup(binding.blinkRadioGroup)
-
-        prefs.edit().apply {
-            putInt(KEY_FLASHLIGHT_TIME, flashTime)
-            putInt(KEY_SCREEN_LIGHT_TIME, screenTime)
-            putInt(KEY_BLINK_TIME, blinkTime)
-            apply()
-        }
-
-        Toast.makeText(this, getString(R.string.toast_success), Toast.LENGTH_SHORT).show()
-    }
-
-    private fun getTimeFromRadioGroup(radioGroup: RadioGroup): Int {
-        val checkedId = radioGroup.checkedRadioButtonId
-        return when (checkedId) {
             R.id.flash1min, R.id.screen1min, R.id.blink1min -> TIME_1_MIN
             R.id.flash5min, R.id.screen5min, R.id.blink5min -> TIME_5_MIN
             R.id.flash10min, R.id.screen10min, R.id.blink10min -> TIME_10_MIN
             R.id.flashNever, R.id.screenNever, R.id.blinkNever -> TIME_NEVER
             else -> TIME_5_MIN
         }
+
+        // 3. 【核心：写入】在协程中异步保存
+        lifecycleScope.launch {
+            when (type) {
+                KEY_TYPE_FLASH -> {
+                    DataStoreManager.setFlashlightAutoOffTime(this@AutomaticActivity, timeValue)
+                    showSaveToast(getString(R.string.title_flashlight), timeValue)
+                }
+                KEY_TYPE_SCREEN -> {
+                    DataStoreManager.setScreenAutoOffTime(this@AutomaticActivity, timeValue)
+                    showSaveToast(getString(R.string.title_screen_light), timeValue)
+                }
+                KEY_TYPE_BLINK -> {
+                    DataStoreManager.setBlinkAutoOffTime(this@AutomaticActivity, timeValue)
+                    showSaveToast(getString(R.string.title_blink), timeValue)
+                }
+            }
+        }
     }
+
 
     private fun showSaveToast(feature: String, timeValue: Int) {
         val timeText = when (timeValue) {
@@ -186,4 +159,7 @@ class AutomaticActivity : BaseActivity<AutomaticBinding>() {
         }
         Toast.makeText(this, "$feature 已设为 $timeText", Toast.LENGTH_SHORT).show()
     }
+    private val KEY_TYPE_FLASH = 0
+    private val KEY_TYPE_SCREEN = 1
+    private val KEY_TYPE_BLINK = 2
 }

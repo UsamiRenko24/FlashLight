@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
-import android.os.BatteryManager
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -15,17 +14,25 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.TaskStackBuilder
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
+import kotlinx.coroutines.launch
+import utils.BatteryRepository
 import utils.LanguageManager
 import utils.LowBatteryManager
+import utils.TimeRepository
 
 abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
-    private var batteryReceiver: BroadcastReceiver? = null
     private var stopFeaturesReceiver: BroadcastReceiver? = null
 
-    protected lateinit var binding:VB
+    protected lateinit var binding: VB
+    
+    // 【彻底修复】使用 this (当前Activity) 而不是 applicationContext
+    // 这样 Repository 拿到的 Resources 永远是最新翻译过的
+    protected val batteryRepository by lazy { BatteryRepository(this) }
+    protected val timeRepository by lazy { TimeRepository(this) }
 
-    protected abstract fun createBinding():VB
+    protected abstract fun createBinding(): VB
 
     override fun attachBaseContext(newBase: Context) {
         val languageCode = LanguageManager.getCurrentLanguage(newBase)
@@ -37,8 +44,9 @@ abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT), navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
 
-        binding= createBinding()
+        binding = createBinding()
         setContentView(binding.root)
+        
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
             val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
             view.setPadding(0, statusBarHeight, 0, 0)
@@ -52,14 +60,24 @@ abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
 
         setupBackButton()
         setupBackHandler()
-        registerBatteryReceiver()
+        observeBatteryStatus()
         registerStopFeaturesReceiver()
     }
 
-    /**
-     * 当电池状态发生物理变化时触发，子类可重写此方法以实时更新 UI
-     */
-    open fun onBatteryStatusChanged() {
+    private fun observeBatteryStatus() {
+        lifecycleScope.launch {
+            // 这里监听到的 info 现在保证是带有最新语言配置的
+            batteryRepository.getBatteryFlow().collect { info ->
+                LowBatteryManager.checkBatteryLevel(this@BaseActivity, info.level.toInt(), info.isCharging)
+                
+                if (!isFinishing && !isDestroyed) {
+                    onBatteryStatusChanged(info)
+                }
+            }
+        }
+    }
+
+    open fun onBatteryStatusChanged(info: BatteryRepository.BatteryInfo) {
         // 子类可选实现
     }
 
@@ -117,28 +135,6 @@ abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
         }
     }
 
-    private fun registerBatteryReceiver() {
-        batteryReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                intent?.let {
-                    val level = it.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-                    val scale = it.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
-                    val status = it.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-                    val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
-                            status == BatteryManager.BATTERY_STATUS_FULL
-
-                    if (level >= 0 && scale > 0) {
-                        val batteryPct = level * 100 / scale
-                        LowBatteryManager.checkBatteryLevel(this@BaseActivity, batteryPct, isCharging)
-                        // 核心优化：电池变化时，立即通知子类更新 UI
-                        onBatteryStatusChanged()
-                    }
-                }
-            }
-        }
-        registerReceiver(batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-    }
-
     private fun registerStopFeaturesReceiver() {
         stopFeaturesReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -156,13 +152,11 @@ abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
         }
     }
 
-    open fun stopAllFeatures() {
-    }
+    open fun stopAllFeatures() {}
 
     override fun onDestroy() {
         super.onDestroy()
         try {
-            batteryReceiver?.let { unregisterReceiver(it) }
             stopFeaturesReceiver?.let { unregisterReceiver(it) }
         } catch (e: Exception) {
             e.printStackTrace()

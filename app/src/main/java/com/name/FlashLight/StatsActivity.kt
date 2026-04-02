@@ -4,23 +4,27 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.name.FlashLight.databinding.StatsBinding
 import com.name.FlashLight.utils.PageConstants
 import com.name.FlashLight.utils.PageUsageRecorder
 import com.name.FlashLight.utils.StartupModeManager
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import utils.AutoBrightnessManager
-import utils.BatteryHelper
-import utils.BatteryHelper.updateBatteryHealth
+import utils.BatteryRepository
+import utils.DataStoreManager
 import utils.LowBatteryManager
 import utils.TemperatureManager
-import utils.TimeRecorder
-import kotlin.math.abs
+import utils.TimeRepository
+import utils.toDetailedTime
 
 class StatsActivity : BaseActivity<StatsBinding>() {
 
     override fun createBinding(): StatsBinding {
         return StatsBinding.inflate(layoutInflater)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
@@ -28,11 +32,39 @@ class StatsActivity : BaseActivity<StatsBinding>() {
         StartupModeManager.recordLastPage(this, PageConstants.PAGE_STATS)
 
         setupClickListeners()
+
+        observeDataStoreSettings()
+
+        setupSlidingButtons()
         loadAutoBrightnessState()
         setupAutoBrightnessListener()
-        setupSlidingButton()
-        loadLowBatterySetting()
-        setupLowBatterySwitch()
+    }
+
+    /**
+     * DataStore 响应式逻辑：
+     * 这是 DataStore 最强的地方：你不需要手动在 onResume 里刷开关状态，
+     * 它像是一个“永不关闭的监听器”。
+     */
+    private fun observeDataStoreSettings() {
+        lifecycleScope.launch {
+            DataStoreManager.isLowBatteryEnabled(this@StatsActivity).collectLatest { isEnabled ->
+                // 收到新值，立即同步 UI
+                binding.btnLowBattery.setCheckedSilently(isEnabled)
+                // 同时同步底层逻辑
+                LowBatteryManager.setProtectionEnabled(this@StatsActivity, isEnabled)
+            }
+        }
+    }
+
+    private fun setupLowBatterySwitch() {
+        binding.btnLowBattery.setOnStateChangedListener { isEnabled ->
+            // 2. 【核心：写入】DataStore
+            // 写入是异步的，必须在协程里跑
+            lifecycleScope.launch {
+                DataStoreManager.setLowBatteryEnabled(this@StatsActivity, isEnabled)
+                Toast.makeText(this@StatsActivity, if (isEnabled) "保护已开启" else "保护已关闭", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onResume() {
@@ -40,89 +72,93 @@ class StatsActivity : BaseActivity<StatsBinding>() {
         refreshUI()
     }
 
-    override fun onBatteryStatusChanged() {
+    /**
+     * 处理电池广播：直接在 Activity 逻辑里更新 UI
+     */
+    override fun onBatteryStatusChanged(info: BatteryRepository.BatteryInfo) {
         if (!isFinishing && !isDestroyed) {
-            updateBatteryDisplay()
+            updateBatteryDisplay(info)
         }
     }
 
     private fun refreshUI() {
-        updateBatteryDisplay()
+        // 使用 this (Activity) 作为 Context，确保拿到最新的多语言字符串
+        updateBatteryDisplay(batteryRepository.getCurrentBatteryInfo(this))
         updateStats()
     }
 
-    private fun updateBatteryDisplay() {
-        val batteryInfo = BatteryHelper.getBatteryInfo(this)
-
-        val level = batteryInfo.level
+    private fun updateBatteryDisplay(info: BatteryRepository.BatteryInfo) {
+        val level = info.level
+        // 根据电量动态切换卡片背景颜色
         when {
             level <= 25 -> binding.cardContainer1.setBackgroundResource(R.drawable.bg_sos_card_red)
             level <= 50 -> binding.cardContainer1.setBackgroundResource(R.drawable.bg_yellow_card)
             else -> binding.cardContainer1.setBackgroundResource(R.drawable.bg_green_card)
         }
 
-        binding.tvBatteryPercent.text = batteryInfo.levelText
-        val direction = if (batteryInfo.isCharging) "↑" else "↓"
-        binding.tvBatteryStatus.text = "${batteryInfo.chargingType} $direction ${abs(batteryInfo.currentMa)} mA"
-        binding.ivBatteryIcon.setImageResource(batteryInfo.iconRes)
+        binding.tvBatteryPercent.text = info.levelText
+        binding.tvBatteryStatus.text = info.chargingType
+        binding.ivBatteryIcon.setImageResource(info.iconRes)
 
-        updateTimeEstimate(batteryInfo)
+        updateTimeEstimate(info)
     }
 
     private fun updateStats() {
-        val flashlightTime = TimeRecorder.getTodayTime(this, "flashlight")
-        val screenLightTime = TimeRecorder.getTodayTime(this, "screen_light")
-        val blinkTime = TimeRecorder.getTodayTime(this, "blink")
-        val totalTime = flashlightTime + screenLightTime + blinkTime
+        val fTime = timeRepository.getTodayUsageMinutes(TimeRepository.TYPE_FLASHLIGHT)
+        val sTime = timeRepository.getTodayUsageMinutes(TimeRepository.TYPE_SCREEN_LIGHT)
+        val bTime = timeRepository.getTodayUsageMinutes(TimeRepository.TYPE_BLINK)
+        val totalTime = timeRepository.getTodayTotalUsageMinutes()
+
+        binding.tvTotalTime.text = totalTime.toDetailedTime(this)
         
-        binding.tvTotalTime.text = formatTime(totalTime)
-        setProgress(binding.progressFlashlight, flashlightTime, totalTime)
-        setProgress(binding.progressScreenLight, screenLightTime, totalTime)
-        setProgress(binding.progressBlink, blinkTime, totalTime)
+        // 进度条逻辑
+        setProgress(binding.progressFlashlight, fTime, totalTime)
+        setProgress(binding.progressScreenLight, sTime, totalTime)
+        setProgress(binding.progressBlink, bTime, totalTime)
 
-        binding.tvHealth.text = updateBatteryHealth(this)
-        binding.tvFlashlightTime.text = formatTime(flashlightTime)
-        binding.tvScreenLightTime.text = formatTime(screenLightTime)
-        binding.tvBlinkTime.text = formatTime(blinkTime)
+        // 刷新健康度描述（传入 this 确保多语言正确）
+        binding.tvHealth.text = batteryRepository.getBatteryHealthDescription(this)
+        
+        binding.tvFlashlightTime.text = fTime.toDetailedTime(this)
+        binding.tvScreenLightTime.text = sTime.toDetailedTime(this)
+        binding.tvBlinkTime.text = bTime.toDetailedTime(this)
     }
 
-    private fun formatTime(minutes: Float): String {
-        return when {
-            minutes < 1 -> "${(minutes * 60).toInt()}${getString(R.string.second)}"
-            minutes < 60 -> "${minutes.toInt()}${getString(R.string.minute)}"
-            else -> "${minutes.toInt() / 60}${getString(R.string.hour)}${minutes.toInt() % 60}${getString(R.string.minute)}"
-        }
-    }
-
-    private fun updateTimeEstimate(info: BatteryHelper.BatteryInfo) {
+    private fun updateTimeEstimate(info: BatteryRepository.BatteryInfo) {
         if (info.isCharging) {
-            if (info.level >= 100f || info.chargingType.contains(getString(R.string.battery_status_full))) {
-                binding.tvState.text = getString(R.string.battery_status)
-                binding.tvTimeToFull.text = getString(R.string.battery_status_full)
-            } else {
-                binding.tvState.text = getString(R.string.time_to_full)
-                binding.tvTimeToFull.text = if (info.estimateMinutes > 0) formatMinutes(info.estimateMinutes) else getString(R.string.calculating)
-            }
+            binding.tvState.text = getString(R.string.time_to_full)
+            binding.tvTimeToFull.text = if (info.estimateMinutes > 0) info.estimateMinutes.toFloat().toDetailedTime(this) else getString(R.string.battery_status_full)
         } else {
             binding.tvState.text = getString(R.string.time_remaining)
-            val minutes = if (info.estimateMinutes > 0) info.estimateMinutes else (info.level * 10).toInt()
-            binding.tvTimeToFull.text = formatMinutes(minutes)
+            val minutes = if (info.estimateMinutes > 0) info.estimateMinutes.toFloat() else (info.level * 10)
+            binding.tvTimeToFull.text = minutes.toDetailedTime(this)
         }
     }
-
-    private fun formatMinutes(minutes: Int): String = if (minutes >= 60) "${minutes / 60}${getString(R.string.hour)}${minutes % 60}${getString(R.string.minute)}" else "$minutes${getString(R.string.minute)}"
 
     private fun setProgress(progressBar: ProgressBar, time: Float, total: Float) {
         progressBar.progress = if (total > 0) (time / total * 100).toInt().coerceIn(0, 100) else 0
     }
 
-    private fun loadLowBatterySetting() { binding.btnLowBattery.setCheckedSilently(LowBatteryManager.isProtectionEnabled(this)) }
-    private fun setupLowBatterySwitch() { binding.btnLowBattery.setOnStateChangedListener { LowBatteryManager.setProtectionEnabled(this, it); Toast.makeText(this, if (it) "开启" else "关闭", Toast.LENGTH_SHORT).show() } }
-    private fun setupSlidingButton() { binding.btnTemperatureSwitch.setCheckedSilently(TemperatureManager.isEnabled()); binding.btnTemperatureSwitch.setOnStateChangedListener { TemperatureManager.setEnabled(it) } }
+    private fun setupSlidingButtons() {
+        binding.btnTemperatureSwitch.setCheckedSilently(TemperatureManager.isEnabled())
+        binding.btnTemperatureSwitch.setOnStateChangedListener { TemperatureManager.setEnabled(it) }
+        setupLowBatterySwitch()
+    }
+
+    private fun loadAutoBrightnessState() {
+        binding.btnBrightness.setCheckedSilently(AutoBrightnessManager.getAutoBrightnessState(this))
+    }
+
+    private fun setupAutoBrightnessListener() {
+        binding.btnBrightness.setOnStateChangedListener { isEnabled ->
+            AutoBrightnessManager.toggleAutoBrightness(this, isEnabled, {}, {
+                binding.btnBrightness.setCheckedSilently(!isEnabled)
+            })
+        }
+    }
+
     private fun setupClickListeners() {
         binding.traceback.setOnClickListener { handleBackPress() }
         binding.ivSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
     }
-    private fun loadAutoBrightnessState() { binding.btnBrightness.setCheckedSilently(AutoBrightnessManager.getAutoBrightnessState(this)) }
-    private fun setupAutoBrightnessListener() { binding.btnBrightness.setOnStateChangedListener { AutoBrightnessManager.toggleAutoBrightness(this, it, {}, { binding.btnBrightness.setCheckedSilently(!it) }) } }
 }

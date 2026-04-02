@@ -2,6 +2,7 @@ package com.name.FlashLight
 
 import android.app.Application
 import android.content.Context
+import utils.FeedbackManager
 import utils.LanguageManager
 import utils.ResetScheduler
 import utils.SoundManager
@@ -14,6 +15,7 @@ class MyApp : Application() {
 
         // 启动每日重置任务
         ResetScheduler.scheduleDailyReset(this)
+        FeedbackManager.init(this)
         TemperatureManager.init(this)
         // 可选：启动时检查是否需要重置（防止应用长时间未启动）
         checkAndResetIfNeeded()
@@ -21,12 +23,12 @@ class MyApp : Application() {
         SoundManager.initSoundPool(this)
     }
     override fun attachBaseContext(base: Context) {
-        println("📱 attachBaseContext 开始")
+        println("attachBaseContext 开始")
         val languageCode = LanguageManager.getCurrentLanguage(base)
         println("读取到的语言: $languageCode")
         val newContext = LanguageManager.applyLanguage(base, languageCode)
         super.attachBaseContext(newContext)
-        println("📱 attachBaseContext 结束")
+        println("attachBaseContext 结束")
     }
     private fun checkAndResetIfNeeded() {
         val prefs = getSharedPreferences("usage_stats", MODE_PRIVATE)

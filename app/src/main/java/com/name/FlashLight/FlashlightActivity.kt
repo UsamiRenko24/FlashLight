@@ -19,69 +19,76 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.name.FlashLight.databinding.FlashlightBinding
 import com.name.FlashLight.utils.PageConstants
 import com.name.FlashLight.utils.PageUsageRecorder
 import com.name.FlashLight.utils.StartupModeManager
-import utils.BatteryHelper
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import utils.BatteryRepository
+import utils.DataStoreManager
 import utils.SoundManager
 import utils.TemperatureManager
-import utils.TimeRecorder
+import utils.TimeRepository
 import utils.feedback
+import utils.toDetailedTime
+import utils.toDigitalTime
 
 class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager.TemperatureListener {
 
     private var isFlashlightOn = false
-    private var currentBrightnessLevel = 0
-    
+    private var currentBrightnessLevel = 1
+    private var currentAutoOffMinutes = 5
+
     private lateinit var cameraManager: CameraManager
     private var cameraId: String? = null
-    private var maxBrightnessLevel = 1 
-    private var isStrengthSupported = false 
+    private var maxBrightnessLevel = 1
+    private var isStrengthSupported = false
 
     private var handler: Handler? = null
     private var timerRunnable: Runnable? = null
     private var isTimerRunning = false
     private var startTime = 0L
 
-    private var haloAnimator: AnimatorSet? = null 
+    private var haloAnimator: AnimatorSet? = null
     private val selectedBlueColor = Color.parseColor("#4786EF")
 
     private val brightnessLevelMap = mutableMapOf(0 to 1, 1 to 1, 2 to 1)
 
-    override fun createBinding():FlashlightBinding{
-        return FlashlightBinding.inflate(layoutInflater)
-    }
+    override fun createBinding(): FlashlightBinding = FlashlightBinding.inflate(layoutInflater)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         handler = Handler(Looper.getMainLooper())
         initTimer()
-        
+
         PageUsageRecorder.recordPageVisit(this, PageConstants.PAGE_FLASHLIGHT)
         StartupModeManager.recordLastPage(this, PageConstants.PAGE_FLASHLIGHT)
 
-        initFlashlight()  
+        initFlashlight()
         
-        val savedLevel = getSharedPreferences("brightness_settings", Context.MODE_PRIVATE)
-            .getInt("default_brightness", 1)
-        currentBrightnessLevel = savedLevel
-        selectBrightnessCard(savedLevel)  
-        
-        setupClickListeners()
-        updateBatteryDisplay()
+        // 【核心修复】：顺序初始化逻辑
+        lifecycleScope.launch {
+            // 1. 先从 DataStore 抓取最新的亮度配置
+            currentBrightnessLevel = DataStoreManager.getDefaultBrightness(this@FlashlightActivity).first()
+            
+            // 2. 根据抓取到的值同步 UI
+            selectBrightnessCard(currentBrightnessLevel)
+            
+            // 3. 配置点击监听
+            setupClickListeners()
+            
+            // 4. 开启实时监听配置流
+            observeSettings()
+        }
+
         updateStats()
         SoundManager.initSoundPool(this)
-
-        if (getAutoOffTime() >= 114514) {
-            binding.tvTotalTime.text = getString(R.string.auto_off_never)
-        } else {
-            binding.tvTotalTime.text = formatMinutes(getAutoOffTime())
-        }
-        
         updateButtonState()
-        
+
         if (TemperatureManager.isEnabled()) {
             showTemperatureContainer()
             updateTemperatureDisplay(TemperatureManager.getCurrentTemperature(), TemperatureManager.isOverheating())
@@ -90,32 +97,62 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
         }
     }
 
+    private fun observeSettings() {
+        // 监听自动关闭时间
+        lifecycleScope.launch {
+            DataStoreManager.getFlashlightAutoOffTime(this@FlashlightActivity).collectLatest { minutes ->
+                currentAutoOffMinutes = minutes
+                binding.tvTotalTime.text = if (minutes >= 114514) getString(R.string.auto_off_never) else minutes.toFloat().toDetailedTime(this@FlashlightActivity)
+            }
+        }
+        
+        // 监听默认亮度（实现实时联动）
+        lifecycleScope.launch {
+            DataStoreManager.getDefaultBrightness(this@FlashlightActivity).collectLatest { level ->
+                if (currentBrightnessLevel != level) {
+                    currentBrightnessLevel = level
+                    selectBrightnessCard(level)
+                    // 如果手电筒亮着，实时调光
+                    if (isFlashlightOn) adjustBrightness()
+                }
+            }
+        }
+    }
+
+    private fun saveLevel(level: Int) {
+        currentBrightnessLevel = level
+        selectBrightnessCard(level)
+        // 【核心修复】：将用户选中的档位存入 DataStore
+    }
+
+    // --- 业务逻辑保持稳定 ---
+
     private fun initTimer() {
         timerRunnable = object : Runnable {
-            override fun run() { 
-                if (isTimerRunning) { 
+            override fun run() {
+                if (isTimerRunning) {
                     updateStats()
-                    handler?.postDelayed(this, 1000) 
-                } 
+                    handler?.postDelayed(this, 1000)
+                }
             }
         }
     }
 
     override fun onMonitorStateChanged(isEnabled: Boolean) {
-        runOnUiThread { 
-            if (isEnabled) { 
+        runOnUiThread {
+            if (isEnabled) {
                 showTemperatureContainer()
-                updateTemperatureDisplay(TemperatureManager.getCurrentTemperature(), TemperatureManager.isOverheating()) 
-            } else { 
-                hideTemperatureContainer() 
-            } 
+                updateTemperatureDisplay(TemperatureManager.getCurrentTemperature(), TemperatureManager.isOverheating())
+            } else {
+                hideTemperatureContainer()
+            }
         }
     }
 
     override fun onTemperatureUpdate(temperature: Float, isOverheating: Boolean) {
-        runOnUiThread { 
+        runOnUiThread {
             if (binding.temperatureContainer.visibility == View.VISIBLE) {
-                updateTemperatureDisplay(temperature, isOverheating) 
+                updateTemperatureDisplay(temperature, isOverheating)
             }
         }
     }
@@ -198,11 +235,6 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
         (binding.cardRight.getChildAt(0) as TextView).text = getString(R.string.brightness_card_high).replace("\n", " ") + ": ${brightnessLevelMap[2]}"
     }
 
-    private fun getAutoOffTime(): Int {
-        val prefs = getSharedPreferences("auto_off_settings", Context.MODE_PRIVATE)
-        return prefs.getInt(AutomaticActivity.KEY_FLASHLIGHT_TIME, 5)
-    }
-
     private fun updateTimeIndicatorPosition(progress: Int) {
         binding.progressFlashlight.post {
             val progressBarWidth = binding.progressFlashlight.width
@@ -211,14 +243,6 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
             val maxTranslation = progressBarWidth - indicatorWidth
             val finalTranslation = translationX.coerceIn(0f, maxTranslation.toFloat())
             binding.lastTime.translationX = finalTranslation
-        }
-    }
-
-    private fun formatMinutes(minutes: Int): String {
-        return if (minutes >= 60) {
-            "${minutes / 60}${getString(R.string.hour)}${minutes % 60}${getString(R.string.minute)}"
-        } else {
-            "$minutes${getString(R.string.minute)}"
         }
     }
 
@@ -254,7 +278,7 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
             }
         }
 
-        binding.btnFlashlight.setOnClickListener { v: View ->
+        binding.btnFlashlight.setOnClickListener { v ->
             v.feedback()
             toggleFlashlight()
         }
@@ -275,13 +299,6 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
         }
     }
 
-    private fun saveLevel(level: Int) {
-        currentBrightnessLevel = level
-        selectBrightnessCard(level)
-        getSharedPreferences("brightness_settings", Context.MODE_PRIVATE)
-            .edit().putInt("default_brightness", level).apply()
-    }
-
     private fun toggleFlashlight() {
         if (cameraId == null) return
         try {
@@ -298,7 +315,7 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
         stopTimer()
         startTime = System.currentTimeMillis()
         isTimerRunning = true
-        timerRunnable?.let { handler?.post(it) } 
+        timerRunnable?.let { handler?.post(it) }
     }
 
     private fun stopTimer() {
@@ -310,7 +327,7 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
     }
 
     private fun turnOnFlashlight() {
-        TimeRecorder.startRecording(this, "flashlight")
+        timeRepository.startRecording(TimeRepository.TYPE_FLASHLIGHT)
         startTimer()
         try {
             val targetLevel = brightnessLevelMap[currentBrightnessLevel] ?: 1
@@ -324,7 +341,7 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
 
     private fun turnOffFlashlight() {
         try { cameraManager.setTorchMode(cameraId!!, false) } catch (e: Exception) { }
-        TimeRecorder.stopRecording(this, "flashlight")
+        timeRepository.stopRecording(TimeRepository.TYPE_FLASHLIGHT)
         stopTimer()
         updateStats()
     }
@@ -354,7 +371,7 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
     private fun startHaloAnimation() {
         if (haloAnimator != null) return
         binding.viewHalo.visibility = View.VISIBLE
-        
+
         val scaleX = ObjectAnimator.ofFloat(binding.viewHalo, "scaleX", 1.0f, 1.2f)
         val scaleY = ObjectAnimator.ofFloat(binding.viewHalo, "scaleY", 1.0f, 1.2f)
         val alpha = ObjectAnimator.ofFloat(binding.viewHalo, "alpha", 0.3f, 0.6f)
@@ -396,13 +413,15 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
     }
 
     private fun updateStats() {
+        val todayMinutes = timeRepository.getTodayUsageMinutes(TimeRepository.TYPE_FLASHLIGHT)
+        binding.tvFlashlightTime.text = todayMinutes.toDigitalTime()
+
         if (isTimerRunning) {
             val elapsedMillis = System.currentTimeMillis() - startTime
             val elapsedMinutes = elapsedMillis / 1000f / 60f
-            val autoOffMinutes = getAutoOffTime().toFloat()
+            val autoOffMinutes = currentAutoOffMinutes
 
-            binding.tvFlashlightTime.text = formatTime(elapsedMinutes)
-            binding.lastTime.text = formatTime(elapsedMinutes)
+            binding.lastTime.text = elapsedMinutes.toDigitalTime()
 
             if (autoOffMinutes > 0 && autoOffMinutes < 114514) {
                 val progress = ((elapsedMinutes / autoOffMinutes) * 100).toInt().coerceIn(0, 100)
@@ -413,23 +432,20 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
                     toggleFlashlight()
                     Toast.makeText(this, getString(R.string.flashlight_auto_off), Toast.LENGTH_SHORT).show()
                 }
+            } else {
+                binding.progressFlashlight.progress = 0
             }
         }
     }
 
-    private fun formatTime(minutes: Float): String {
-        val totalSeconds = (minutes * 60).toInt()
-        val m = totalSeconds / 60
-        val s = totalSeconds % 60
-        return String.format("%02d:%02d", m, s)
+    private fun updateBatteryDisplay(info: BatteryRepository.BatteryInfo) {
+        binding.tvBatteryPercent.text = info.levelText
+        binding.tvBatteryStatus.text = info.status
+        binding.ivBatteryIcon.setImageResource(info.iconRes)
     }
 
-    private fun updateBatteryDisplay() {
-        BatteryHelper.updateBatteryUI(this, binding.tvBatteryPercent, binding.tvBatteryStatus, binding.ivBatteryIcon)
-    }
-
-    override fun onBatteryStatusChanged() {
-        updateBatteryDisplay()
+    override fun onBatteryStatusChanged(info: BatteryRepository.BatteryInfo) {
+        updateBatteryDisplay(info)
     }
 
     override fun onDestroy() {

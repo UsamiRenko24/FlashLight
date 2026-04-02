@@ -23,7 +23,7 @@
     <!-- 状态提示 -->
     <string name="toast_on">手电筒已开启</string>
     <string name="toast_off">手电筒已关闭</string>
-    <string name="toast_success">保存成功</string>
+    <string name="toast_to_modify">请更改设置</string>
     <string name="toast_failed">操作失败，请重试</string>
 
     <!-- 亮度档位 -->

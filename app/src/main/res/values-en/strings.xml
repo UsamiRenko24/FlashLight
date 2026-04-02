@@ -23,7 +23,7 @@
     <!-- Status Toast -->
     <string name="toast_on">Flashlight turned on</string>
     <string name="toast_off">Flashlight turned off</string>
-    <string name="toast_success">Saved successfully</string>
+    <string name="toast_to_modify">Please modify settings</string>
     <string name="toast_failed">Operation failed, please try again</string>
 
     <!-- Brightness Levels -->

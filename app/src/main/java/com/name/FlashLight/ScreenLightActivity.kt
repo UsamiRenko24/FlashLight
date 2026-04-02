@@ -7,49 +7,93 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.View
 import android.view.animation.OvershootInterpolator
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import com.name.FlashLight.databinding.ScreenBinding
 import com.name.FlashLight.utils.PageConstants
 import com.name.FlashLight.utils.PageUsageRecorder
 import com.name.FlashLight.utils.StartupModeManager
-import utils.AutoBrightnessManager
-import utils.SoundManager
-import utils.VibrationManager
-import utils.feedback
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import utils.*
 
 class ScreenLightActivity : BaseActivity<ScreenBinding>() {
 
-    private var currentBrightnessLevel = 1  
+    private var localBrightnessLevel = 1  
     private var currentBrightnessValue = 70
-    private var currentColorHex = "#FFFFFFFF"  
-    private var currentColorLevel = 0  
+    private var localColorLevel = 0
+    private var currentColorHex = "#FFFFFFFF"
     private val selectedBlueColor = Color.parseColor("#4786EF")
-
-    private lateinit var brightnessTextMap: Map<Int, String>
-    private lateinit var colorTextMap: Map<Int, String>
 
     private val colorMap = mapOf(0 to "#FFFFFFFF", 1 to "#FFFFF8DC", 2 to "#FFF0F8FF")
     private val brightnessMap = mapOf(0 to 40, 1 to 70, 2 to 100)
 
-    private val screenLightLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            result.data?.let { data ->
-                val newBrightness = data.getIntExtra("brightnessLevel", -1)
-                val newColor = data.getIntExtra("colorLevel", -1)
-                if (newBrightness != -1 && newColor != -1) updateFromActiveActivity(newBrightness, newColor)
+    private lateinit var brightnessTextMap: Map<Int, String>
+    private lateinit var colorTextMap: Map<Int, String>
+
+    override fun createBinding(): ScreenBinding = ScreenBinding.inflate(layoutInflater)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        
+        initResources()
+        PageUsageRecorder.recordPageVisit(this, PageConstants.PAGE_SCREEN_LIGHT)
+        StartupModeManager.recordLastPage(this, PageConstants.PAGE_SCREEN_LIGHT)
+        
+        // 【核心修复】：持续监听内存仓库的变化，确保无论在哪个页面改，这里都能实时同步
+        observeSessionChanges()
+        
+        lifecycleScope.launch {
+            // 1. 初始化：如果内存仓库没数据，先同步一次 DataStore 默认值
+            if (savedInstanceState == null) {
+                val defaultBrightness = DataStoreManager.getDefaultBrightness(this@ScreenLightActivity).first()
+
+                // 强制更新内存仓库，这会触发 observeSessionChanges 里的 Flow，从而刷新 UI
+                ScreenSessionRepository.updateBrightness(defaultBrightness)
+                ScreenSessionRepository.updateColor(localColorLevel)
+            }
+            
+            // 2. 加载其余监听逻辑
+            setupClickListeners()
+            observeGlobalSettings()
+        }
+
+        SoundManager.initSoundPool(this)
+    }
+
+    /**
+     * 响应式同步：关键在于这里！
+     * 只要 ScreenSessionRepository 变了，这里会立刻刷新 UI
+     */
+    private fun observeSessionChanges() {
+        // 监听亮度
+        lifecycleScope.launch {
+            ScreenSessionRepository.brightnessLevel.collectLatest { level ->
+                if (level != -1) {
+                    localBrightnessLevel = level
+                    currentBrightnessValue = brightnessMap[level] ?: 70
+                    selectBrightnessCard(level)
+                    updatePreview()
+                }
+            }
+        }
+        // 监听颜色
+        lifecycleScope.launch {
+            ScreenSessionRepository.colorLevel.collectLatest { level ->
+                if (level != -1) {
+                    localColorLevel = level
+                    currentColorHex = colorMap[level] ?: "#FFFFFFFF"
+                    selectColorCard(level)
+                    updatePreview()
+                }
             }
         }
     }
 
-    override fun createBinding(): ScreenBinding {
-        return ScreenBinding.inflate(layoutInflater)
-    }
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        
-        // 关键修复：在资源环境就绪后初始化映射表
+    private fun initResources() {
         brightnessTextMap = mapOf(
             0 to getString(R.string.brightness_card_low),
             1 to getString(R.string.brightness_card_medium),
@@ -60,120 +104,93 @@ class ScreenLightActivity : BaseActivity<ScreenBinding>() {
             1 to getString(R.string.color_warm),
             2 to getString(R.string.color_cold)
         )
-
-        PageUsageRecorder.recordPageVisit(this, PageConstants.PAGE_SCREEN_LIGHT)
-        StartupModeManager.recordLastPage(this, PageConstants.PAGE_SCREEN_LIGHT)
-        setupClickListeners()
-
-        val savedLevel = getSharedPreferences("brightness_settings", Context.MODE_PRIVATE).getInt("default_brightness", 1)
-        currentBrightnessValue = brightnessMap[savedLevel] ?: 70
-        currentBrightnessLevel = savedLevel
-        selectBrightnessCard(savedLevel)
-        selectColorCard(0)
-
-        SoundManager.initSoundPool(this)
-        updatePreview()
-        loadAutoBrightnessState()
-        setupAutoBrightnessListener()
     }
 
+    private fun observeGlobalSettings() {
+        lifecycleScope.launch {
+            AutoBrightnessManager.getAutoBrightnessFlow(this@ScreenLightActivity).collectLatest { isEnabled ->
+                binding.slidingAutoBrightness.setCheckedSilently(isEnabled)
+            }
+        }
+        lifecycleScope.launch {
+            DataStoreManager.getScreenAutoOffTime(this@ScreenLightActivity).collectLatest { minutes ->
+                binding.tvScreenTime.text = if (minutes >= 114514) getString(R.string.auto_off_never) else minutes.toFloat().toDetailedTime(this@ScreenLightActivity)
+            }
+        }
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupClickListeners() {
         binding.traceback.setOnClickListener { handleBackPress() }
         binding.ivSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
 
-        binding.cardLeft.setOnClickListener { selectBrightnessCard(0); currentBrightnessLevel = 0; currentBrightnessValue = 40; updatePreview() }
-        binding.cardMiddle.setOnClickListener { selectBrightnessCard(1); currentBrightnessLevel = 1; currentBrightnessValue = 70; updatePreview() }
-        binding.cardRight.setOnClickListener { selectBrightnessCard(2); currentBrightnessLevel = 2; currentBrightnessValue = 100; updatePreview() }
+        // 修改：点击只负责更新仓库，联动逻辑由 observeSessionChanges 处理
+        binding.cardLeft.setOnClickListener { ScreenSessionRepository.updateBrightness(0) }
+        binding.cardMiddle.setOnClickListener { ScreenSessionRepository.updateBrightness(1) }
+        binding.cardRight.setOnClickListener { ScreenSessionRepository.updateBrightness(2) }
 
-        binding.cardLeft1.setOnClickListener { selectColorCard(0); currentColorHex = colorMap[0]!!; currentColorLevel = 0; updatePreview() }
-        binding.cardMiddle1.setOnClickListener { selectColorCard(1); currentColorHex = colorMap[1]!!; currentColorLevel = 1; updatePreview() }
-        binding.cardRight1.setOnClickListener { selectColorCard(2); currentColorHex = colorMap[2]!!; currentColorLevel = 2; updatePreview() }
+        binding.cardLeft1.setOnClickListener { ScreenSessionRepository.updateColor(0) }
+        binding.cardMiddle1.setOnClickListener { ScreenSessionRepository.updateColor(1) }
+        binding.cardRight1.setOnClickListener { ScreenSessionRepository.updateColor(2) }
+
+        binding.slidingAutoBrightness.setOnStateChangedListener { isEnabled ->
+            binding.slidingAutoBrightness.feedback()
+            AutoBrightnessManager.toggleAutoBrightness(this, isEnabled, {}, {
+                binding.slidingAutoBrightness.setCheckedSilently(!isEnabled)
+            })
+        }
 
         binding.card2.setOnTouchListener { view, event ->
             val isInside = event.x >= 0 && event.x <= view.width && event.y >= 0 && event.y <= view.height
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> { view.animate().scaleX(0.92f).scaleY(0.92f).setDuration(100).start(); true }
-                MotionEvent.ACTION_MOVE -> { val scale = if (isInside) 0.92f else 1.0f; view.animate().scaleX(scale).scaleY(scale).setDuration(100).start(); true }
-                MotionEvent.ACTION_UP -> {
-                    view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).setInterpolator(OvershootInterpolator()).start()
-                    if (isInside) {
-                        view.feedback()
-                        val intent = Intent(this, ScreenLightActiveActivity::class.java).apply {
-                            putExtra("brightnessLevel", currentBrightnessLevel)
-                            putExtra("colorLevel", currentColorLevel)
-                            putExtra("colorHex", getCurrentMixedColor())
-                        }
-                        screenLightLauncher.launch(intent)
-                    }
-                    true
-                }
-                MotionEvent.ACTION_CANCEL -> { view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).start(); true }
-                else -> false
+            if (event.action == MotionEvent.ACTION_UP && isInside) {
+                view.feedback()
+                // 无需再传 Intent 参，因为大家共用 ScreenSessionRepository
+                startActivity(Intent(this, ScreenLightActiveActivity::class.java))
             }
+            handleTouchEffect(view, event)
         }
     }
 
-    private fun updateFromActiveActivity(brightness: Int, color: Int) {
-        currentBrightnessLevel = brightness
-        currentBrightnessValue = brightnessMap[brightness] ?: 70
-        currentColorLevel = color
-        currentColorHex = colorMap[color] ?: "#FFFFFFFF"
-        selectBrightnessCard(brightness); selectColorCard(color); updatePreview()
+    private fun handleTouchEffect(view: View, event: MotionEvent): Boolean {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> view.animate().scaleX(0.92f).scaleY(0.92f).setDuration(100).start()
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).setInterpolator(OvershootInterpolator()).start()
+        }
+        return true
     }
 
     private fun updatePreview() {
-        binding.tvLightInfo.text = "${colorTextMap[currentColorLevel]} ${getString(R.string.brightness)}"
+        if (!::colorTextMap.isInitialized) return
+        binding.tvLightInfo.text = "${colorTextMap[localColorLevel]} ${getString(R.string.brightness)}"
         binding.card1.background = GradientDrawable().apply {
-            setColor(Color.parseColor(getCurrentMixedColor()))
-            cornerRadius = dpToPx(12).toFloat()
-            setStroke(dpToPx(2), Color.parseColor("#374151"))
+            val brightness = (currentBrightnessValue * 2.55).toInt()
+            val color = Color.parseColor(currentColorHex)
+            val mixedColor = String.format("#%02X%02X%02X", 
+                Color.red(color) * brightness / 255, 
+                Color.green(color) * brightness / 255, 
+                Color.blue(color) * brightness / 255)
+            setColor(Color.parseColor(mixedColor))
+            cornerRadius = (12 * resources.displayMetrics.density)
+            setStroke((2 * resources.displayMetrics.density).toInt(), Color.parseColor("#374151"))
         }
-        if (getAutoOffTime() >= 114514) {
-            binding.tvScreenTime.text = getString(R.string.auto_off_never)
-        } else {
-            binding.tvScreenTime.text = formatMinutes(getAutoOffTime())
-        }
-    }
-
-    private fun getCurrentMixedColor(): String {
-        val brightness = (currentBrightnessValue * 2.55).toInt()
-        val color = Color.parseColor(currentColorHex)
-        return String.format("#%02X%02X%02X", Color.red(color) * brightness / 255, Color.green(color) * brightness / 255, Color.blue(color) * brightness / 255)
     }
 
     private fun selectBrightnessCard(level: Int) {
         val cards = listOf(binding.cardLeft, binding.cardMiddle, binding.cardRight)
         cards.forEachIndexed { index, card ->
-            if (index == level) {
-                card.isSelected = true
-                card.setBackgroundResource(R.drawable.bg_rounded_selector)
-                (card.getChildAt(0) as TextView).setTextColor(selectedBlueColor)
-            } else {
-                card.isSelected = false
-                card.setBackgroundResource(R.drawable.bg_rounded_selector)
-                (card.getChildAt(0) as TextView).setTextColor(Color.WHITE)
-            }
+            val isSelected = index == level
+            card.isSelected = isSelected
+            card.setBackgroundResource(R.drawable.bg_rounded_selector)
+            (card.getChildAt(0) as? TextView)?.setTextColor(if (isSelected) selectedBlueColor else Color.WHITE)
         }
     }
 
-    private fun selectColorCard(color: Int) {
-        binding.cardLeft1.isSelected = false; binding.cardMiddle1.isSelected = false; binding.cardRight1.isSelected = false
-        val tvWhite = binding.cardLeft1.getChildAt(1) as TextView
-        val tvWarm = binding.cardMiddle1.getChildAt(1) as TextView
-        val tvCold = binding.cardRight1.getChildAt(1) as TextView
-        listOf(tvWhite, tvWarm, tvCold).forEach { it.setTextColor(Color.WHITE) }
-        when(color) { 
-            0 -> { binding.cardLeft1.isSelected = true; tvWhite.setTextColor(selectedBlueColor) }
-            1 -> { binding.cardMiddle1.isSelected = true; tvWarm.setTextColor(selectedBlueColor) }
-            2 -> { binding.cardRight1.isSelected = true; tvCold.setTextColor(selectedBlueColor) }
+    private fun selectColorCard(level: Int) {
+        val colorCards = listOf(binding.cardLeft1, binding.cardMiddle1, binding.cardRight1)
+        colorCards.forEachIndexed { index, card ->
+            val isSelected = index == level
+            card.isSelected = isSelected
+            (card.getChildAt(1) as? TextView)?.setTextColor(if (isSelected) selectedBlueColor else Color.WHITE)
         }
     }
-
-    private fun getAutoOffTime() = getSharedPreferences("auto_off_settings", MODE_PRIVATE).getInt(AutomaticActivity.KEY_SCREEN_LIGHT_TIME, 5)
-    private fun formatMinutes(minutes: Int) = if (minutes >= 60) "${minutes / 60}${getString(R.string.hour)}${minutes % 60}${getString(R.string.minute)}" else "$minutes${getString(R.string.minute)}"
-    private fun dpToPx(dp: Int) = (dp * resources.displayMetrics.density).toInt()
-    private fun loadAutoBrightnessState() = binding.slidingAutoBrightness.setCheckedSilently(AutoBrightnessManager.getAutoBrightnessState(this))
-    private fun setupAutoBrightnessListener() { binding.slidingAutoBrightness.setOnStateChangedListener { isChecked -> VibrationManager.setVibrationEnabled(this, isChecked); SoundManager.setSoundEnabled(this, isChecked); AutoBrightnessManager.toggleAutoBrightness(this, isChecked, {}, { binding.slidingAutoBrightness.setCheckedSilently(!isChecked) }) } }
 }

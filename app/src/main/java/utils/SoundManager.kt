@@ -2,54 +2,67 @@ package utils
 
 import android.content.Context
 import android.media.AudioAttributes
+import android.media.AudioManager
 import android.media.SoundPool
 import com.name.FlashLight.R
 
 object SoundManager {
 
-    private const val PREFS_NAME = "sound_settings"
-    private const val KEY_SOUND_ENABLED = "sound_enabled"
-    
-    // 统一默认值为 true
-    private const val DEFAULT_VALUE = true
-
     private var soundPool: SoundPool? = null
-    private var clickSoundId: Int = 0
+    private var clickSoundId: Int = -1
+    private var isLoaded = false
 
-    fun isSoundEnabled(context: Context): Boolean {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getBoolean(KEY_SOUND_ENABLED, DEFAULT_VALUE)
-    }
-
-    fun setSoundEnabled(context: Context, enabled: Boolean) {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        prefs.edit().putBoolean(KEY_SOUND_ENABLED, enabled).apply()
-    }
-
+    /**
+     * 初始化声音池
+     * 建议在 Application 或第一个 Activity 中尽早调用
+     */
     fun initSoundPool(context: Context) {
         if (soundPool != null) return
+
         val audioAttributes = AudioAttributes.Builder()
-            .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+            // 工业级建议：使用 USAGE_MEDIA 确保声音跟随媒体音量，不受系统静音模式干扰
+            .setUsage(AudioAttributes.USAGE_MEDIA)
             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
             .build()
+
         soundPool = SoundPool.Builder()
-            .setMaxStreams(5)
+            .setMaxStreams(3)
             .setAudioAttributes(audioAttributes)
             .build()
-        clickSoundId = soundPool?.load(context, R.raw.click, 1) ?: 0
+
+        // 监听加载完成
+        soundPool?.setOnLoadCompleteListener { _, _, status ->
+            if (status == 0) isLoaded = true
+        }
+
+        // 加载资源
+        clickSoundId = soundPool?.load(context, R.raw.click, 1) ?: -1
     }
 
-    fun playClickSound(context: Context) {
-        if (!isSoundEnabled(context)) return
-        try {
-            soundPool?.play(clickSoundId, 1.0f, 1.0f, 0, 0, 1.0f)
-        } catch (e: Exception) {
-            e.printStackTrace()
+    /**
+     * 播放点击音效
+     */
+    fun playClickSound(context: Context, forceEnabled: Boolean = true) {
+        // 如果外部逻辑（DataStore）关闭了声音且不是强制播放，则退出
+        if (!forceEnabled) return
+        
+        // 兜底：如果还没初始化，立即初始化
+        if (soundPool == null) initSoundPool(context)
+        
+        // 只有加载成功了才播放，防止报错
+        if (isLoaded && clickSoundId != -1) {
+            try {
+                // 1.0f 代表最大音量（相对于当前的媒体音量百分比）
+                soundPool?.play(clickSoundId, 1.0f, 1.0f, 1, 0, 1.0f)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
     fun release() {
         soundPool?.release()
         soundPool = null
+        isLoaded = false
     }
 }

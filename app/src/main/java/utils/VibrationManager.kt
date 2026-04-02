@@ -6,29 +6,29 @@ import android.view.View
 
 object VibrationManager {
 
-    private const val PREFS_NAME = "vibration_settings"
-    private const val KEY_VIBRATION_ENABLED = "vibration_enabled"
-    
-    // 建议：统一默认值为 true (或者你想要的默认状态)
-    private const val DEFAULT_VALUE = true
-
-    fun isVibrationEnabled(context: Context): Boolean {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getBoolean(KEY_VIBRATION_ENABLED, DEFAULT_VALUE)
-    }
-
-    fun setVibrationEnabled(context: Context, enabled: Boolean) {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        prefs.edit().putBoolean(KEY_VIBRATION_ENABLED, enabled).apply()
-    }
-
-    fun vibrate(view: View) {
-        if (!isVibrationEnabled(view.context)) return
+    /**
+     * 工业级反馈方法：直接根据外部传入的状态决定是否震动
+     * 避免了去查旧数据库导致的延迟和逻辑冲突
+     */
+    fun vibrate(view: View, forceEnabled: Boolean = true) {
+        if (!forceEnabled) return
 
         try {
             view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    // 保留旧方法用于兼容其他页面，但标记为废弃或内部使用
+    @Deprecated("Use vibrate(view, isEnabled) instead")
+    fun isVibrationEnabled(context: Context): Boolean {
+        return context.getSharedPreferences("vibration_settings", Context.MODE_PRIVATE)
+            .getBoolean("vibration_enabled", true)
+    }
+
+    fun setVibrationEnabled(context: Context, enabled: Boolean) {
+        context.getSharedPreferences("vibration_settings", Context.MODE_PRIVATE)
+            .edit().putBoolean("vibration_enabled", enabled).apply()
     }
 }

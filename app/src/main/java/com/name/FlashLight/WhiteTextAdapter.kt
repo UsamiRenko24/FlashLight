@@ -35,7 +35,6 @@ class WhiteTextAdapter(context: Context, private val items: List<String>) :
             )
             textSize = 14f
         }
-
         return textView
     }
 }

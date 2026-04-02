@@ -72,12 +72,6 @@ class LowBatteryActivity : BaseActivity<LowbatteryBinding>() {
         binding.tvBatteryPercent.text = "$batteryLevel%"
     }
 
-    override fun onBatteryStatusChanged() {
-        super.onBatteryStatusChanged()
-        val batteryManager = getSystemService(Context.BATTERY_SERVICE) as android.os.BatteryManager
-        val level = batteryManager.getIntProperty(android.os.BatteryManager.BATTERY_PROPERTY_CAPACITY)
-        binding.tvBatteryPercent.text = "$level%"
-    }
 
     private fun setLowBrightness() {
         try {

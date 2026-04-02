@@ -8,16 +8,23 @@ import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.lifecycle.lifecycleScope
 import com.name.FlashLight.databinding.ScreenLightBinding
-import utils.TimeRecorder
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import utils.DataStoreManager
+import utils.ScreenSessionRepository
+import utils.TimeRepository
+import utils.feedback
 
 class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
 
-    // 当前选中的状态
-    private var selectedBrightness = 1  // 0=低, 1=中, 2=高
-    private var selectedColor = 0       // 0=纯白, 1=暖白, 2=冷白
-    private var currentColorHex = "#FFFFFFFF"  // 当前颜色值
-    private var currentBrightnessValue = 70    // 当前亮度值
+    private var currentBrightnessLevel = 1
+    private var currentColorLevel = 0
+    
+    private val colorMap = mapOf(0 to "#FFFFFFFF", 1 to "#FFFFF8DC", 2 to "#FFF0F8FF")
+    private val brightnessMap = mapOf(0 to 40, 1 to 70, 2 to 100)
 
     private var lastClickTime: Long = 0
     private val DOUBLE_CLICK_TIME = 300
@@ -27,284 +34,120 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
     private var startTime = 0L
     private var totalTimeMinutes: Int = 0
 
-    override fun createBinding():ScreenLightBinding{
-        return ScreenLightBinding.inflate(layoutInflater)
-    }
+    override fun createBinding(): ScreenLightBinding = ScreenLightBinding.inflate(layoutInflater)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 1. 【核心修复】首先初始化 Handler 和 获取自动关闭时长
         handler = Handler(Looper.getMainLooper())
-        totalTimeMinutes = getAutoOffTime()
+        
+        // 【核心修复】：响应式监听内存仓库的变化
+        observeSessionChanges()
 
-        // 2. 接收 Intent 参数
-        receiveIntentData()
-
-        // 3. 数据就绪后，再启动计时和记录
-        startTimer()
-        TimeRecorder.startRecording(this, "screen_light")
+        lifecycleScope.launch {
+            // 1. 获取自动关闭时长
+            totalTimeMinutes = DataStoreManager.getScreenAutoOffTime(this@ScreenLightActiveActivity).first()
+            startTimer()
+            timeRepository.startRecording(TimeRepository.TYPE_SCREEN_LIGHT)
+        }
 
         setupInitialState()
         setupClickListeners()
-
-        // 5. 应用初始设置
-        applyInitialSettings()
-
         setupBackPressedCallback()
     }
-    /**
-     * 接收从ScreenLightActivity传递过来的参数
-     */
-    private fun receiveIntentData() {
-        // 获取传递过来的数据，如果没有传递则使用默认值
-        selectedBrightness = intent.getIntExtra("brightnessLevel", 1)
-        selectedColor = intent.getIntExtra("colorLevel", 0)
-        currentColorHex = intent.getStringExtra("colorHex") ?: "#FFFFFFFF"
-        currentBrightnessValue = when (selectedBrightness) {
-            0 -> 40
-            1 -> 70
-            2 -> 100
-            else -> 70
+
+    private fun observeSessionChanges() {
+        lifecycleScope.launch {
+            ScreenSessionRepository.brightnessLevel.collectLatest { level ->
+                if (level != -1) {
+                    currentBrightnessLevel = level
+                    updateUI()
+                }
+            }
         }
-
+        lifecycleScope.launch {
+            ScreenSessionRepository.colorLevel.collectLatest { level ->
+                if (level != -1) {
+                    currentColorLevel = level
+                    updateUI()
+                }
+            }
+        }
     }
 
-    /**
-     * 应用接收到的设置初始化界面
-     */
-    private fun applyInitialSettings() {
-        // 1. 根据色温和亮度设置背景颜色
-        updateBackgroundColor()
-
-        // 2. 更新顶部标题文字
-        updateTitleText()
-
-        // 3. 更新选中状态（太阳和颜色的高亮）
-        updateSunSelection()
-        updateColorSelection()
+    private fun updateUI() {
+        val brightnessValue = brightnessMap[currentBrightnessLevel] ?: 70
+        val colorHex = colorMap[currentColorLevel] ?: "#FFFFFFFF"
+        
+        // 混合背景色
+        val brightness = (brightnessValue * 2.55).toInt()
+        val color = Color.parseColor(colorHex)
+        val mixedColor = String.format("#%02X%02X%02X", 
+            Color.red(color) * brightness / 255, 
+            Color.green(color) * brightness / 255, 
+            Color.blue(color) * brightness / 255)
+        
+        binding.mainPage.setBackgroundColor(Color.parseColor(mixedColor))
+        
+        // 更新标题
+        val bText = when (currentBrightnessLevel) { 0 -> getString(R.string.brightness_low) 1 -> getString(R.string.brightness_medium) else -> getString(R.string.brightness_high) }
+        val cText = when (currentColorLevel) { 0 -> getString(R.string.color_pure) 1 -> getString(R.string.color_warm) else -> getString(R.string.color_cold) }
+        binding.tvTitle.text = "$cText - $bText"
+        
+        // 更新选中项透明度
+        binding.sun1.alpha = if (currentBrightnessLevel == 0) 1.0f else 0.5f
+        binding.sun2.alpha = if (currentBrightnessLevel == 1) 1.0f else 0.5f
+        binding.sun3.alpha = if (currentBrightnessLevel == 2) 1.0f else 0.5f
+        
+        binding.color1.alpha = if (currentColorLevel == 0) 1.0f else 0.5f
+        binding.color2.alpha = if (currentColorLevel == 1) 1.0f else 0.5f
+        binding.color3.alpha = if (currentColorLevel == 2) 1.0f else 0.5f
     }
-
 
     private fun setupInitialState() {
-        // 开始时隐藏所有需要隐藏的组件
         binding.card2.visibility = View.GONE
         binding.card3.visibility = View.GONE
     }
 
     private fun setupClickListeners() {
-        // 点击太阳图标 - 显示亮度选择卡片
-        binding.sun.setOnClickListener {
-            toggleCard2()
-        }
+        binding.sun.setOnClickListener { binding.card2.visibility = if (binding.card2.visibility == View.VISIBLE) View.GONE else View.VISIBLE; binding.card3.visibility = View.GONE }
+        binding.palette.setOnClickListener { binding.card3.visibility = if (binding.card3.visibility == View.VISIBLE) View.GONE else View.VISIBLE; binding.card2.visibility = View.GONE }
+        binding.settings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
+        binding.close.setOnClickListener { finish() }
 
-        // 点击调色板图标 - 显示色温选择卡片
-        binding.palette.setOnClickListener {
-            toggleCard3()
-        }
+        // 点击调节：只改内存仓库
+        binding.sun1.setOnClickListener { it.feedback(); ScreenSessionRepository.updateBrightness(0) }
+        binding.sun2.setOnClickListener { it.feedback(); ScreenSessionRepository.updateBrightness(1) }
+        binding.sun3.setOnClickListener { it.feedback(); ScreenSessionRepository.updateBrightness(2) }
 
-        // 点击设置图标
-        binding.settings.setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
-        }
-
-        // 点击关闭图标 - 返回上一页
-        binding.close.setOnClickListener {
-            returnWithSettings()
-            finish()
-        }
-
-        // 亮度选择
-        binding.sun1.setOnClickListener {
-            selectBrightness(0)
-//            Toast.makeText(this, "已选择低亮度", Toast.LENGTH_SHORT).show()
-        }
-
-        binding.sun2.setOnClickListener {
-            selectBrightness(1)
-//            Toast.makeText(this, "已选择中亮度", Toast.LENGTH_SHORT).show()
-        }
-
-        binding.sun3.setOnClickListener {
-            selectBrightness(2)
-//            Toast.makeText(this, "已选择高亮度", Toast.LENGTH_SHORT).show()
-        }
-
-        // 色温选择
-        binding.color1.setOnClickListener {
-            selectColor(0)
-//            Toast.makeText(this, "已选择纯白光", Toast.LENGTH_SHORT).show()
-        }
-
-        binding.color2.setOnClickListener {
-            selectColor(1)
-//            Toast.makeText(this, "已选择暖白光", Toast.LENGTH_SHORT).show()
-        }
-
-        binding.color3.setOnClickListener {
-            selectColor(2)
-//            Toast.makeText(this, "已选择冷白光", Toast.LENGTH_SHORT).show()
-        }
+        binding.color1.setOnClickListener { it.feedback(); ScreenSessionRepository.updateColor(0) }
+        binding.color2.setOnClickListener { it.feedback(); ScreenSessionRepository.updateColor(1) }
+        binding.color3.setOnClickListener { it.feedback(); ScreenSessionRepository.updateColor(2) }
     }
 
-    private fun toggleCard2() {
-        if (binding.card2.visibility == View.GONE) {
-            binding.card2.visibility = View.VISIBLE
-            binding.card3.visibility = View.GONE
-            updateSunSelection()
-        } else {
-            binding.card2.visibility = View.GONE
-        }
-    }
-
-    private fun toggleCard3() {
-        if (binding.card3.visibility == View.GONE) {
-            binding.card3.visibility = View.VISIBLE
-            binding.card2.visibility = View.GONE
-            updateColorSelection()
-        } else {
-            binding.card3.visibility = View.GONE
-        }
-    }
-
-    private fun selectBrightness(level: Int) {
-        selectedBrightness = level
-        currentBrightnessValue = when (level) {
-            0 -> 40
-            1 -> 70
-            2 -> 100
-            else -> 70
-        }
-        updateSunSelection()
-        updateTitleText()
-        updateBackgroundColor()  // 亮度变化时更新背景
-    }
-
-    private fun selectColor(level: Int) {
-        selectedColor = level
-        currentColorHex = when (level) {
-            0 -> "#FFFFFFFF"  // 纯白
-            1 -> "#FFFFF8DC"  // 暖白
-            2 -> "#FFF0F8FF"  // 冷白
-            else -> "#FFFFFFFF"
-        }
-        updateColorSelection()
-        updateTitleText()
-        updateBackgroundColor()  // 色温变化时更新背景
-    }
-
-    /**
-     * 更新背景颜色 - 根据色温和亮度混合
-     */
-    private fun updateBackgroundColor() {
-        val mixedColor = mixColorWithBrightness(currentColorHex, currentBrightnessValue)
-        binding.mainPage.setBackgroundColor(Color.parseColor(mixedColor))
-    }
-
-    /**
-     * 将颜色与亮度混合
-     */
-    private fun mixColorWithBrightness(colorHex: String, brightnessPercent: Int): String {
-        val brightness = (brightnessPercent * 2.55).toInt()
-        val color = Color.parseColor(colorHex)
-        val red = Color.red(color) * brightness / 255
-        val green = Color.green(color) * brightness / 255
-        val blue = Color.blue(color) * brightness / 255
-        return String.format("#%02X%02X%02X", red, green, blue)
-    }
-
-    private fun updateSunSelection() {
-        binding.sun1.alpha = 0.5f
-        binding.sun2.alpha = 0.5f
-        binding.sun3.alpha = 0.5f
-
-        when (selectedBrightness) {
-            0 -> binding.sun1.alpha = 1.0f
-            1 -> binding.sun2.alpha = 1.0f
-            2 -> binding.sun3.alpha = 1.0f
-        }
-    }
-
-    private fun updateColorSelection() {
-        binding.color1.alpha = 0.5f
-        binding.color2.alpha = 0.5f
-        binding.color3.alpha = 0.5f
-
-        when (selectedColor) {
-            0 -> binding.color1.alpha = 1.0f
-            1 -> binding.color2.alpha = 1.0f
-            2 -> binding.color3.alpha = 1.0f
-        }
-    }
-
-    private fun updateTitleText() {
-        val brightnessText = when (selectedBrightness) {
-            0 -> getString(R.string.brightness_low)
-            1 -> getString(R.string.brightness_medium)
-            2 -> getString(R.string.brightness_high)
-            else -> getString(R.string.brightness_medium)
-        }
-
-        val colorText = when (selectedColor) {
-            0 -> getString(R.string.color_pure)
-            1 -> getString(R.string.color_warm)
-            2 -> getString(R.string.color_cold)
-            else -> getString(R.string.color_pure)
-        }
-
-        binding.tvTitle.text = "$colorText - ${brightnessText}"
-    }
-    /**
-     * 返回设置并退出
-     */
     private fun startTimer() {
-        // 如果设置为永不关闭 (114514) 或无效时间，则不启动倒计时任务
         if (totalTimeMinutes >= 114514 || totalTimeMinutes <= 0) return
-
         startTime = System.currentTimeMillis()
-        // 保存开始时间供返回时校验
-        getSharedPreferences("timer_prefs", MODE_PRIVATE).edit()
-            .putLong("timer_start_time_${totalTimeMinutes}", startTime).apply()
-
-        stopTimer()
         timerRunnable = object : Runnable {
             override fun run() {
-                val elapsed = System.currentTimeMillis() - startTime
-                if (elapsed >= totalTimeMinutes * 60 * 1000) {
-                    navigateToMain()
-                } else {
-                    handler?.postDelayed(this, 1000)
-                }
+                if (System.currentTimeMillis() - startTime >= totalTimeMinutes * 60 * 1000) navigateToMain()
+                else handler?.postDelayed(this, 1000)
             }
         }
         handler?.post(timerRunnable!!)
     }
 
-    private fun stopTimer() { timerRunnable?.let { handler?.removeCallbacks(it) }; timerRunnable = null }
+    private fun stopTimer() { handler?.removeCallbacksAndMessages(null); timerRunnable = null }
 
     private fun navigateToMain() {
-        stopTimer()
         startActivity(Intent(this, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK })
         finish()
     }
-    private fun getAutoOffTime() = getSharedPreferences("auto_off_settings", MODE_PRIVATE).getInt(AutomaticActivity.KEY_SCREEN_LIGHT_TIME, 5)
-        private fun returnWithSettings() {
-        val resultIntent = Intent().apply {
-            putExtra("brightnessLevel", selectedBrightness)
-            putExtra("colorLevel", selectedColor)
-        }
-        setResult(RESULT_OK, resultIntent)
-        finish()
-    }
 
-    // 双击退出
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_DOWN) {
             val currentTime = System.currentTimeMillis()
-            if (currentTime - lastClickTime < DOUBLE_CLICK_TIME) {
-                returnWithSettings()
-                return true
-            }
+            if (currentTime - lastClickTime < DOUBLE_CLICK_TIME) { finish(); return true }
             lastClickTime = currentTime
         }
         return super.onTouchEvent(event)
@@ -312,21 +155,10 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
 
     private fun setupBackPressedCallback() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                returnWithSettings()
-            }
+            override fun handleOnBackPressed() { finish() }
         })
     }
-    override fun onPause() {
-        super.onPause()
-        // 页面不可见时停止记录
-        TimeRecorder.stopRecording(this, "screen_light")
-    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        // 确保退出时停止
-        TimeRecorder.stopRecording(this, "screen_light")
-        stopTimer()
-    }
+    override fun onPause() { super.onPause(); timeRepository.stopRecording(TimeRepository.TYPE_SCREEN_LIGHT) }
+    override fun onDestroy() { super.onDestroy(); stopTimer() }
 }

@@ -1,24 +1,31 @@
 package com.name.FlashLight
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.OvershootInterpolator
+import androidx.lifecycle.lifecycleScope
 import com.name.FlashLight.databinding.ActivityMainBinding
-import utils.BatteryHelper
-import utils.TimeRecorder
-import utils.VibrationManager
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import utils.BatteryRepository
+import utils.DataStoreManager
+import utils.TimeRepository
 import utils.feedback
+import utils.toDetailedTime
+import utils.toDigitalTime
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
     
     private val REQUEST_CODE1 = 1001
     private val REQUEST_CODE2 = 1002
 
-    override fun createBinding():ActivityMainBinding{
+    // 【新增】本地缓存变量
+    private var flashlightAutoOffMinutes = 5
+
+    override fun createBinding(): ActivityMainBinding {
         return ActivityMainBinding.inflate(layoutInflater)
     }
 
@@ -27,36 +34,58 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         setupBottomNavigation()
         setupClickListeners()
-        loadVibrationSetting()
+        
+        // 【核心修改】：开启 DataStore 全局实时监听
+        observeSettings()
+        
         setupVibrationButton()
 
         binding.bottomNav.selectedItemId = R.id.nav_home
     }
 
+    /**
+     * 响应式监听：这里是全应用逻辑的“大脑”
+     */
+    private fun observeSettings() {
+        // 监听震动开关
+        lifecycleScope.launch {
+            DataStoreManager.isVibrationEnabled(this@MainActivity).collectLatest { isEnabled ->
+                binding.btnSwitch.setCheckedSilently(isEnabled)
+            }
+        }
+
+        // 【核心修复】：监听自动关闭时间，实现实时文字联动
+        lifecycleScope.launch {
+            DataStoreManager.getFlashlightAutoOffTime(this@MainActivity).collectLatest { minutes ->
+                flashlightAutoOffMinutes = minutes
+                // 只要 DataStore 变了，主页文字立刻跟着变
+                updateAutoOffDisplay(minutes)
+            }
+        }
+    }
+
+    private fun updateAutoOffDisplay(minutes: Int) {
+        if (minutes >= 114514) {
+            binding.tvTime.text = getString(R.string.auto_off_never)
+        } else {
+            binding.tvTime.text = minutes.toFloat().toDetailedTime(this)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         refreshUI()
-        syncVibrationUI() 
     }
 
-    override fun onBatteryStatusChanged() {
+    override fun onBatteryStatusChanged(info: BatteryRepository.BatteryInfo) {
         if (!isFinishing && !isDestroyed) {
-            updateBatteryDisplay()
+            updateBatteryDisplay(info)
         }
     }
 
     private fun refreshUI() {
-        updateBatteryDisplay()
+        updateBatteryDisplay(batteryRepository.getCurrentBatteryInfo(this))
         updateStats()
-    }
-
-    private fun syncVibrationUI() {
-        binding.btnSwitch.setCheckedSilently(VibrationManager.isVibrationEnabled(this))
-    }
-
-    private fun getAutoOffTime(): Int {
-        return getSharedPreferences("auto_off_settings", Context.MODE_PRIVATE)
-            .getInt(AutomaticActivity.KEY_FLASHLIGHT_TIME, 5)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -107,32 +136,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private fun updateStats() {
-        val flashlightTime = TimeRecorder.getTodayTime(this, "flashlight")
-        binding.tvFlashlightTime.text = formatTime(flashlightTime)
+        // 更新今日时长统计
+        val flashlightTime = timeRepository.getTodayUsageMinutes(TimeRepository.TYPE_FLASHLIGHT)
+        binding.tvFlashlightTime.text = flashlightTime.toDigitalTime()
         
-        val offTime = getAutoOffTime()
-        if (offTime >= 114514) {
-            binding.tvTime.text = getString(R.string.auto_off_never)
-        } else {
-            binding.tvTime.text = formatMinutes(offTime)
-        }
+        // 这里不再需要读取 DataStore，因为 observeSettings 已经帮我们同步好了
+        updateAutoOffDisplay(flashlightAutoOffMinutes)
     }
 
-    private fun formatMinutes(minutes: Int): String {
-        return if (minutes >= 60) {
-            "${minutes / 60}${getString(R.string.hour)}${minutes % 60}${getString(R.string.minute)}"
-        } else {
-            "${minutes}${getString(R.string.minute)}"
-        }
-    }
-
-    private fun formatTime(minutes: Float): String {
-        val totalSeconds = (minutes * 60).toInt()
-        return String.format("%02d:%02d", totalSeconds / 60, totalSeconds % 60)
-    }
-
-    private fun updateBatteryDisplay() {
-        BatteryHelper.updateBatteryUI(this, binding.tvBatteryPercent, binding.tvBatteryStatus, binding.ivBatteryIcon)
+    private fun updateBatteryDisplay(info: BatteryRepository.BatteryInfo) {
+        binding.tvBatteryPercent.text = info.levelText
+        binding.tvBatteryStatus.text = info.status
+        binding.ivBatteryIcon.setImageResource(info.iconRes)
     }
 
     private fun setupBottomNavigation() {
@@ -160,16 +175,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         }
     }
 
-    private fun loadVibrationSetting() { 
-        binding.btnSwitch.isChecked = VibrationManager.isVibrationEnabled(this) 
-    }
-    
     private fun setupVibrationButton() { 
         binding.btnSwitch.setOnStateChangedListener { isEnabled: Boolean ->
-            VibrationManager.setVibrationEnabled(this, isEnabled)
-            if (isEnabled) {
-                VibrationManager.vibrate(binding.btnSwitch)
+            // 开关操作直接给予预览式反馈
+            binding.btnSwitch.feedback()
+
+            lifecycleScope.launch {
+                DataStoreManager.setVibrationEnabled(this@MainActivity, isEnabled)
             }
-        } 
+        }
     }
 }

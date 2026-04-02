@@ -15,7 +15,9 @@ import android.os.Looper
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import com.name.FlashLight.databinding.SosBinding
-import utils.TimeRecorder
+import utils.TimeRepository
+import utils.toCountdownDisplay
+import utils.toDigitalTime
 
 class SOSActivity : BaseActivity<SosBinding>() {
 
@@ -67,8 +69,8 @@ class SOSActivity : BaseActivity<SosBinding>() {
         updateBatteryInfo()
         startBatteryMonitor()
         initTimer()
-        
-        TimeRecorder.startRecording(this, "blink")
+
+        timeRepository.startRecording(TimeRepository.TYPE_BLINK)
         startRecording()
         startTime = System.currentTimeMillis()
 
@@ -132,27 +134,24 @@ class SOSActivity : BaseActivity<SosBinding>() {
     }
 
     private fun updateDuration() {
-        val elapsedSeconds = (System.currentTimeMillis() - startTime) / 1000
-        val displayMinutes = elapsedSeconds / 60
-        val displaySeconds = elapsedSeconds % 60
-        binding.lastTime.text = String.format("%02d:%02d", displayMinutes, displaySeconds)
+        // 1. 计算已经过的时间
+        val elapsedMinutes = (System.currentTimeMillis() - startTime) / 1000f / 60f
+        binding.lastTime.text = elapsedMinutes.toDigitalTime()
 
+        // 2. 获取配置的自动关闭总时间
         val autoOffMinutes = getAutoOffTime()
-        if (autoOffMinutes >= 114514) {
-            binding.remainTime.text = getString(R.string.auto_off_never)
-        } else {
-            val totalSeconds = autoOffMinutes * 60
-            val progress = (elapsedSeconds * 100 / totalSeconds).toInt().coerceIn(0, 100)
+        val remainingMinutes = (autoOffMinutes - elapsedMinutes).coerceAtLeast(0f)
+
+        // 3. 【核心精简】一行代码搞定：文字会自动在 “04:59” 和 “永不关闭” 之间切换
+        binding.remainTime.text = remainingMinutes.toCountdownDisplay(autoOffMinutes, this)
+
+        // 4. 只有在需要倒计时时才更新进度条和执行退出
+        if (autoOffMinutes < 114514) {
+            val progress = (elapsedMinutes * 100 / autoOffMinutes).toInt().coerceIn(0, 100)
             binding.progressBlink.progress = progress
-            
-            val remainingSeconds = (totalSeconds - elapsedSeconds).toInt().coerceAtLeast(0)
-            val remainMinutes = remainingSeconds / 60
-            val remainSeconds = remainingSeconds % 60
-            binding.remainTime.text = String.format("%02d:%02d", remainMinutes, remainSeconds)
-            
-            if (remainingSeconds <= 0) {
-                navigateToMain()
-            }
+            if (remainingMinutes <= 0) navigateToMain()
+        } else {
+            binding.progressBlink.progress = 0
         }
     }
 
@@ -288,7 +287,7 @@ class SOSActivity : BaseActivity<SosBinding>() {
     }
 
     override fun onPause() {
-        TimeRecorder.stopRecording(this, "blink")
+        timeRepository.stopRecording(TimeRepository.TYPE_BLINK)
         stopRecording()
         super.onPause()
         isSosActive = false

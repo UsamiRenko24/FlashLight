@@ -45,7 +45,7 @@
     <LinearLayout
         android:id="@+id/card_container1"
         android:layout_width="0dp"
-        android:layout_height="220dp"
+        android:layout_height="240dp"
         android:layout_marginStart="44dp"
         android:layout_marginEnd="44dp"
         android:layout_marginTop="40dp"
@@ -69,7 +69,7 @@
             android:id="@+id/tv_battery_percent"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="0.8"
             android:gravity="center"
             android:text="85%"
             android:textSize="24sp"
@@ -83,7 +83,7 @@
             android:text="⚡充电中"
             android:textSize="16sp"
             android:textColor="@color/white"
-            android:layout_weight="0.8"/>
+            android:layout_weight="0.6"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -163,7 +163,7 @@
             android:gravity="center"
             android:layout_marginTop="6dp">
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:text="@string/title_flashlight"
                 android:layout_margin="8dp"
@@ -175,7 +175,7 @@
                 android:layout_height="10dp"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:progressDrawable="@drawable/progress_bar"
-                android:layout_marginStart="60dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"/>
             <TextView
@@ -192,7 +192,7 @@
             android:layout_height="wrap_content"
             android:gravity="center">
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:text="@string/title_screen_light"
                 android:layout_margin="8dp"
@@ -204,7 +204,7 @@
                 android:layout_height="10dp"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:progressDrawable="@drawable/progress_bar"
-                android:layout_marginStart="60dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"/>
             <TextView
@@ -221,7 +221,7 @@
             android:layout_height="wrap_content"
             android:gravity="center">
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:text="@string/title_blink"
                 android:layout_margin="8dp"
@@ -233,7 +233,7 @@
                 android:layout_height="10dp"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:progressDrawable="@drawable/progress_bar"
-                android:layout_marginStart="60dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"/>
             <TextView

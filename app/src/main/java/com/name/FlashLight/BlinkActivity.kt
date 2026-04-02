@@ -1,7 +1,6 @@
 package com.name.FlashLight
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.hardware.camera2.CameraManager
@@ -19,12 +18,10 @@ import com.name.FlashLight.databinding.BlinkBinding
 import com.name.FlashLight.utils.PageConstants
 import com.name.FlashLight.utils.PageUsageRecorder
 import com.name.FlashLight.utils.StartupModeManager
-import utils.TimeRecorder
+import utils.TimeRepository
 import utils.feedback
 
 class BlinkActivity : BaseActivity<BlinkBinding>() {
-
-    // 不需要再声明 binding 变量，Base 已经有了
 
     private var isScreenLightSelected = false
     private var isFlashlightSelected = true   
@@ -43,7 +40,6 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
 
     private val selectedBlueColor = Color.parseColor("#4786EF")
 
-    // 实现 Base 方法，返回正确的绑定类
     override fun createBinding(): BlinkBinding {
         return BlinkBinding.inflate(layoutInflater)
     }
@@ -90,11 +86,13 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
                 if (isBlinking) {
                     stopBlinking()
                     stopTimer()
-                    TimeRecorder.stopRecording(this, "blink")
+                    // 修正：使用实例并调用 stop
+                    timeRepository.stopRecording(TimeRepository.TYPE_BLINK)
                 } else {
                     startBlinking()
                     startTimer()
-                    TimeRecorder.stopRecording(this, "blink")
+                    // 修正：使用实例并调用 start
+                    timeRepository.startRecording(TimeRepository.TYPE_BLINK)
                 }
             }
         }
@@ -223,15 +221,13 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
     private fun updateStats() {
         if (!isBlinking || !isTimerRunning || startTime == 0L) return
         val usedTime = (System.currentTimeMillis() - startTime) / 60000F
-        if (usedTime >= getAutoOffTime().toFloat()) navigateToMain()
+        if (usedTime >= timeRepository.getTodayTotalUsageMinutes()) navigateToMain()
     }
 
     private fun navigateToMain() {
         startActivity(Intent(this, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK })
         finish()
     }
-
-    private fun getAutoOffTime() = getSharedPreferences("auto_off_settings", Context.MODE_PRIVATE).getInt(AutomaticActivity.KEY_BLINK_TIME, 5)
 
     private fun initFlashlight() {
         cameraManager = getSystemService(CAMERA_SERVICE) as CameraManager
@@ -245,11 +241,19 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
 
     override fun onPause() {
         super.onPause()
-        if (isBlinking) { stopBlinking(); stopTimer(); TimeRecorder.stopRecording(this, "blink") }
+        if (isBlinking) { 
+            stopBlinking()
+            stopTimer()
+            timeRepository.stopRecording(TimeRepository.TYPE_BLINK) 
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (isBlinking) { stopBlinking(); stopTimer(); TimeRecorder.stopRecording(this, "blink") }
+        if (isBlinking) { 
+            stopBlinking()
+            stopTimer()
+            timeRepository.stopRecording(TimeRepository.TYPE_BLINK) 
+        }
     }
 }
