@@ -10,6 +10,8 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.lifecycleScope
 import com.name.FlashLight.databinding.ScreenLightBinding
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -29,8 +31,7 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
     private var lastClickTime: Long = 0
     private val DOUBLE_CLICK_TIME = 300
 
-    private var handler: Handler? = null
-    private var timerRunnable: Runnable? = null
+    private var timerJob: Job? = null
     private var startTime = 0L
     private var totalTimeMinutes: Int = 0
 
@@ -38,8 +39,6 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        handler = Handler(Looper.getMainLooper())
         
         // 【核心修复】：响应式监听内存仓库的变化
         observeSessionChanges()
@@ -126,18 +125,27 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
     }
 
     private fun startTimer() {
-        if (totalTimeMinutes >= 114514 || totalTimeMinutes <= 0) return
+        timerJob?.cancel()
         startTime = System.currentTimeMillis()
-        timerRunnable = object : Runnable {
-            override fun run() {
-                if (System.currentTimeMillis() - startTime >= totalTimeMinutes * 60 * 1000) navigateToMain()
-                else handler?.postDelayed(this, 1000)
+        timerJob = lifecycleScope.launch { // 启动协程
+            while (true) { // 只要任务没被取消，就一直循环
+                val elapsedMinutes = (System.currentTimeMillis() - startTime)/ 60000f
+                if (elapsedMinutes < 114514 && elapsedMinutes >= totalTimeMinutes){
+                    stopTimer()
+                    navigateToMain()
+                    break
+                }
+                updateUI() // 逻辑入口
+                delay(1000)   // 挂起 1 秒，不卡界面
             }
         }
-        handler?.post(timerRunnable!!)
     }
 
-    private fun stopTimer() { handler?.removeCallbacksAndMessages(null); timerRunnable = null }
+    private fun stopTimer() {
+        timerJob?.cancel()
+        timerJob = null
+        updateUI()
+    }
 
     private fun navigateToMain() {
         startActivity(Intent(this, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK })

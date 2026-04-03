@@ -37,7 +37,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         
         // 【核心修改】：开启 DataStore 全局实时监听
         observeSettings()
-        
         setupVibrationButton()
 
         binding.bottomNav.selectedItemId = R.id.nav_home
@@ -132,6 +131,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         binding.ivSettings.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
+        binding.tvTime.setOnClickListener {
+            startActivity(Intent(this, AutomaticActivity::class.java))
         }
     }
 

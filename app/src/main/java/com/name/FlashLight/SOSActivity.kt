@@ -14,9 +14,14 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.lifecycle.lifecycleScope
 import com.name.FlashLight.databinding.SosBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import utils.DataStoreManager
 import utils.TimeRepository
 import utils.toCountdownDisplay
+import utils.toDetailedTime
 import utils.toDigitalTime
 
 class SOSActivity : BaseActivity<SosBinding>() {
@@ -37,7 +42,7 @@ class SOSActivity : BaseActivity<SosBinding>() {
     private lateinit var timerRunnable: Runnable
     private var isTimerRunning = false
 
-    private var haloAnimator: AnimatorSet? = null 
+    private var haloAnimator: AnimatorSet? = null
 
     // SOS摩斯码时序
     companion object {
@@ -241,8 +246,13 @@ class SOSActivity : BaseActivity<SosBinding>() {
     }
 
     private fun getAutoOffTime(): Int {
-        val prefs = getSharedPreferences("auto_off_settings", Context.MODE_PRIVATE)
-        return prefs.getInt(AutomaticActivity.KEY_BLINK_TIME, 5)
+        var currentAutoOffMinutes = 5
+        lifecycleScope.launch {
+            DataStoreManager.getFlashlightAutoOffTime(this@SOSActivity).collectLatest { minutes ->
+                currentAutoOffMinutes = minutes
+            }
+        }
+        return currentAutoOffMinutes
     }
 
     private fun initFlashlight() {
