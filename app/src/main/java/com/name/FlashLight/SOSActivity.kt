@@ -84,7 +84,7 @@ class SOSActivity : BaseActivity<SosBinding>() {
         startHaloAnimation() 
     }
 
-    private fun initViews() {
+    override fun initViews() {
         binding.siganl.text = ". . . _ _ _\n. . ."
         binding.tvSosCycles.text = "0${getString(R.string.times)}"
         binding.lastTime.text = "00:00"

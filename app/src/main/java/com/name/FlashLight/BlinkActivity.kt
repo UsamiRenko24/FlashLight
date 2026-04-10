@@ -16,203 +16,204 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.name.FlashLight.databinding.BlinkBinding
 import com.name.FlashLight.utils.PageConstants
-import com.name.FlashLight.utils.PageUsageRecorder
-import com.name.FlashLight.utils.StartupModeManager
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import utils.DataStoreManager
-import utils.TimeRepository
-import utils.feedback
+import utils.*
 
+/**
+ * 工业级模块化闪烁页面
+ * 职责：负责闪烁功能的配置、控制以及硬件 Session 管理
+ */
 class BlinkActivity : BaseActivity<BlinkBinding>() {
 
+    // --- 1. 模块化配置 (子类只需声明) ---
+    override val pageTrackName = PageConstants.PAGE_BLINK
+    override val isBatteryMonitorEnabled = false
+    override val isLowBatteryCheckEnabled = true
+
+    // --- 2. 局部会话状态 ---
+    private var isBlinking = false
+    private var selectedFrequency = 1  
+    private var currentAutoOffMinutes = 5
+    private var startTime = 0L
+    
+    private var blinkJob: Job? = null
+    private var timerJob: Job? = null
+
+    // --- 3. 硬件管理与常量 ---
     private var isScreenLightSelected = false
     private var isFlashlightSelected = true   
-    private var selectedFrequency = 1  
-    private var isBlinking = false
-
-    private var blinkJob: Job? = null 
-    private var timerJob: Job? = null 
-
-    private var startTime = 0L
-    private var currentAutoOffMinutes = 5
-
     private lateinit var cameraManager: CameraManager
     private var cameraId: String? = null
     private val selectedBlueColor = Color.parseColor("#4786EF")
 
     override fun createBinding(): BlinkBinding = BlinkBinding.inflate(layoutInflater)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        PageUsageRecorder.recordPageVisit(this, PageConstants.PAGE_BLINK)
-        StartupModeManager.recordLastPage(this, PageConstants.PAGE_BLINK)
-
-        initFlashlight()
-        setupClickListeners()
-        observeSettings() 
-
+    /**
+     * 职责模块 A: 初始化静态视图与资源
+     */
+    override fun initViews() {
+        SoundManager.initSoundPool(this)
+        initHardware()
+        
+        // UI 默认状态设置
         selectFrequency(1)
         binding.layoutBlink.isSelected = true
         updateSourceLayoutUI(binding.layoutBlink, true)
     }
 
-    private fun observeSettings() {
+    /**
+     * 职责模块 B: 事件监听集中营
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    override fun initListeners() {
+        binding.traceback.setOnClickListener { handleBackPress() }
+        binding.ivSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
+
+        // SOS 跳转逻辑
+        binding.SOS.setOnTouchListener { v, event ->
+            handleTouchAnimation(v, event)
+            if (event.action == MotionEvent.ACTION_UP) {
+                if (isBlinking) Toast.makeText(this, getString(R.string.please_stop_blink), Toast.LENGTH_SHORT).show()
+                else startActivity(Intent(this, SOSActivity::class.java))
+            }
+            true
+        }
+
+        // 光源选择逻辑
+        binding.layoutScreenLight.setOnClickListener { if (!isBlinking) toggleSourceSelection(true) }
+        binding.layoutBlink.setOnClickListener { if (!isBlinking) toggleSourceSelection(false) }
+
+        // 频率选择逻辑
+        binding.cardLeft.setOnClickListener { if (!isBlinking) selectFrequency(0) }
+        binding.cardMiddle.setOnClickListener { if (!isBlinking) selectFrequency(1) }
+        binding.cardRight.setOnClickListener { if (!isBlinking) selectFrequency(2) }
+
+        // 主开关控制 (现代化权限集成)
+        binding.btnStartBlink.setOnTouchListener { v, event ->
+            handleTouchAnimation(v, event)
+            if (event.action == MotionEvent.ACTION_UP) {
+                ensureCameraPermission { 
+                    if (isBlinking) stopBlinkingSession() else startBlinkingSession() 
+                }
+            }
+            true
+        }
+    }
+
+    /**
+     * 职责模块 C: 响应式配置观察中心
+     */
+    override fun initObservers() {
         lifecycleScope.launch {
+            // 实时同步自动关闭时长设置
             DataStoreManager.getBlinkAutoOffTime(this@BlinkActivity).collectLatest { minutes ->
                 currentAutoOffMinutes = minutes
             }
         }
     }
 
-    private fun startBlinking() {
-        if (!isScreenLightSelected && !isFlashlightSelected) return
+    // --- 核心业务逻辑 (内聚化管理) ---
+
+    private fun startBlinkingSession() {
+        if (!isScreenLightSelected && !isFlashlightSelected) {
+            Toast.makeText(this, getString(R.string.at_least_choose_one_light_source), Toast.LENGTH_SHORT).show()
+            return
+        }
         isBlinking = true
-        
-        binding.btnStartBlink.text = "⬜ " + getString(R.string.btn_blink)
-        binding.btnStartBlink.alpha = 0.3f 
-        binding.SOS.isEnabled = false
-        binding.SOS.alpha = 0.3f 
+        updateActionUI(true)
 
         val interval = when (selectedFrequency) { 0 -> 1000L; 1 -> 500L; 2 -> 200L; else -> 500L }
         
-        // 核心：协程驱动的精准“闪烁节奏”
+        // A. 开启闪烁循环 Job
         blinkJob?.cancel()
         blinkJob = lifecycleScope.launch {
+            var isOn = false
             while (isBlinking) {
-                // ON 状态
-                setLightState(true)
-                delay(interval)
-                // OFF 状态
-                setLightState(false)
+                isOn = !isOn
+                applyHardwareLightState(isOn)
                 delay(interval)
             }
         }
 
-        startTimer()
+        // B. 开启统计与判定 Job
+        startTimerJob()
     }
 
-    private fun stopBlinking() {
+    private fun stopBlinkingSession() {
         isBlinking = false
-        blinkJob?.cancel()
-        blinkJob = null
-        stopTimer()
+        blinkJob?.cancel(); blinkJob = null
+        stopTimerJob()
 
-        binding.btnStartBlink.text = getString(R.string.btn_blink)
-        binding.btnStartBlink.alpha = 1.0f
-        binding.SOS.isEnabled = true
-        binding.SOS.alpha = 1.0f
-        
-        // 强制确保硬件状态为 OFF
-        setLightState(false)
+        updateActionUI(false)
+        applyHardwareLightState(false)
     }
 
-    private fun setLightState(on: Boolean) {
-        if (isScreenLightSelected) controlScreenBrightness(on)
-        if (isFlashlightSelected) controlFlashlight(on)
-    }
-
-    private fun startTimer() {
+    private fun startTimerJob() {
         timerJob?.cancel()
         startTime = System.currentTimeMillis()
         timeRepository.startRecording(TimeRepository.TYPE_BLINK)
         timerJob = lifecycleScope.launch {
             while (true) {
-                updateStats()
+                if (checkAutoOffReached()) break
                 delay(1000)
             }
         }
     }
 
-    private fun stopTimer() {
-        timerJob?.cancel()
-        timerJob = null
+    private fun stopTimerJob() {
+        timerJob?.cancel(); timerJob = null
         timeRepository.stopRecording(TimeRepository.TYPE_BLINK)
-        updateStats()
     }
 
-    private fun updateStats() {
-        // 兼容 ID：如果 stats 页面用了 tvBlinkTime，这里也用 tvBlinkTime
-        // 注意：这里需要确认 binding.tvBlinkTime 是否在 blink.xml 中存在
+    private fun checkAutoOffReached(): Boolean {
+        val elapsed = (System.currentTimeMillis() - startTime) / 60000f
+        return if (currentAutoOffMinutes < 114514 && elapsed >= currentAutoOffMinutes) {
+            stopBlinkingSession()
+            Toast.makeText(this, getString(R.string.blink_auto_off), Toast.LENGTH_SHORT).show()
+            navigateToMain()
+            true
+        } else false
+    }
+
+    // --- 驱动与辅助逻辑 (私有) ---
+
+    private fun initHardware() {
+        cameraManager = getSystemService(CAMERA_SERVICE) as CameraManager
         try {
-            val todayMinutes = timeRepository.getTodayUsageMinutes(TimeRepository.TYPE_BLINK)
-        } catch (e: Exception) {}
-
-        if (timerJob != null) {
-            val elapsedMinutes = (System.currentTimeMillis() - startTime) / 1000f / 60f
-            val autoOffMinutes = currentAutoOffMinutes
-
-            if (autoOffMinutes > 0 && autoOffMinutes < 114514) {
-                if (elapsedMinutes >= autoOffMinutes) {
-                    stopBlinking()
-                    Toast.makeText(this, getString(R.string.blink_auto_off), Toast.LENGTH_SHORT).show()
-                    navigateToMain()
-                }
+            cameraId = cameraManager.cameraIdList.firstOrNull { id ->
+                val chars = cameraManager.getCameraCharacteristics(id)
+                chars.get(CameraCharacteristics.FLASH_INFO_AVAILABLE) == true &&
+                chars.get(CameraCharacteristics.LENS_FACING) == CameraCharacteristics.LENS_FACING_BACK
             }
+        } catch (e: Exception) { }
+    }
+
+    private fun applyHardwareLightState(on: Boolean) {
+        if (isScreenLightSelected) {
+            val lp = window.attributes
+            lp.screenBrightness = if (on) 1.0f else -1.0f
+            window.attributes = lp
+        }
+        if (isFlashlightSelected) {
+            try { cameraId?.let { cameraManager.setTorchMode(it, on) } } catch (e: Exception) { }
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setupClickListeners() {
-        binding.traceback.setOnClickListener { stopBlinking(); handleBackPress() }
-        binding.ivSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
-
-        binding.SOS.setOnTouchListener { v, event ->
-            handleTouch(v, event) {
-                if (isBlinking) Toast.makeText(this, getString(R.string.please_stop_blink), Toast.LENGTH_SHORT).show()
-                else startActivity(Intent(this, SOSActivity::class.java))
-            }
+    private fun toggleSourceSelection(isScreen: Boolean) {
+        if (isScreen) {
+            if (isScreenLightSelected && !isFlashlightSelected) return
+            isScreenLightSelected = !isScreenLightSelected
+            binding.layoutScreenLight.isSelected = isScreenLightSelected
+            updateSourceLayoutUI(binding.layoutScreenLight, isScreenLightSelected)
+        } else {
+            if (isFlashlightSelected && !isScreenLightSelected) return
+            isFlashlightSelected = !isFlashlightSelected
+            binding.layoutBlink.isSelected = isFlashlightSelected
+            updateSourceLayoutUI(binding.layoutBlink, isFlashlightSelected)
         }
-
-        binding.layoutScreenLight.setOnClickListener { if (!isBlinking) toggleScreenLight() }
-        binding.layoutBlink.setOnClickListener { if (!isBlinking) toggleFlashlight() }
-
-        binding.cardLeft.setOnClickListener { if (!isBlinking) selectFrequency(0) }
-        binding.cardMiddle.setOnClickListener { if (!isBlinking) selectFrequency(1) }
-        binding.cardRight.setOnClickListener { if (!isBlinking) selectFrequency(2) }
-
-        binding.btnStartBlink.setOnTouchListener { v, event ->
-            handleTouch(v, event) {
-                if (isBlinking) stopBlinking() else startBlinking()
-            }
-        }
-    }
-
-    private fun handleTouch(view: View, event: MotionEvent, action: () -> Unit): Boolean {
-        val isInside = event.x >= 0 && event.x <= view.width && event.y >= 0 && event.y <= view.height
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> { view.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100).start(); return true }
-            MotionEvent.ACTION_UP -> {
-                view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).setInterpolator(OvershootInterpolator()).start()
-                if (isInside) { view.feedback(); action() }
-                return true
-            }
-            MotionEvent.ACTION_CANCEL -> { view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).start(); return true }
-        }
-        return false
-    }
-
-    private fun toggleScreenLight() {
-        if (isScreenLightSelected && !isFlashlightSelected) {
-            Toast.makeText(this, getString(R.string.at_least_choose_one_light_source), Toast.LENGTH_SHORT).show()
-            return
-        }
-        isScreenLightSelected = !isScreenLightSelected
-        binding.layoutScreenLight.isSelected = isScreenLightSelected
-        updateSourceLayoutUI(binding.layoutScreenLight, isScreenLightSelected)
-    }
-
-    private fun toggleFlashlight() {
-        if (isFlashlightSelected && !isScreenLightSelected) {
-            Toast.makeText(this, getString(R.string.at_least_choose_one_light_source), Toast.LENGTH_SHORT).show()
-            return
-        }
-        isFlashlightSelected = !isFlashlightSelected
-        binding.layoutBlink.isSelected = isFlashlightSelected
-        updateSourceLayoutUI(binding.layoutBlink, isFlashlightSelected)
     }
 
     private fun updateSourceLayoutUI(layout: LinearLayout, selected: Boolean) {
@@ -225,24 +226,27 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
 
     private fun selectFrequency(level: Int) {
         selectedFrequency = level
-        val cards = listOf(binding.cardLeft, binding.cardMiddle, binding.cardRight)
-        cards.forEachIndexed { index, layout ->
-            layout.isSelected = (index == level)
-            for (i in 0 until layout.childCount) {
-                val child = layout.getChildAt(i)
-                if (child is TextView) child.setTextColor(if (index == level) selectedBlueColor else Color.WHITE)
-            }
+        listOf(binding.cardLeft, binding.cardMiddle, binding.cardRight).forEachIndexed { i, card ->
+            card.isSelected = (i == level)
+            (card.getChildAt(0) as? TextView)?.setTextColor(if (i == level) selectedBlueColor else Color.WHITE)
         }
     }
 
-    private fun controlFlashlight(on: Boolean) {
-        try { if (cameraId != null) cameraManager.setTorchMode(cameraId!!, on) } catch (e: Exception) { }
+    private fun updateActionUI(active: Boolean) {
+        binding.btnStartBlink.text = if (active) "⬜ " + getString(R.string.btn_blink) else getString(R.string.btn_blink)
+        binding.btnStartBlink.alpha = if (active) 0.3f else 1.0f
+        binding.SOS.isEnabled = !active
+        binding.SOS.alpha = if (active) 0.3f else 1.0f
     }
 
-    private fun controlScreenBrightness(on: Boolean) {
-        val layoutParams = window.attributes
-        layoutParams.screenBrightness = if (on) 1.0f else -1.0f
-        window.attributes = layoutParams
+    private fun handleTouchAnimation(view: View, event: MotionEvent) {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> view.animate().scaleX(0.9f).scaleY(0.9f).setDuration(100).start()
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).setInterpolator(OvershootInterpolator()).start()
+                if (event.action == MotionEvent.ACTION_UP) view.feedback()
+            }
+        }
     }
 
     private fun navigateToMain() {
@@ -250,18 +254,11 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
         finish()
     }
 
-    private fun initFlashlight() {
-        cameraManager = getSystemService(CAMERA_SERVICE) as CameraManager
-        try {
-            cameraId = cameraManager.cameraIdList.firstOrNull { id ->
-                val characteristics = cameraManager.getCameraCharacteristics(id)
-                val flashAvailable = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE) ?: false
-                val lensFacing = characteristics.get(CameraCharacteristics.LENS_FACING)
-                flashAvailable && lensFacing == CameraCharacteristics.LENS_FACING_BACK
-            }
-        } catch (e: Exception) { }
+    override fun stopAllFeatures() { if (isBlinking) stopBlinkingSession() }
+    override fun onPause() { super.onPause(); if (isBlinking) stopBlinkingSession() }
+    
+    // 电池信息通过基类钩子自动回调
+    override fun onBatteryStatusChanged(info: BatteryRepository.BatteryInfo) {
+        // 子类接收电池信息同步 UI（如果有）
     }
-
-    override fun onPause() { super.onPause(); if (isBlinking) stopBlinking() }
-    override fun onDestroy() { super.onDestroy(); if (isBlinking) stopBlinking() }
 }

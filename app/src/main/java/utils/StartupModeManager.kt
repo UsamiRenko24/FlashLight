@@ -53,33 +53,4 @@ object StartupModeManager {
     fun getLastPage(context: Context): String {
         return getPrefs(context).getString(KEY_LAST_PAGE, PageConstants.PAGE_HOME) ?: PageConstants.PAGE_HOME
     }
-
-    /**
-     * 根据当前模式获取启动 Intent
-     */
-    fun getStartupIntent(context: Context): Intent {
-        val mode = getStartupMode(context)
-
-        return when (mode) {
-            MODE_LAST_USED -> {
-                // 记住上次使用的功能
-                val lastPage = getLastPage(context)
-                PageNavigator.getPageIntent(context, lastPage)
-            }
-            MODE_HOME -> {
-                // 总是启动到主页面
-                Intent(context, MainActivity::class.java)
-            }
-            MODE_MOST_USED -> {
-                // 启动到最常用功能
-                val mostUsedPage = PageUsageRecorder.getMostUsedPage(context)
-                PageNavigator.getPageIntent(context, mostUsedPage)
-            }
-            else -> Intent(context, MainActivity::class.java)
-        }
-    }
-
-    /**
-     * 获取模式名称
-     */
 }

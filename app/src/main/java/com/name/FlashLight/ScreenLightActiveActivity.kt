@@ -92,7 +92,7 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
         val bText = when (currentBrightnessLevel) { 0 -> getString(R.string.brightness_low) 1 -> getString(R.string.brightness_medium) else -> getString(R.string.brightness_high) }
         val cText = when (currentColorLevel) { 0 -> getString(R.string.color_pure) 1 -> getString(R.string.color_warm) else -> getString(R.string.color_cold) }
         binding.tvTitle.text = "$cText - $bText"
-        
+
         // 更新选中项透明度
         binding.sun1.alpha = if (currentBrightnessLevel == 0) 1.0f else 0.5f
         binding.sun2.alpha = if (currentBrightnessLevel == 1) 1.0f else 0.5f
@@ -109,8 +109,10 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
     }
 
     private fun setupClickListeners() {
-        binding.sun.setOnClickListener { binding.card2.visibility = if (binding.card2.visibility == View.VISIBLE) View.GONE else View.VISIBLE; binding.card3.visibility = View.GONE }
-        binding.palette.setOnClickListener { binding.card3.visibility = if (binding.card3.visibility == View.VISIBLE) View.GONE else View.VISIBLE; binding.card2.visibility = View.GONE }
+        binding.sun.setOnClickListener { binding.card2.visibility = if (binding.card2.visibility == View.VISIBLE) View.GONE
+        else View.VISIBLE; binding.card3.visibility = View.GONE }
+        binding.palette.setOnClickListener { binding.card3.visibility = if (binding.card3.visibility == View.VISIBLE) View.GONE
+        else View.VISIBLE; binding.card2.visibility = View.GONE }
         binding.settings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
         binding.close.setOnClickListener { finish() }
 

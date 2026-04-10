@@ -1,127 +1,132 @@
 package com.name.FlashLight
 
 import android.content.Intent
-import android.os.Bundle
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.name.FlashLight.databinding.StatsBinding
 import com.name.FlashLight.utils.PageConstants
-import com.name.FlashLight.utils.PageUsageRecorder
-import com.name.FlashLight.utils.StartupModeManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import utils.AutoBrightnessManager
-import utils.BatteryRepository
-import utils.DataStoreManager
-import utils.LowBatteryManager
-import utils.TemperatureManager
-import utils.TimeRepository
-import utils.toDetailedTime
+import utils.*
 
+/**
+ * 工业级模块化重构 - 统计页面
+ * 职责：负责展示时长统计、电池健康度及系统级开关管理
+ */
 class StatsActivity : BaseActivity<StatsBinding>() {
 
-    override fun createBinding(): StatsBinding {
-        return StatsBinding.inflate(layoutInflater)
-    }
+    override val pageTrackName = PageConstants.PAGE_STATS
+    override val isBatteryMonitorEnabled = true
+    override val isLowBatteryCheckEnabled = true
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        
-        PageUsageRecorder.recordPageVisit(this, PageConstants.PAGE_STATS)
-        StartupModeManager.recordLastPage(this, PageConstants.PAGE_STATS)
+    override fun createBinding(): StatsBinding = StatsBinding.inflate(layoutInflater)
 
-        setupClickListeners()
-
-        observeDataStoreSettings()
-
-        setupSlidingButtons()
-        loadAutoBrightnessState()
-        setupAutoBrightnessListener()
+    /**
+     * 职责模块 A: UI 静态初始化
+     */
+    override fun initViews() {
+        // 同步系统亮度状态
+        binding.btnBrightness.setCheckedSilently(AutoBrightnessManager.getAutoBrightnessState(this))
+        // 同步温度监控开关状态
+        binding.btnTemperatureSwitch.setCheckedSilently(TemperatureManager.isEnabled())
     }
 
     /**
-     * DataStore 响应式逻辑：
-     * 这是 DataStore 最强的地方：你不需要手动在 onResume 里刷开关状态，
-     * 它像是一个“永不关闭的监听器”。
+     * 职责模块 B: 事件监听集中营
      */
-    private fun observeDataStoreSettings() {
+    override fun initListeners() {
+        binding.traceback.setOnClickListener { handleBackPress() }
+        binding.ivSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
+
+        // 处理低电量开关手动动作
+        binding.btnLowBattery.setOnStateChangedListener { isEnabled ->
+            lifecycleScope.launch {
+                DataStoreManager.setLowBatteryEnabled(this@StatsActivity, isEnabled)
+                Toast.makeText(this@StatsActivity, 
+                    if (isEnabled) getString(R.string.toast_on) else getString(R.string.toast_off),
+                    Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.btnTemperatureSwitch.setOnStateChangedListener { isEnabled ->
+            TemperatureManager.setEnabled(isEnabled)
+        }
+
+        binding.btnBrightness.setOnStateChangedListener { isEnabled ->
+            AutoBrightnessManager.toggleAutoBrightness(this, isEnabled, {}, {
+                binding.btnBrightness.setCheckedSilently(!isEnabled)
+            })
+        }
+    }
+
+    /**
+     * 职责模块 C: 响应式配置观察中心
+     */
+    override fun initObservers() {
         lifecycleScope.launch {
+            // 修正：调用正确的方法名 isLowBatteryEnabled
             DataStoreManager.isLowBatteryEnabled(this@StatsActivity).collectLatest { isEnabled ->
-                // 收到新值，立即同步 UI
                 binding.btnLowBattery.setCheckedSilently(isEnabled)
-                // 同时同步底层逻辑
                 LowBatteryManager.setProtectionEnabled(this@StatsActivity, isEnabled)
             }
         }
     }
 
-    private fun setupLowBatterySwitch() {
-        binding.btnLowBattery.setOnStateChangedListener { isEnabled ->
-            // 2. 【核心：写入】DataStore
-            // 写入是异步的，必须在协程里跑
-            lifecycleScope.launch {
-                DataStoreManager.setLowBatteryEnabled(this@StatsActivity, isEnabled)
-                Toast.makeText(this@StatsActivity, if (isEnabled) "保护已开启" else "保护已关闭", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+    // --- 行为钩子重写 (由父类自动驱动) ---
 
     override fun onResume() {
         super.onResume()
-        refreshUI()
+        refreshStats()
     }
 
     /**
-     * 处理电池广播：直接在 Activity 逻辑里更新 UI
+     * 关键钩子：父类监听到电池变化，这里只管“怎么画”
      */
     override fun onBatteryStatusChanged(info: BatteryRepository.BatteryInfo) {
         if (!isFinishing && !isDestroyed) {
-            updateBatteryDisplay(info)
+            updateBatteryUI(info)
         }
     }
 
-    private fun refreshUI() {
-        // 使用 this (Activity) 作为 Context，确保拿到最新的多语言字符串
-        updateBatteryDisplay(batteryRepository.getCurrentBatteryInfo(this))
-        updateStats()
-    }
-
-    private fun updateBatteryDisplay(info: BatteryRepository.BatteryInfo) {
-        val level = info.level
-        // 根据电量动态切换卡片背景颜色
-        when {
-            level <= 25 -> binding.cardContainer1.setBackgroundResource(R.drawable.bg_sos_card_red)
-            level <= 50 -> binding.cardContainer1.setBackgroundResource(R.drawable.bg_yellow_card)
-            else -> binding.cardContainer1.setBackgroundResource(R.drawable.bg_green_card)
-        }
-
-        binding.tvBatteryPercent.text = info.levelText
-        binding.tvBatteryStatus.text = info.chargingType
-        binding.ivBatteryIcon.setImageResource(info.iconRes)
-
-        updateTimeEstimate(info)
-    }
-
-    private fun updateStats() {
+    private fun refreshStats() {
+        // 初始化时手动同步一次电池信息
+        updateBatteryUI(batteryRepository.getCurrentBatteryInfo(this))
+        
         val fTime = timeRepository.getTodayUsageMinutes(TimeRepository.TYPE_FLASHLIGHT)
         val sTime = timeRepository.getTodayUsageMinutes(TimeRepository.TYPE_SCREEN_LIGHT)
         val bTime = timeRepository.getTodayUsageMinutes(TimeRepository.TYPE_BLINK)
-        val totalTime = timeRepository.getTodayTotalUsageMinutes()
+        val total = timeRepository.getTodayTotalUsageMinutes()
 
-        binding.tvTotalTime.text = totalTime.toDetailedTime(this)
-        
-        // 进度条逻辑
-        setProgress(binding.progressFlashlight, fTime, totalTime)
-        setProgress(binding.progressScreenLight, sTime, totalTime)
-        setProgress(binding.progressBlink, bTime, totalTime)
+        binding.apply {
+            tvTotalTime.text = total.toDetailedTime(this@StatsActivity)
+            tvHealth.text = batteryRepository.getBatteryHealthDescription(this@StatsActivity)
 
-        // 刷新健康度描述（传入 this 确保多语言正确）
-        binding.tvHealth.text = batteryRepository.getBatteryHealthDescription(this)
-        
-        binding.tvFlashlightTime.text = fTime.toDetailedTime(this)
-        binding.tvScreenLightTime.text = sTime.toDetailedTime(this)
-        binding.tvBlinkTime.text = bTime.toDetailedTime(this)
+            renderProgressBar(progressFlashlight, fTime, total)
+            renderProgressBar(progressScreenLight, sTime, total)
+            renderProgressBar(progressBlink, bTime, total)
+
+            tvFlashlightTime.text = fTime.toDetailedTime(this@StatsActivity)
+            tvScreenLightTime.text = sTime.toDetailedTime(this@StatsActivity)
+            tvBlinkTime.text = bTime.toDetailedTime(this@StatsActivity)
+        }
+    }
+
+    private fun updateBatteryUI(info: BatteryRepository.BatteryInfo) {
+        val level = info.level
+        val cardBg = when {
+            level <= 25 -> R.drawable.bg_sos_card_red
+            level <= 50 -> R.drawable.bg_yellow_card
+            else -> R.drawable.bg_green_card
+        }
+
+        binding.apply {
+            cardContainer1.setBackgroundResource(cardBg)
+            tvBatteryPercent.text = info.levelText
+            tvBatteryStatus.text = info.status // 统一字段，确保多语言正确
+            ivBatteryIcon.setImageResource(info.iconRes)
+        }
+        updateTimeEstimate(info)
     }
 
     private fun updateTimeEstimate(info: BatteryRepository.BatteryInfo) {
@@ -135,30 +140,7 @@ class StatsActivity : BaseActivity<StatsBinding>() {
         }
     }
 
-    private fun setProgress(progressBar: ProgressBar, time: Float, total: Float) {
-        progressBar.progress = if (total > 0) (time / total * 100).toInt().coerceIn(0, 100) else 0
-    }
-
-    private fun setupSlidingButtons() {
-        binding.btnTemperatureSwitch.setCheckedSilently(TemperatureManager.isEnabled())
-        binding.btnTemperatureSwitch.setOnStateChangedListener { TemperatureManager.setEnabled(it) }
-        setupLowBatterySwitch()
-    }
-
-    private fun loadAutoBrightnessState() {
-        binding.btnBrightness.setCheckedSilently(AutoBrightnessManager.getAutoBrightnessState(this))
-    }
-
-    private fun setupAutoBrightnessListener() {
-        binding.btnBrightness.setOnStateChangedListener { isEnabled ->
-            AutoBrightnessManager.toggleAutoBrightness(this, isEnabled, {}, {
-                binding.btnBrightness.setCheckedSilently(!isEnabled)
-            })
-        }
-    }
-
-    private fun setupClickListeners() {
-        binding.traceback.setOnClickListener { handleBackPress() }
-        binding.ivSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
+    private fun renderProgressBar(bar: ProgressBar, time: Float, total: Float) {
+        bar.progress = if (total > 0) (time / total * 100).toInt().coerceIn(0, 100) else 0
     }
 }

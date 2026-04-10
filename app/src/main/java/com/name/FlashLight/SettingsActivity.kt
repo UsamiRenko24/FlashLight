@@ -1,27 +1,26 @@
 package com.name.FlashLight
 
-import android.content.Context
 import android.content.Intent
-import android.os.Bundle
-import android.view.View
 import android.widget.AdapterView
 import androidx.lifecycle.lifecycleScope
 import com.name.FlashLight.databinding.SettingsBinding
-import com.name.FlashLight.utils.PageConstants.PAGE_SETTINGS
-import com.name.FlashLight.utils.PageUsageRecorder
+import com.name.FlashLight.utils.PageConstants
 import com.name.FlashLight.utils.StartupModeManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import utils.AutoBrightnessManager
-import utils.DataStoreManager
-import utils.DataStoreManager.setDefaultBrightness
-import utils.LanguageManager
-import utils.SoundManager
-import utils.VibrationManager
+import utils.*
 
+/**
+ * 工业级职责分离版 - SettingsActivity
+ * 已优化导航堆栈处理，消除白屏
+ */
 class SettingsActivity : BaseActivity<SettingsBinding>() {
 
+    override val pageTrackName = PageConstants.PAGE_SETTINGS
+    override val isBatteryMonitorEnabled = false
+    override val isLowBatteryCheckEnabled = true
+    
     private val REQ_FLASHLIGHT = 1001
     private val REQ_BLINK = 1002
 
@@ -31,56 +30,52 @@ class SettingsActivity : BaseActivity<SettingsBinding>() {
         StartupModeManager.MODE_MOST_USED
     )
 
-    override fun createBinding(): SettingsBinding {
-        return SettingsBinding.inflate(layoutInflater)
-    }
+    override fun createBinding(): SettingsBinding = SettingsBinding.inflate(layoutInflater)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        
-        PageUsageRecorder.recordPageVisit(this, PAGE_SETTINGS)
-        StartupModeManager.recordLastPage(this, PAGE_SETTINGS)
-
-        setupBottomNavigation()
-        setupStartupModeSpinner()
-        setupClickListeners()
-        setupBrightnessSpinner()
-        
-        // 【核心修改】：观察 DataStore 里的配置
-        observeSettings()
-        
-        setupButtons()
-        setupLanguageSpinner()
-
-        loadAutoBrightnessState()
-        setupAutoBrightnessListener()
-
-        binding.traceback.setOnClickListener {
-            handleBackPress()
-        }
-        
+    override fun initViews() {
+        SoundManager.initSoundPool(this)
+        initAdapters()
+        binding.slidingAutoBrightness.setCheckedSilently(AutoBrightnessManager.getAutoBrightnessState(this))
         binding.bottomNav.selectedItemId = R.id.nav_settings
     }
 
-    /**
-     * 【工业级建议】
-     * 对于开关（Switch/SlidingButton），建议用 collectLatest 保持实时同步。
-     * 对于下拉框（Spinner），由于它们通常涉及页面跳转或重启，用 collectLatest 反而容易干扰用户操作。
-     */
-    private fun observeSettings() {
-        // 1. 监听震动
+    override fun initListeners() {
+        binding.traceback.setOnClickListener { handleBackPress() }
+
+        binding.bottomNav.setOnItemSelectedListener { item -> handleNavigation(item.itemId) }
+
+        binding.btnVibration.setOnStateChangedListener { isEnabled ->
+            VibrationManager.vibrate(binding.btnVibration, forceEnabled = true)
+            lifecycleScope.launch { DataStoreManager.setVibrationEnabled(this@SettingsActivity, isEnabled) }
+        }
+        binding.slidingSound.setOnStateChangedListener { isEnabled ->
+            SoundManager.playClickSound(this@SettingsActivity, forceEnabled = true)
+            lifecycleScope.launch { DataStoreManager.setSoundEnabled(this@SettingsActivity, isEnabled) }
+        }
+
+        bindSpinnerListeners()
+
+        binding.slidingAutoBrightness.setOnStateChangedListener { isChecked ->
+            AutoBrightnessManager.toggleAutoBrightness(this, isChecked, {}, {
+                binding.slidingAutoBrightness.setCheckedSilently(!isChecked)
+            })
+        }
+
+        binding.arrowClose.setOnClickListener { startActivity(Intent(this, AutomaticActivity::class.java)) }
+        binding.arrowStats.setOnClickListener { startActivity(Intent(this, StatsActivity::class.java)) }
+    }
+
+    override fun initObservers() {
         lifecycleScope.launch {
             DataStoreManager.isVibrationEnabled(this@SettingsActivity).collectLatest {
                 binding.btnVibration.setCheckedSilently(it)
             }
         }
-        // 2. 监听声音
         lifecycleScope.launch {
             DataStoreManager.isSoundEnabled(this@SettingsActivity).collectLatest {
                 binding.slidingSound.setCheckedSilently(it)
             }
         }
-        // 3. 监听亮度（可选：如果想实时同步，也可以放在这里）
         lifecycleScope.launch {
             DataStoreManager.getDefaultBrightness(this@SettingsActivity).collectLatest { brightness ->
                 val pos = listOf(0, 1, 2).indexOf(brightness)
@@ -89,149 +84,94 @@ class SettingsActivity : BaseActivity<SettingsBinding>() {
                 }
             }
         }
+        loadInitialSyncData()
     }
 
-    private fun setupButtons() {
-        // 震动开关逻辑
-        binding.btnVibration.setOnStateChangedListener { isEnabled ->
-            // 开关操作建议强制反馈，给用户最直接的“确认感”
-            VibrationManager.vibrate(binding.btnVibration, forceEnabled = true)
-
-            lifecycleScope.launch {
-                DataStoreManager.setVibrationEnabled(this@SettingsActivity, isEnabled)
-            }
-        }
-        
-        // 声音开关逻辑
-        binding.slidingSound.setOnStateChangedListener { isEnabled ->
-            SoundManager.playClickSound(this@SettingsActivity, forceEnabled = true)
-
-            lifecycleScope.launch {
-                DataStoreManager.setSoundEnabled(this@SettingsActivity, isEnabled)
-            }
-        }
-    }
-
-    private fun loadAutoBrightnessState() {
-        binding.slidingAutoBrightness.setCheckedSilently(AutoBrightnessManager.getAutoBrightnessState(this))
-    }
-
-    private fun setupAutoBrightnessListener() {
-        binding.slidingAutoBrightness.setOnStateChangedListener { isChecked ->
-            AutoBrightnessManager.toggleAutoBrightness(
-                activity = this,
-                targetState = isChecked,
-                onSuccess = { },
-                onFailure = { binding.slidingAutoBrightness.setCheckedSilently(!isChecked) }
-            )
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        AutoBrightnessManager.handlePermissionResult(this, requestCode) { successState ->
-            binding.slidingAutoBrightness.setCheckedSilently(successState)
-        }
-    }
-
-    private fun setupBottomNavigation() {
-        binding.bottomNav.setOnItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.nav_settings -> true
-                R.id.nav_home -> {
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    startActivity(intent)
-                    false
-                }
-                R.id.nav_flashlight -> {
-                    startActivityForResult(Intent(this, FlashlightActivity::class.java), REQ_FLASHLIGHT)
-                    false
-                }
-                R.id.nav_blink -> {
-                    startActivityForResult(Intent(this, BlinkActivity::class.java), REQ_BLINK)
-                    false
-                }
-                R.id.nav_stats -> {
-                    startActivity(Intent(this, StatsActivity::class.java))
-                    false
-                }
-                else -> false
-            }
-        }
-    }
-    private fun setupStartupModeSpinner() {
+    private fun initAdapters() {
         val startupModes = listOf(getString(R.string.remember_last_usage), getString(R.string.main_page), getString(R.string.most_usage))
-        val adapter = StartupModeAdapter(this, startupModes)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spinnerStartupMode.adapter = adapter
+        binding.spinnerStartupMode.adapter = StartupModeAdapter(this, startupModes)
 
-        // 从 DataStore 读取初始值
-        lifecycleScope.launch {
-            val currentMode = DataStoreManager.getStartupMode(this@SettingsActivity).first()
-            val position = modeValues.indexOf(currentMode)
-            if (position >= 0) binding.spinnerStartupMode.setSelection(position)
-        }
+        val brightnessLevels = listOf(getString(R.string.brightness_low), getString(R.string.brightness_medium), getString(R.string.brightness_high))
+        binding.spinnerBrightness.adapter = WhiteTextAdapter(this, brightnessLevels)
 
-        binding.spinnerStartupMode.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val newMode = modeValues[position]
-                lifecycleScope.launch {
-                    DataStoreManager.setStartupMode(this@SettingsActivity, newMode)
-                }
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
+        val displayNames = LanguageManager.getSupportedLanguages().map { it.second }
+        binding.spinnerLanguage.adapter = WhiteTextAdapter(this, displayNames)
     }
 
-    private fun setupBrightnessSpinner() {
-        val adapter = WhiteTextAdapter(this, listOf(getString(R.string.brightness_low), getString(R.string.brightness_medium), getString(R.string.brightness_high)))
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spinnerBrightness.adapter = adapter
+    private fun bindSpinnerListeners() {
+        binding.spinnerStartupMode.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p: AdapterView<*>?, v: android.view.View?, pos: Int, id: Long) {
+                lifecycleScope.launch { DataStoreManager.setStartupMode(this@SettingsActivity, modeValues[pos]) }
+            }
+            override fun onNothingSelected(p: AdapterView<*>?) {}
+        }
 
         binding.spinnerBrightness.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val levels = listOf(0, 1, 2)
-                lifecycleScope.launch {
-                    DataStoreManager.setDefaultBrightness(this@SettingsActivity, levels[position])
-                }
+            override fun onItemSelected(p: AdapterView<*>?, v: android.view.View?, pos: Int, id: Long) {
+                lifecycleScope.launch { DataStoreManager.setDefaultBrightness(this@SettingsActivity, pos) }
             }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-    }
-
-    private fun setupLanguageSpinner() {
-        val languages = LanguageManager.getSupportedLanguages()
-        val displayNames = languages.map { it.second }
-        val adapter = WhiteTextAdapter(this, displayNames)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spinnerLanguage.adapter = adapter
-
-        lifecycleScope.launch {
-            val currentLang = DataStoreManager.getLanguage(this@SettingsActivity).first()
-            val position = languages.indexOfFirst { it.first == currentLang }
-            if (position >= 0) binding.spinnerLanguage.setSelection(position, false)
+            override fun onNothingSelected(p: AdapterView<*>?) {}
         }
 
         binding.spinnerLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val selectedLanguage = languages[position].first
+            override fun onItemSelected(p: AdapterView<*>?, v: android.view.View?, pos: Int, id: Long) {
+                val selectedLang = LanguageManager.getSupportedLanguages()[pos].first
                 lifecycleScope.launch {
-                    val currentStored = DataStoreManager.getLanguage(this@SettingsActivity).first()
-                    if (selectedLanguage != currentStored) {
-                        DataStoreManager.setLanguage(this@SettingsActivity, selectedLanguage)
-                        // 语言切换通常需要重启 App 刷新 Resources
-                        LanguageManager.saveLanguage(this@SettingsActivity, selectedLanguage) // 暂时保留 Manager 用于兼容重启逻辑
+                    val current = DataStoreManager.getLanguage(this@SettingsActivity).first()
+                    if (selectedLang != current) {
+                        DataStoreManager.setLanguage(this@SettingsActivity, selectedLang)
+                        LanguageManager.saveLanguage(this@SettingsActivity, selectedLang)
                         LanguageManager.restartApp(this@SettingsActivity)
                     }
                 }
             }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onNothingSelected(p: AdapterView<*>?) {}
         }
     }
 
-    private fun setupClickListeners() {
-        binding.arrowClose.setOnClickListener { startActivity(Intent(this, AutomaticActivity::class.java)) }
-        binding.arrowStats.setOnClickListener { startActivity(Intent(this, StatsActivity::class.java)) }
+    private fun loadInitialSyncData() {
+        lifecycleScope.launch {
+            val mode = DataStoreManager.getStartupMode(this@SettingsActivity).first()
+            val modePos = modeValues.indexOf(mode)
+            if (modePos >= 0) binding.spinnerStartupMode.setSelection(modePos)
+
+            val lang = DataStoreManager.getLanguage(this@SettingsActivity).first()
+            val langPos = LanguageManager.getSupportedLanguages().indexOfFirst { it.first == lang }
+            if (langPos >= 0) binding.spinnerLanguage.setSelection(langPos, false)
+        }
+    }
+
+    /**
+     * 【工业级优化】：
+     * 解决“白屏”和“多余堆栈”问题的关键。
+     */
+    private fun handleNavigation(itemId: Int): Boolean {
+        if (itemId == R.id.nav_settings) return true
+        
+        val target = when (itemId) {
+            R.id.nav_home -> MainActivity::class.java
+            R.id.nav_flashlight -> FlashlightActivity::class.java
+            R.id.nav_blink -> BlinkActivity::class.java
+            R.id.nav_stats -> StatsActivity::class.java
+            else -> null
+        }
+        
+        target?.let {
+            val intent = Intent(this, it).apply {
+                // 关键：CLEAR_TOP 清理上方 Activity，SINGLE_TOP 复用现有实例防止重启
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
+            startActivity(intent)
+            // 立即结束当前页面，确保返回栈里不会留下重复的路径
+            if (it == MainActivity::class.java) finish()
+        }
+        return false
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        AutoBrightnessManager.handlePermissionResult(this, requestCode) {
+            binding.slidingAutoBrightness.setCheckedSilently(it)
+        }
     }
 }
