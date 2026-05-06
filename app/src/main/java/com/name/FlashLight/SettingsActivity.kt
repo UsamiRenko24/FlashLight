@@ -20,9 +20,6 @@ class SettingsActivity : BaseActivity<SettingsBinding>() {
     override val pageTrackName = PageConstants.PAGE_SETTINGS
     override val isBatteryMonitorEnabled = false
     override val isLowBatteryCheckEnabled = true
-    
-    private val REQ_FLASHLIGHT = 1001
-    private val REQ_BLINK = 1002
 
     private val modeValues = listOf(
         StartupModeManager.MODE_LAST_USED,

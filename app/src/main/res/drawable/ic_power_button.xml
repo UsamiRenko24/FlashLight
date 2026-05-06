@@ -1,0 +1,25 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="34dp"
+    android:height="34dp"
+    android:viewportWidth="34"
+    android:viewportHeight="34">
+    <!-- Background Circle -->
+    <path
+        android:fillColor="#FF6464"
+        android:fillAlpha="0.34"
+        android:pathData="M17,17m-17,0a17,17 0,1 1,34 0a17,17 0,1 1,-34 0" />
+    <!-- Power Icon Arc -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M13.0418,10.3335C12.7671,10.4904 12.5027,10.6631 12.2502,10.8504C11.8179,11.1709 11.4199,11.5341 11.0627,11.9336C9.8309,13.3111 9.0835,15.1206 9.0835,17.1025C9.0835,21.4182 12.6279,24.9168 17.0002,24.9168C21.3724,24.9168 24.9168,21.4182 24.9168,17.1025C24.9168,15.1206 24.1694,13.3111 22.9377,11.9336C22.5804,11.5341 22.1825,11.1709 21.7502,10.8504C21.4976,10.6631 21.2332,10.4904 20.9585,10.3335" />
+    <!-- Center Line -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M17,8.6665V16.9998" />
+</vector>

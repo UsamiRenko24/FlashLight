@@ -1,10 +1,62 @@
-<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
+
+    <!-- 主体灯泡轮廓 -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M8,13 L12,13 L7,21 L16,11 L12,11 L16,3 L8,13 Z" />
+        android:pathData="M7,12.5c0,-2.7614 2.2386,-5 5,-5s5,2.2386 5,5V20.5H7V12.5z"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1"
+        android:strokeLineJoin="round"/>
+
+    <!-- 顶部光线 -->
+    <path
+        android:pathData="M12,2.5V4"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+
+    <!-- 右上光线 -->
+    <path
+        android:pathData="M17.9459,4.6641L16.9817,5.8132"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+
+    <!-- 右侧光线 -->
+    <path
+        android:pathData="M21.1093,10.1436L19.6321,10.4041"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+
+    <!-- 左侧光线 -->
+    <path
+        android:pathData="M2.8906,10.1438L4.3678,10.4042"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+
+    <!-- 左上光线 -->
+    <path
+        android:pathData="M6.0543,4.6641L7.0185,5.8132"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+
+    <!-- 底部底座 -->
+    <path
+        android:pathData="M3,20.5H21.5"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+
 </vector>

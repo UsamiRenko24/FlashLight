@@ -4,9 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.transition.AutoTransition
+import android.transition.TransitionManager
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.lifecycleScope
 import com.name.FlashLight.databinding.ScreenBinding
 import com.name.FlashLight.utils.PageConstants
@@ -35,9 +39,9 @@ class ScreenLightActivity : BaseActivity<ScreenBinding>() {
     // --- 2. 映射表与常量 ---
     private val colorMap = mapOf(0 to "#FFFFFFFF", 1 to "#FFFFF8DC", 2 to "#FFF0F8FF")
     private val brightnessMap = mapOf(0 to 40, 1 to 70, 2 to 100)
-    private val selectedBlueColor = Color.parseColor("#4786EF")
+    private val selectedBlueColor = Color.parseColor("#2AE1F8") // 已修改为：#2AE1F8
+    private val selectedColor = Color.parseColor("#0E0E0E")
 
-    private lateinit var brightnessTextMap: Map<Int, String>
     private lateinit var colorTextMap: Map<Int, String>
 
     override fun createBinding(): ScreenBinding = ScreenBinding.inflate(layoutInflater)
@@ -46,11 +50,6 @@ class ScreenLightActivity : BaseActivity<ScreenBinding>() {
      * 职责模块 A: 初始化静态 UI 与资源
      */
     override fun initViews() {
-        brightnessTextMap = mapOf(
-            0 to getString(R.string.brightness_card_low),
-            1 to getString(R.string.brightness_card_medium),
-            2 to getString(R.string.brightness_card_high)
-        )
         colorTextMap = mapOf(
             0 to getString(R.string.color_pure),
             1 to getString(R.string.color_warm),
@@ -67,7 +66,7 @@ class ScreenLightActivity : BaseActivity<ScreenBinding>() {
         binding.traceback.setOnClickListener { handleBackPress() }
         binding.ivSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
 
-        // 点击只负责更新仓库，联动逻辑由 initObservers 处理
+        // 滑块点击触发：只需更新仓库，UI 联动由 refreshBrightnessUI 处理
         binding.cardLeft.setOnClickListener { ScreenSessionRepository.updateBrightness(0) }
         binding.cardMiddle.setOnClickListener { ScreenSessionRepository.updateBrightness(1) }
         binding.cardRight.setOnClickListener { ScreenSessionRepository.updateBrightness(2) }
@@ -81,6 +80,10 @@ class ScreenLightActivity : BaseActivity<ScreenBinding>() {
             AutoBrightnessManager.toggleAutoBrightness(this, isEnabled, {}, {
                 binding.slidingAutoBrightness.setCheckedSilently(!isEnabled)
             })
+        }
+
+        binding.tvScreenTime.setOnClickListener {
+            startActivity(Intent(this, AutomaticActivity::class.java))
         }
 
         binding.card2.setOnTouchListener { view, event ->
@@ -98,10 +101,8 @@ class ScreenLightActivity : BaseActivity<ScreenBinding>() {
      * 职责模块 C: 响应式数据观察中心
      */
     override fun initObservers() {
-        // 1. 初始化同步逻辑：新鲜进入时拉取全局默认值
+        // 1. 初始化同步逻辑
         lifecycleScope.launch {
-            // 使用 savedInstanceState 确保旋转屏幕不重置
-            // 这里判断 -1 是为了兼容单例尚未从 DataStore 种子化的情况
             if (ScreenSessionRepository.isUninitialized()) {
                 val defB = DataStoreManager.getDefaultBrightness(this@ScreenLightActivity).first()
                 ScreenSessionRepository.updateBrightness(defB)
@@ -143,7 +144,35 @@ class ScreenLightActivity : BaseActivity<ScreenBinding>() {
         }
     }
 
-    // --- 内部 UI 渲染逻辑 (私有) ---
+    /**
+     * 【工业级修复】：滑块平滑移动动效
+     */
+    private fun refreshBrightnessUI(level: Int) {
+        val bias = when (level) {
+            0 -> 0.0f
+            1 -> 0.5f
+            2 -> 1.0f
+            else -> 0.0f
+        }
+
+        // A. 动画移动滑块背景 (通过控制 HorizontalBias)
+        val constraintLayout = binding.layoutBrightnessSlider
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(constraintLayout)
+        constraintSet.setHorizontalBias(R.id.view_brightness_thumb, bias)
+        
+        TransitionManager.beginDelayedTransition(constraintLayout, AutoTransition().apply {
+            duration = 250
+            interpolator = DecelerateInterpolator()
+        })
+        constraintSet.applyTo(constraintLayout)
+
+        // B. 更新文字颜色 (直接操作 TextView，修复 getChildAt 报错)
+        val brightnessTexts = listOf(binding.cardLeft, binding.cardMiddle, binding.cardRight)
+        brightnessTexts.forEachIndexed { i, tv ->
+            tv.setTextColor(if (i == level) selectedColor else Color.WHITE)
+        }
+    }
 
     private fun updatePreview() {
         if (!::colorTextMap.isInitialized) return
@@ -169,20 +198,39 @@ class ScreenLightActivity : BaseActivity<ScreenBinding>() {
         }
     }
 
-    private fun refreshBrightnessUI(level: Int) {
-        listOf(binding.cardLeft, binding.cardMiddle, binding.cardRight).forEachIndexed { i, card ->
-            val isSelected = i == level
-            card.isSelected = isSelected
-            card.setBackgroundResource(R.drawable.bg_rounded_selector)
-            (card.getChildAt(0) as? TextView)?.setTextColor(if (isSelected) selectedBlueColor else Color.WHITE)
-        }
-    }
-
     private fun refreshColorUI(level: Int) {
-        listOf(binding.cardLeft1, binding.cardMiddle1, binding.cardRight1).forEachIndexed { i, card ->
+
+        val cards = listOf(
+            binding.cardLeft1,
+            binding.cardMiddle1,
+            binding.cardRight1
+        )
+
+        val checks = listOf(
+            binding.ivCheckPure,
+            binding.ivCheckWarm,
+            binding.ivCheckCold
+        )
+
+        val texts = listOf(
+            binding.tvColorPure,
+            binding.tvColorWarm,
+            binding.tvColorCold
+        )
+
+        cards.forEachIndexed { i, card ->
             val isSelected = i == level
+
+            // 1. 触发 selector
             card.isSelected = isSelected
-            (card.getChildAt(1) as? TextView)?.setTextColor(if (isSelected) selectedBlueColor else Color.WHITE)
+
+            // 2. 勾选显示
+            checks[i].visibility = if (isSelected) View.VISIBLE else View.GONE
+
+            // 3. 文字高亮
+            texts[i].setTextColor(
+                if (isSelected) selectedBlueColor else Color.WHITE
+            )
         }
     }
 
@@ -193,8 +241,5 @@ class ScreenLightActivity : BaseActivity<ScreenBinding>() {
         }
     }
 
-    // --- 行为钩子重写 ---
-    override fun onBatteryStatusChanged(info: BatteryRepository.BatteryInfo) {
-        // 如果页面有电量显示逻辑，在此处处理
-    }
+    override fun onBatteryStatusChanged(info: BatteryRepository.BatteryInfo) {}
 }

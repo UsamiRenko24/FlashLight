@@ -1,0 +1,33 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- 秒表外圈 -->
+    <path
+        android:pathData="M12,22c4.6944,0 8.5,-3.8056 8.5,-8.5S16.6944,5 12,5S3.5,8.8056 3.5,13.5S7.3056,22 12,22Z"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineJoin="round"/>
+    <!-- 顶部按钮 -->
+    <path
+        android:pathData="M15.5,2H8.5"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+    <!-- 右上角刻度 -->
+    <path
+        android:pathData="M19,5L17.5,6.5"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+    <!-- 指针 -->
+    <path
+        android:pathData="M12,9V13.5"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+</vector>

@@ -1,4 +1,3 @@
-<!-- ic_battery_charging_white.xml -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
@@ -7,22 +6,25 @@
 
     <!-- 电池外壳 -->
     <path
-        android:fillColor="#666666"
-        android:pathData="M4,7 L18,7 A2,2 0 0 1 20,9 L20,15 A2,2 0 0 1 18,17 L4,17 A2,2 0 0 1 2,15 L2,9 A2,2 0 0 1 4,7 Z" />
+        android:pathData="M19,7H3c-0.55,0 -1,0.45 -1,1v8c0,0.55 0.45,1 1,1h16c0.55,0 1,-0.45 1,-1V8c0,-0.55 -0.45,-1 -1,-1z"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
 
-    <!-- 电池正极 -->
+    <!-- 充电电量填充：绿色 (约60%) -->
     <path
-        android:fillColor="#666666"
-        android:pathData="M20,10 L21,10 A1,1 0 0 1 22,11 L22,13 A1,1 0 0 1 21,14 L20,14 L20,10 Z" />
+        android:fillColor="#5C9E56"
+        android:pathData="M3.5,8.5h10v7h-10V8.5z" />
 
-    <!-- 电量填充 50% -->
-    <path
-        android:fillColor="#4CAF50"
-        android:pathData="M4,9 L4,15 L11,15 L11,9 Z" />
-
-    <!-- 白色闪电 -->
+    <!-- 电池头 -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M12,9 L9,12 L13,12 L10,17 L15,11 L11,11 L14,9 L12,9 Z" />
+        android:pathData="M21,10h1c0.55,0 1,0.45 1,1v2c0,0.55 -0.45,1 -1,1h-1V10z" />
+
+    <!-- 充电闪电符号：已修复坐标，确保在电池内部居中且不溢出 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M13,8.5 L9.5,12.5 H12 L11,15.5 L14.5,11.5 H12 Z" />
 
 </vector>

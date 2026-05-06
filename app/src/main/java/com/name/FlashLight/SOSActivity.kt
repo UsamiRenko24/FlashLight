@@ -85,7 +85,7 @@ class SOSActivity : BaseActivity<SosBinding>() {
     }
 
     override fun initViews() {
-        binding.siganl.text = ". . . _ _ _\n. . ."
+        binding.siganl.text = ". . . _ _ _ . . ."
         binding.tvSosCycles.text = "0${getString(R.string.times)}"
         binding.lastTime.text = "00:00"
     }

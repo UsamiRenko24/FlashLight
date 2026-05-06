@@ -49,7 +49,7 @@ class SlidingButton @JvmOverloads constructor(
     private var animator: ValueAnimator? = null
     private var currentPosition = 0f
     private var trackOffColor = Color.parseColor("#E0E0E0")
-    private var trackOnColor = Color.parseColor("#4786EF") // 使用项目主题色
+    private var trackOnColor = Color.parseColor("#2AE1F8") // 已修改为：#2AE1F8
     private var thumbColor = Color.WHITE
     private val trackPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val thumbPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = thumbColor }

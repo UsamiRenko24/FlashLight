@@ -1,165 +1,121 @@
 package com.name.FlashLight
 
-import android.os.Bundle
-import android.widget.RadioGroup
-import android.widget.Toast
+import android.graphics.Color
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import com.name.FlashLight.databinding.AutomaticBinding
+import com.name.FlashLight.utils.PageConstants
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import utils.DataStoreManager
+import utils.feedback
 
+/**
+ * 工业级模块化自动关闭设置页面
+ */
 class AutomaticActivity : BaseActivity<AutomaticBinding>() {
 
-    companion object {
-        const val KEY_FLASHLIGHT_TIME = "flashlight_auto_off"
-        const val KEY_SCREEN_LIGHT_TIME = "screen_light_auto_off"
-        const val KEY_BLINK_TIME = "blink_auto_off"
+    // --- 1. 声明式配置 (父类会自动调用 init 方法，无需在 onCreate 重复) ---
+    override val pageTrackName = PageConstants.PAGE_AUTOMATIC
+    override val isBatteryMonitorEnabled = false
+    override val isLowBatteryCheckEnabled = false
 
+    companion object {
         const val TIME_1_MIN = 1
         const val TIME_5_MIN = 5
         const val TIME_10_MIN = 10
         const val TIME_NEVER = 114514
     }
 
-    override fun createBinding():AutomaticBinding{
-        return AutomaticBinding.inflate(layoutInflater)
+    private val selectedBlueColor = Color.parseColor("#2AE1F8")
+
+    override fun createBinding(): AutomaticBinding = AutomaticBinding.inflate(layoutInflater)
+
+    override fun initViews() {
+        // UI 静态表现已由 XML 渲染
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun initListeners() {
+        binding.traceback.setOnClickListener { handleBackPress() }
 
-        // 1. 【核心：监听】使用 DataStore 实时同步 UI
-        observeSettings()
-
-        // 2. 设置点击监听
-        setupClickListeners()
+        // 绑定各组卡片点击 (0: Flash, 1: Screen, 2: Blink)
+        bindClicks(getFlashlightCards(), 0)
+        bindClicks(getScreenCards(), 1)
+        bindClicks(getBlinkCards(), 2)
     }
 
-    /**
-     * 响应式监听：从 DataStore 读取数据并自动勾选 RadioButton
-     */
-    private fun observeSettings() {
-        // 监听手电筒自动关闭时间
+    override fun initObservers() {
+        // 监听 DataStore 变化并实时高亮卡片
         lifecycleScope.launch {
             DataStoreManager.getFlashlightAutoOffTime(this@AutomaticActivity).collectLatest { time ->
-                selectRadioButton(binding.flashRadioGroup, time)
+                refreshUI(getFlashlightCards(), time)
             }
         }
-        // 监听屏幕补光自动关闭时间
         lifecycleScope.launch {
             DataStoreManager.getScreenAutoOffTime(this@AutomaticActivity).collectLatest { time ->
-                selectRadioButton(binding.screenRadioGroup, time)
+                refreshUI(getScreenCards(), time)
             }
         }
-        // 监听闪烁自动关闭时间
         lifecycleScope.launch {
             DataStoreManager.getBlinkAutoOffTime(this@AutomaticActivity).collectLatest { time ->
-                selectRadioButton(binding.blinkRadioGroup, time)
+                refreshUI(getBlinkCards(), time)
             }
         }
     }
 
-    private fun selectRadioButton(radioGroup: RadioGroup, timeValue: Int) {
-        val radioButtonId = when (timeValue) {
-            TIME_1_MIN -> {
-                when (radioGroup) {
-                    binding.flashRadioGroup -> R.id.flash1min
-                    binding.screenRadioGroup -> R.id.screen1min
-                    binding.blinkRadioGroup -> R.id.blink1min
-                    else -> null
-                }
+    private fun bindClicks(cards: Map<Int, LinearLayout>, type: Int) {
+        cards.forEach { (time, view) ->
+            view.setOnClickListener {
+                it.feedback()
+                saveSetting(type, time)
             }
-            TIME_5_MIN -> {
-                when (radioGroup) {
-                    binding.flashRadioGroup -> R.id.flash5min
-                    binding.screenRadioGroup -> R.id.screen5min
-                    binding.blinkRadioGroup -> R.id.blink5min
-                    else -> null
-                }
-            }
-            TIME_10_MIN -> {
-                when (radioGroup) {
-                    binding.flashRadioGroup -> R.id.flash10min
-                    binding.screenRadioGroup -> R.id.screen10min
-                    binding.blinkRadioGroup -> R.id.blink10min
-                    else -> null
-                }
-            }
-            TIME_NEVER -> {
-                when (radioGroup) {
-                    binding.flashRadioGroup -> R.id.flashNever
-                    binding.screenRadioGroup -> R.id.screenNever
-                    binding.blinkRadioGroup -> R.id.blinkNever
-                    else -> null
-                }
-            }
-            else -> null
-        }
-
-        radioButtonId?.let { id ->
-            radioGroup.check(id)
         }
     }
 
-    private fun setupClickListeners() {
-        binding.traceback.setOnClickListener {
-            finish()
-        }
-
-        binding.flashRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-            saveSetting(KEY_TYPE_FLASH, checkedId)
-        }
-
-        binding.screenRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-            saveSetting(KEY_TYPE_SCREEN, checkedId)
-        }
-
-        binding.blinkRadioGroup.setOnCheckedChangeListener { _, checkedId ->
-            saveSetting(KEY_TYPE_BLINK, checkedId)
-        }
-    }
-
-    private fun saveSetting(type: Int, checkedId: Int) {
-        val timeValue = when (checkedId) {
-            R.id.flash1min, R.id.screen1min, R.id.blink1min -> TIME_1_MIN
-            R.id.flash5min, R.id.screen5min, R.id.blink5min -> TIME_5_MIN
-            R.id.flash10min, R.id.screen10min, R.id.blink10min -> TIME_10_MIN
-            R.id.flashNever, R.id.screenNever, R.id.blinkNever -> TIME_NEVER
-            else -> TIME_5_MIN
-        }
-
-        // 3. 【核心：写入】在协程中异步保存
+    private fun saveSetting(type: Int, time: Int) {
         lifecycleScope.launch {
             when (type) {
-                KEY_TYPE_FLASH -> {
-                    DataStoreManager.setFlashlightAutoOffTime(this@AutomaticActivity, timeValue)
-                    showSaveToast(getString(R.string.title_flashlight), timeValue)
-                }
-                KEY_TYPE_SCREEN -> {
-                    DataStoreManager.setScreenAutoOffTime(this@AutomaticActivity, timeValue)
-                    showSaveToast(getString(R.string.title_screen_light), timeValue)
-                }
-                KEY_TYPE_BLINK -> {
-                    DataStoreManager.setBlinkAutoOffTime(this@AutomaticActivity, timeValue)
-                    showSaveToast(getString(R.string.title_blink), timeValue)
+                0 -> DataStoreManager.setFlashlightAutoOffTime(this@AutomaticActivity, time)
+                1 -> DataStoreManager.setScreenAutoOffTime(this@AutomaticActivity, time)
+                2 -> DataStoreManager.setBlinkAutoOffTime(this@AutomaticActivity, time)
+            }
+        }
+    }
+
+    private fun refreshUI(cards: Map<Int, LinearLayout>, selectedTime: Int) {
+        cards.forEach { (time, layout) ->
+            val isSelected = (time == selectedTime)
+            layout.isSelected = isSelected
+            // 遍历子 View 寻找所有 TextView 变色
+            for (i in 0 until layout.childCount) {
+                val child = layout.getChildAt(i)
+                if (child is TextView) {
+                    child.setTextColor(if (isSelected) selectedBlueColor else Color.WHITE)
                 }
             }
         }
     }
 
+    // --- ID 映射 (确保与 XML 保持 100% 一致) ---
+    private fun getFlashlightCards() = mapOf(
+        TIME_1_MIN to binding.flash1min,
+        TIME_5_MIN to binding.flash5min,
+        TIME_10_MIN to binding.flash10min,
+        TIME_NEVER to binding.flashNever
+    )
 
-    private fun showSaveToast(feature: String, timeValue: Int) {
-        val timeText = when (timeValue) {
-            TIME_1_MIN -> getString(R.string.auto_off_1)
-            TIME_5_MIN -> getString(R.string.auto_off_5)
-            TIME_10_MIN -> getString(R.string.auto_off_10)
-            TIME_NEVER -> getString(R.string.auto_off_never)
-            else -> getString(R.string.auto_off_5)
-        }
-        Toast.makeText(this, "$feature 已设为 $timeText", Toast.LENGTH_SHORT).show()
-    }
-    private val KEY_TYPE_FLASH = 0
-    private val KEY_TYPE_SCREEN = 1
-    private val KEY_TYPE_BLINK = 2
+    private fun getScreenCards() = mapOf(
+        TIME_1_MIN to binding.screen1min,
+        TIME_5_MIN to binding.screen5min,
+        TIME_10_MIN to binding.screen10min,
+        TIME_NEVER to binding.screenNever
+    )
+
+    private fun getBlinkCards() = mapOf(
+        TIME_1_MIN to binding.blink1min,
+        TIME_5_MIN to binding.blink5min,
+        TIME_10_MIN to binding.blink10min,
+        TIME_NEVER to binding.blinkNever
+    )
 }

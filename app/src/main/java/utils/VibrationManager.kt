@@ -27,8 +27,4 @@ object VibrationManager {
             .getBoolean("vibration_enabled", true)
     }
 
-    fun setVibrationEnabled(context: Context, enabled: Boolean) {
-        context.getSharedPreferences("vibration_settings", Context.MODE_PRIVATE)
-            .edit().putBoolean("vibration_enabled", enabled).apply()
-    }
 }

@@ -1,25 +1,42 @@
-<!-- ✅ 正确：有 pathData -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-
-    <!-- 外圈 -->
+    android:width="34dp"
+    android:height="34dp"
+    android:viewportWidth="34"
+    android:viewportHeight="34">
+    <!-- 背景淡黄色装饰圆圈 -->
     <path
-        android:fillColor="#00000000"
-        android:strokeColor="#2196F3"
-        android:strokeWidth="1.5"
-        android:pathData="M12,2 A10,10 0 1,1 12,22 A10,10 0 1,1 12,2z" />
+        android:fillColor="#FFCE64"
+        android:fillAlpha="0.34"
+        android:pathData="M17,17m-17,0a17,17 0,1 1,34,0a17,17 0,1 1,-34,0" />
 
-    <!-- 时针 -->
+    <!-- 时钟主体圆圈 -->
     <path
-        android:fillColor="#2196F3"
-        android:pathData="M12,12 L12,6 L13,6 L13,12 L12,12z" />
+        android:pathData="M17,25.3332c3.912,0 7.0833,-3.1714 7.0833,-7.0834c0,-3.912 -3.1713,-7.0833 -7.0833,-7.0833c-3.912,0 -7.08334,3.1713 -7.08334,7.0833c0,3.912 3.17134,7.0834 7.08334,7.0834z"
+        android:strokeColor="#FFE1A1"
+        android:strokeWidth="1"
+        android:strokeLineJoin="round"/>
 
-    <!-- 分针 -->
+    <!-- 顶部按钮/装饰 -->
     <path
-        android:fillColor="#2196F3"
-        android:pathData="M12,12 L16,12 L16,13 L12,13 L12,12z" />
+        android:pathData="M19.9167,8.6665H14.0833"
+        android:strokeColor="#FFE1A1"
+        android:strokeWidth="1"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
 
+    <!-- 右上角细节 -->
+    <path
+        android:pathData="M22.8333,11.1665L21.5833,12.4165"
+        android:strokeColor="#FFE1A1"
+        android:strokeWidth="1"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+
+    <!-- 时钟指针 -->
+    <path
+        android:pathData="M17,14.5V18.25"
+        android:strokeColor="#FFE1A1"
+        android:strokeWidth="1"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
 </vector>

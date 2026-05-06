@@ -1,10 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
+    <!-- 柱状图统计图标 -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M4,20 L20,20 M7,20 L7,12 L9,12 L9,20 M12,20 L12,7 L14,7 L14,20 M17,20 L17,15 L19,15 L19,20" />
+        android:pathData="M9,19v-6c0,-0.27 -0.1,-0.52 -0.29,-0.71C8.52,12.11 8.27,12 8,12H4c-0.27,0 -0.52,0.11 -0.71,0.29C3.11,12.48 3,12.73 3,13v6c0,0.27 0.11,0.52 0.29,0.71C3.48,19.89 3.73,20 4,20"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+    <path
+        android:pathData="M9,19c0,0.27 0.11,0.52 0.29,0.71c0.19,0.19 0.44,0.29 0.71,0.29h4c0.27,0 0.52,-0.1 0.71,-0.29c0.19,-0.19 0.29,-0.44 0.29,-0.71M9,19V9c0,-0.27 0.11,-0.52 0.29,-0.71C9.48,8.11 9.73,8 10,8h4c0.27,0 0.52,0.11 0.71,0.29C14.89,8.48 15,8.73 15,9v10"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+    <path
+        android:pathData="M4,20h14M15,19c0,0.27 0.11,0.52 0.29,0.71c0.19,0.19 0.44,0.29 0.71,0.29h4c0.27,0 0.52,-0.1 0.71,-0.29c0.19,-0.19 0.29,-0.44 0.29,-0.71V5c0,-0.27 -0.11,-0.52 -0.29,-0.71C20.52,4.11 20.27,4 20,4h-4c-0.27,0 -0.52,0.11 -0.71,0.29C15.11,4.48 15,4.73 15,5v14z"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
 </vector>

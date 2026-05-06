@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
+
     <corners android:radius="12dp"/>
-    <solid android:color="#A16B1B1B"/>
+
+    <!-- 背景渐变：左 → 右 -->
+    <gradient
+        android:startColor="#210D0D"
+        android:endColor="#572122"
+        android:angle="0"/>
+
+    <!-- 普通边框（⚠️ 不能渐变） -->
+    <stroke
+        android:width="1dp"
+        android:color="#612424"/>
+
 </shape>

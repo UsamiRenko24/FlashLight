@@ -23,7 +23,6 @@ class StartupModeAdapter(context: Context, private val items: List<String>) :
         textView.gravity = Gravity.CENTER
         textView.setTextColor(Color.WHITE)
         textView.setTextSize(12F)
-        // 保持未展开状态也有微量左右边距，防止贴边
         textView.setPadding(10, 0, 10, 0)
         return view
     }
@@ -33,7 +32,8 @@ class StartupModeAdapter(context: Context, private val items: List<String>) :
             text = items[position]
             gravity = Gravity.CENTER
             setTextColor(Color.WHITE)
-            setBackgroundColor(Color.parseColor("#1E293B"))
+            // 修改为深黑色背景以匹配黑金风格
+            setBackgroundColor(Color.parseColor("#0B0B0B"))
             setPadding(20, 35, 20, 35)
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -41,7 +41,6 @@ class StartupModeAdapter(context: Context, private val items: List<String>) :
             )
             textSize = 14f
         }
-
         return textView
     }
 }

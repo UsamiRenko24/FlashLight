@@ -13,17 +13,16 @@
         android:src="@drawable/traceback"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginStart="44dp"
+        android:layout_marginStart="16dp"
         android:contentDescription="返回"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="@id/tv_title"/>
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="10dp"
         android:text="@string/title_battery_monitor"
 
         android:textColor="@color/white"
@@ -36,231 +35,223 @@
         android:id="@+id/iv_settings"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="44dp"
-        android:src="@drawable/ic_settings"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_equalizer"
         android:contentDescription="设置"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/tv_title" />
     <LinearLayout
         android:id="@+id/card_container1"
-        android:layout_width="0dp"
-        android:layout_height="240dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginEnd="44dp"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/bg_green_card"
+        android:layout_width="335dp"
+        android:layout_height="174dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_grey"
         android:orientation="vertical"
         android:gravity="center"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title">
-        <ImageView
-            android:id="@+id/iv_battery_icon"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/ic_battery_75"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:id="@+id/tv_battery_percent"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.8"
-            android:gravity="center"
-            android:text="85%"
-            android:textSize="24sp"
-            android:textColor="@color/white" />
-
-        <TextView
-            android:id="@+id/tv_battery_status"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:gravity="center_horizontal"
-            android:text="⚡充电中"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:layout_weight="0.6"/>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="top">
-            <LinearLayout
-                android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="-4dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp">
+            <ImageView
+                android:id="@+id/iv_battery_icon"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_weight="1">
-                <TextView
-                    android:id="@+id/tv_state"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/time_to_full"
-                    android:textSize="14sp"
-                    android:textColor="@color/grey"/>
-                <TextView
-                    android:id="@+id/tv_time_to_full"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="1小时"
-                    android:textSize="14sp"
-                    android:textColor="@color/white"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_weight="1">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/battery_health"
-                    android:textSize="14sp"
-                    android:textColor="@color/grey"/>
-                <TextView
-                    android:id="@+id/tv_health"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/battery_health_excellent"
-                    android:textSize="14sp"
-                    android:textColor="@color/white"/>
-            </LinearLayout>
+                android:src="@drawable/ic_battery_75" />
 
+            <TextView
+                android:id="@+id/tv_battery_percent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="85%"
+                android:textSize="14sp"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/white"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/tv_battery_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="充电中"
+                android:textSize="14sp"
+                android:textColor="@color/white" />
+        </LinearLayout>
+        <View android:layout_width="match_parent"
+            android:layout_marginTop="16dp"
+            android:layout_height="1dp"
+            android:background="#33FFFFFF" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp">
+            <TextView
+                android:id="@+id/tv_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_to_full"
+                android:textSize="14sp"
+                android:textColor="@color/grey"
+                android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/tv_time_to_full"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1小时"
+                android:textSize="14sp"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+        <View android:layout_width="match_parent"
+            android:layout_marginTop="16dp"
+            android:layout_height="1dp"
+            android:background="#33FFFFFF" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/battery_health"
+                android:textSize="14sp"
+                android:textColor="@color/grey"
+                android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/tv_health"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/battery_health_excellent"
+                android:textSize="14sp"
+                android:textColor="@color/white"/>
         </LinearLayout>
 
-
     </LinearLayout>
+    <TextView
+        android:id="@+id/stats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/today_usage"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="@id/card_container2"
+        app:layout_constraintTop_toBottomOf="@id/card_container1"/>
     <LinearLayout
         android:id="@+id/card_container2"
-        android:layout_width="0dp"
-        android:layout_height="220dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginEnd="44dp"
-        android:layout_marginTop="25dp"
+        android:layout_width="335dp"
+        android:layout_height="239dp"
         android:background="@drawable/bg_grey"
         android:orientation="vertical"
-        android:paddingTop="20dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
+        android:layout_marginTop="8dp"
+        android:padding="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_container1">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/today_usage"
-            android:textColor="@color/white"
-            android:textSize="18sp"/>
+        app:layout_constraintTop_toBottomOf="@id/stats">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="6dp">
+            android:layout_height="wrap_content">
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:text="@string/title_flashlight"
-                android:layout_margin="8dp"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
-            <ProgressBar
-                android:id="@+id/progress_flashlight"
-                android:layout_width="wrap_content"
-                android:layout_height="10dp"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:progressDrawable="@drawable/progress_bar"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="8dp"
+                android:textSize="14sp"
                 android:layout_weight="1"/>
             <TextView
                 android:id="@+id/tv_flashlight_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="time"
-                android:layout_margin="8dp"
                 android:textColor="@color/grey"
                 android:textSize="14sp"/>
         </LinearLayout>
+        <ProgressBar
+            android:id="@+id/progress_flashlight"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_marginTop="10dp"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:progressDrawable="@drawable/progress_bar_gold" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center">
+            android:layout_marginTop="20dp">
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:text="@string/title_screen_light"
-                android:layout_margin="8dp"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
-            <ProgressBar
-                android:id="@+id/progress_screen_light"
-                android:layout_width="wrap_content"
-                android:layout_height="10dp"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:progressDrawable="@drawable/progress_bar"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="8dp"
+                android:textSize="14sp"
                 android:layout_weight="1"/>
             <TextView
                 android:id="@+id/tv_screen_light_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="time"
-                android:layout_margin="8dp"
                 android:textColor="@color/grey"
                 android:textSize="14sp"/>
         </LinearLayout>
+        <ProgressBar
+            android:id="@+id/progress_screen_light"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_marginTop="8dp"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:progressDrawable="@drawable/progress_bar_gold" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center">
+            android:layout_marginTop="20dp">
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:text="@string/title_blink"
-                android:layout_margin="8dp"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
-            <ProgressBar
-                android:id="@+id/progress_blink"
-                android:layout_width="wrap_content"
-                android:layout_height="10dp"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:progressDrawable="@drawable/progress_bar"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="8dp"
+                android:textSize="14sp"
                 android:layout_weight="1"/>
             <TextView
                 android:id="@+id/tv_blink_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="time"
-                android:layout_margin="8dp"
                 android:textColor="@color/grey"
                 android:textSize="14sp"/>
         </LinearLayout>
+        <ProgressBar
+            android:id="@+id/progress_blink"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_marginTop="8dp"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:progressDrawable="@drawable/progress_bar_gold" />
         <View
-            android:id="@+id/divider"
+            android:id="@+id/divider1"
             android:layout_width="wrap_content"
             android:layout_height="1dp"
             android:background="#666666"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             app:layout_constraintBottom_toTopOf="@+id/bottom_nav" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp">
+            android:layout_marginTop="20dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/total_usage"
-                android:textColor="@color/grey"
+                android:textColor="@color/white"
                 android:textSize="14sp"/>
             <TextView
                 android:id="@+id/tv_total_time"
@@ -272,44 +263,35 @@
                 android:textSize="14sp"/>
         </LinearLayout>
     </LinearLayout>
+    <TextView
+        android:id="@+id/battery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/battery_management"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@id/card_container3"
+        app:layout_constraintTop_toBottomOf="@id/card_container2" />
     <LinearLayout
         android:id="@+id/card_container3"
-        android:layout_width="0dp"
-        android:layout_height="160dp"
+        android:layout_width="335dp"
+        android:layout_height="174dp"
         android:layout_marginStart="44dp"
         android:layout_marginEnd="44dp"
-        android:layout_marginTop="25dp"
-        android:background="@drawable/bg_rounded_corner"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_grey"
         android:orientation="vertical"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_container2">
+        app:layout_constraintTop_toBottomOf="@id/battery">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:layout_weight="1">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_settings"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/battery_management"
-                android:layout_marginStart="4dp"
-                android:textColor="@color/white"
-                android:textSize="16sp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_weight="1">
+            android:layout_marginTop="18dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -323,11 +305,20 @@
                 android:layout_height="20dp"
                 android:gravity="end" />
         </LinearLayout>
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="#666666"
+            android:layout_marginTop="18dp"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_nav" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:layout_weight="1">
+            android:layout_marginTop="18dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -341,11 +332,20 @@
                 android:layout_height="20dp"
                 android:gravity="end" />
         </LinearLayout>
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="#666666"
+            android:layout_marginTop="18dp"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_nav" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:layout_weight="1">
+            android:layout_marginTop="18dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -6,7 +6,7 @@
         android:title="@string/nav_home" />
     <item
         android:id="@+id/nav_flashlight"
-        android:gravity="center_vertical"
+        android:icon="@drawable/ic_flashlight"
         android:title="@string/nav_flashlight" />
     <item
         android:id="@+id/nav_blink"

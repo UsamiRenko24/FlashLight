@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!-- 滑块主色调：你要求的亮金色 (#FFCE64) -->
+    <solid android:color="#FFCE64" />
+    <!-- 90dp 圆角，使其呈现完美椭圆状 -->
+    <corners android:radius="90dp" />
+</shape>

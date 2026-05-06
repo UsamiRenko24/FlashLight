@@ -24,13 +24,13 @@ import utils.*
 
 /**
  * 工业级模块化闪烁页面
- * 职责：负责闪烁功能的配置、控制以及硬件 Session 管理
+ * 职责：负责闪烁功能的配置控制及硬件 Session 生命周期管理
  */
 class BlinkActivity : BaseActivity<BlinkBinding>() {
 
-    // --- 1. 模块化配置 (子类只需声明) ---
+    // --- 1. 模块化声明 (声明式配置) ---
     override val pageTrackName = PageConstants.PAGE_BLINK
-    override val isBatteryMonitorEnabled = false
+    override val isBatteryMonitorEnabled = true
     override val isLowBatteryCheckEnabled = true
 
     // --- 2. 局部会话状态 ---
@@ -42,7 +42,7 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
     private var blinkJob: Job? = null
     private var timerJob: Job? = null
 
-    // --- 3. 硬件管理与常量 ---
+    // --- 3. 硬件管理与 UI 常量 ---
     private var isScreenLightSelected = false
     private var isFlashlightSelected = true   
     private lateinit var cameraManager: CameraManager
@@ -52,14 +52,14 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
     override fun createBinding(): BlinkBinding = BlinkBinding.inflate(layoutInflater)
 
     /**
-     * 职责模块 A: 初始化静态视图与资源
+     * 职责模块 A: 初始化 UI 静态表现
      */
     override fun initViews() {
         SoundManager.initSoundPool(this)
         initHardware()
         
-        // UI 默认状态设置
-        selectFrequency(1)
+        // 设置初始选中状态
+        selectFrequencyUI(1)
         binding.layoutBlink.isSelected = true
         updateSourceLayoutUI(binding.layoutBlink, true)
     }
@@ -69,7 +69,7 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
      */
     @SuppressLint("ClickableViewAccessibility")
     override fun initListeners() {
-        binding.traceback.setOnClickListener { handleBackPress() }
+        binding.traceback.setOnClickListener { stopBlinkingSession(); handleBackPress() }
         binding.ivSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
 
         // SOS 跳转逻辑
@@ -82,16 +82,16 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
             true
         }
 
-        // 光源选择逻辑
+        // 光源选择
         binding.layoutScreenLight.setOnClickListener { if (!isBlinking) toggleSourceSelection(true) }
         binding.layoutBlink.setOnClickListener { if (!isBlinking) toggleSourceSelection(false) }
 
-        // 频率选择逻辑
-        binding.cardLeft.setOnClickListener { if (!isBlinking) selectFrequency(0) }
-        binding.cardMiddle.setOnClickListener { if (!isBlinking) selectFrequency(1) }
-        binding.cardRight.setOnClickListener { if (!isBlinking) selectFrequency(2) }
+        // 频率卡片点击
+        binding.cardLeft.setOnClickListener { if (!isBlinking) selectFrequencyUI(0) }
+        binding.cardMiddle.setOnClickListener { if (!isBlinking) selectFrequencyUI(1) }
+        binding.cardRight.setOnClickListener { if (!isBlinking) selectFrequencyUI(2) }
 
-        // 主开关控制 (现代化权限集成)
+        // 主开关控制 (利用基类模块化权限请求)
         binding.btnStartBlink.setOnTouchListener { v, event ->
             handleTouchAnimation(v, event)
             if (event.action == MotionEvent.ACTION_UP) {
@@ -104,18 +104,18 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
     }
 
     /**
-     * 职责模块 C: 响应式配置观察中心
+     * 职责模块 C: 响应式观察
      */
     override fun initObservers() {
         lifecycleScope.launch {
-            // 实时同步自动关闭时长设置
+            // 实时同步 DataStore 里的自动关闭时长
             DataStoreManager.getBlinkAutoOffTime(this@BlinkActivity).collectLatest { minutes ->
                 currentAutoOffMinutes = minutes
             }
         }
     }
 
-    // --- 核心业务逻辑 (内聚化管理) ---
+    // --- 核心业务会话 (Session) ---
 
     private fun startBlinkingSession() {
         if (!isScreenLightSelected && !isFlashlightSelected) {
@@ -127,7 +127,7 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
 
         val interval = when (selectedFrequency) { 0 -> 1000L; 1 -> 500L; 2 -> 200L; else -> 500L }
         
-        // A. 开启闪烁循环 Job
+        // A. 开启硬件闪烁协程 (Blink Job)
         blinkJob?.cancel()
         blinkJob = lifecycleScope.launch {
             var isOn = false
@@ -138,7 +138,7 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
             }
         }
 
-        // B. 开启统计与判定 Job
+        // B. 开启计时与判定协程 (Timer Job)
         startTimerJob()
     }
 
@@ -178,7 +178,7 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
         } else false
     }
 
-    // --- 驱动与辅助逻辑 (私有) ---
+    // --- 硬件驱动层 ---
 
     private fun initHardware() {
         cameraManager = getSystemService(CAMERA_SERVICE) as CameraManager
@@ -216,6 +216,8 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
         }
     }
 
+    // --- 辅助 UI 逻辑 (保持纯净) ---
+
     private fun updateSourceLayoutUI(layout: LinearLayout, selected: Boolean) {
         for (i in 0 until layout.childCount) {
             val child = layout.getChildAt(i)
@@ -224,16 +226,23 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
         }
     }
 
-    private fun selectFrequency(level: Int) {
+    private fun selectFrequencyUI(level: Int) {
         selectedFrequency = level
-        listOf(binding.cardLeft, binding.cardMiddle, binding.cardRight).forEachIndexed { i, card ->
+        val cards = listOf(binding.cardLeft, binding.cardMiddle, binding.cardRight)
+        cards.forEachIndexed { i, card ->
             card.isSelected = (i == level)
-            (card.getChildAt(0) as? TextView)?.setTextColor(if (i == level) selectedBlueColor else Color.WHITE)
+            // 【核心修复】：遍历卡片内所有子 View，确保所有 TextView 都能正确变色
+            for (j in 0 until card.childCount) {
+                val child = card.getChildAt(j)
+                if (child is TextView) {
+                    child.setTextColor(if (i == level) selectedBlueColor else Color.WHITE)
+                }
+            }
         }
     }
 
     private fun updateActionUI(active: Boolean) {
-        binding.btnStartBlink.text = if (active) "⬜ " + getString(R.string.btn_blink) else getString(R.string.btn_blink)
+        binding.btnStartBlink.text = if (active) getString(R.string.btn_blink) else getString(R.string.btn_blink)
         binding.btnStartBlink.alpha = if (active) 0.3f else 1.0f
         binding.SOS.isEnabled = !active
         binding.SOS.alpha = if (active) 0.3f else 1.0f
@@ -257,8 +266,8 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
     override fun stopAllFeatures() { if (isBlinking) stopBlinkingSession() }
     override fun onPause() { super.onPause(); if (isBlinking) stopBlinkingSession() }
     
-    // 电池信息通过基类钩子自动回调
-    override fun onBatteryStatusChanged(info: BatteryRepository.BatteryInfo) {
-        // 子类接收电池信息同步 UI（如果有）
+    // 行为钩子实现
+    override fun onBatteryStatusChanged(info: utils.BatteryRepository.BatteryInfo) {
+        // 子类接收电池信息通知
     }
 }

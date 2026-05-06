@@ -1,0 +1,41 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="20dp"
+    android:height="20dp"
+    android:viewportWidth="20"
+    android:viewportHeight="20">
+    <!-- 沙漏主体填充：纯白色 (#FFFFFF) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="0.833333"
+        android:strokeLineJoin="round"
+        android:pathData="M7.0833,9.2485c0,-0.0515 -0.0242,-0.1 -0.0654,-0.1307C4.9608,7.5748 3.75,5.1533 3.75,2.5818V1.6668h12.5v0.915c0,2.5715 -1.2107,4.993 -3.268,6.536c-0.0411,0.0308 -0.0653,0.0792 -0.0653,0.1307v9.0849H7.0833V9.2485z" />
+
+    <!-- 内部细节：使用背景色 (#0E0E0E) 以在纯白填充上保持可见 -->
+    <path
+        android:strokeColor="#0E0E0E"
+        android:strokeWidth="0.833333"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M10,11.6702v1.6666" />
+
+    <!-- 边框细节：纯白色 -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="0.833333"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M7.0833,9.1668C4.985,7.593 3.75,5.123 3.75,2.5001V1.6668" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M16.2501,1.6668V2.5001c0,2.623 -1.235,5.0929 -3.3334,6.6667" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="0.833333"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M15.8334,4.5833H4.1668" />
+</vector>

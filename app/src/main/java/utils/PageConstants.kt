@@ -11,6 +11,7 @@ object PageConstants {
     const val PAGE_STATS = "stats"
     const val PAGE_SETTINGS = "settings"
     const val PAGE_LOW_BATTERY = "low_battery"
+    const val PAGE_AUTOMATIC = "automatic"
 
     val allPages = listOf(
         PAGE_HOME,
@@ -19,7 +20,7 @@ object PageConstants {
         PAGE_BLINK,
         PAGE_STATS,
         PAGE_SETTINGS,
-        PAGE_LOW_BATTERY
+        PAGE_LOW_BATTERY,
+        PAGE_AUTOMATIC
     )
-
 }

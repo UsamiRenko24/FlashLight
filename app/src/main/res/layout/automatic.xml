@@ -5,259 +5,154 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@color/gray">
+    tools:context=".AutomaticActivity"
+    android:background="#0E0E0E">
 
     <ImageView
         android:id="@+id/traceback"
         android:src="@drawable/traceback"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginStart="44dp"
+        android:layout_marginStart="16dp"
         android:contentDescription="返回"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="@id/tv_title"/>
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="10dp"
         android:text="@string/auto_off_time"
-
         android:textColor="@color/white"
         android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/card_container1"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginEnd="44dp"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/bg_rounded_corner"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        app:layout_constraintStart_toStartOf="parent"
+    <ImageView
+        android:id="@+id/iv_settings"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_equalizer"
+        android:contentDescription="设置"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_title" />
+
+    <!-- 1. 手电筒自动关闭部分 -->
+    <TextView
+        android:id="@+id/label_flash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/flashlight_auto_off"
+        android:textColor="@color/white"
+        android:layout_marginBottom="8dp"
+        android:textSize="17sp"
+        app:layout_constraintStart_toStartOf="@id/container_flash"
+        app:layout_constraintBottom_toTopOf="@id/container_flash" />
+
+    <LinearLayout
+        android:id="@+id/container_flash"
+        android:layout_width="335dp"
+        android:layout_height="110dp"        android:layout_marginTop="47dp"
+        android:background="@drawable/bg_grey"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:baselineAligned="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="@string/flashlight_auto_off"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:layout_marginBottom="6dp"/>
 
-        <RadioGroup
-            android:id="@+id/flash_radio_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <RadioButton
-                android:id="@+id/flash1min"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/auto_off_1"
-                android:textSize="14sp"
-                android:layout_weight="1"
-                android:textColor="@color/white"
-                android:padding="6dp"/>
-
-            <RadioButton
-                android:id="@+id/flash5min"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/auto_off_5"
-                android:textSize="14sp"
-                android:layout_weight="1"
-                android:textColor="@color/white"
-                android:padding="6dp"
-                android:checked="true"/>
-
-            <RadioButton
-                android:id="@+id/flash10min"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/auto_off_10"
-                android:textSize="14sp"
-                android:layout_weight="1"
-                android:textColor="@color/white"
-                android:padding="6dp"/>
-
-            <RadioButton
-                android:id="@+id/flashNever"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:text="@string/auto_off_never"
-                android:textSize="14sp"
-                android:layout_weight="1"
-                android:padding="6dp"/>
-
-        </RadioGroup>
-
-
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/card_container2"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginEnd="44dp"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/bg_rounded_corner"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_container1">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="@string/screen_auto_off"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:layout_marginBottom="6dp"/>
-
-        <RadioGroup
-            android:id="@+id/screen_radio_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <RadioButton
-                android:id="@+id/screen1min"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/auto_off_1"
-                android:textSize="14sp"
-                android:layout_weight="1"
-                android:textColor="@color/white"
-                android:padding="6dp"/>
-
-            <RadioButton
-                android:id="@+id/screen5min"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/auto_off_5"
-                android:textSize="14sp"
-                android:layout_weight="1"
-                android:textColor="@color/white"
-                android:padding="6dp"
-                android:checked="true"/>
-
-            <RadioButton
-                android:id="@+id/screen10min"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/auto_off_10"
-                android:textSize="14sp"
-                android:layout_weight="1"
-                android:textColor="@color/white"
-                android:padding="6dp"/>
-
-            <RadioButton
-                android:id="@+id/screenNever"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:text="@string/auto_off_never"
-                android:textSize="14sp"
-                android:layout_weight="1"
-                android:padding="6dp"/>
-
-        </RadioGroup>
-
-
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/card_container3"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginEnd="44dp"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/bg_rounded_corner"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_container2">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="@string/blink_auto_off"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:layout_marginBottom="6dp"/>
-
-            <RadioGroup
-                android:id="@+id/blink_radio_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <RadioButton
-                    android:id="@+id/blink1min"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/auto_off_1"
-                    android:textSize="14sp"
-                    android:layout_weight="1"
-                    android:textColor="@color/white"
-                    android:padding="6dp"/>
-
-                <RadioButton
-                    android:id="@+id/blink5min"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/auto_off_5"
-                    android:textSize="14sp"
-                    android:layout_weight="1"
-                    android:textColor="@color/white"
-                    android:padding="6dp"
-                    android:checked="true"/>
-
-                <RadioButton
-                    android:id="@+id/blink10min"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/auto_off_10"
-                    android:textSize="14sp"
-                    android:layout_weight="1"
-                    android:textColor="@color/white"
-                    android:padding="6dp"/>
-
-                <RadioButton
-                    android:id="@+id/blinkNever"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="@string/auto_off_never"
-                    android:textSize="14sp"
-                    android:layout_weight="1"
-                    android:padding="6dp"/>
-
-            </RadioGroup>
-
+        <LinearLayout android:id="@+id/flash1min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginStart="10dp" android:layout_marginEnd="11dp" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_1" android:textColor="@color/white" android:textSize="14sp"/>
         </LinearLayout>
+        <LinearLayout android:id="@+id/flash5min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_5" android:textColor="@color/white" android:textSize="14sp"/>
+        </LinearLayout>
+        <LinearLayout android:id="@+id/flash10min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_10" android:textColor="@color/white" android:textSize="14sp"/>
+        </LinearLayout>
+        <LinearLayout android:id="@+id/flashNever" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_never" android:textColor="@color/white" android:textSize="14sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 2. 屏幕补光自动关闭部分 -->
+    <TextView
+        android:id="@+id/label_screen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/screen_auto_off"
+        android:textColor="@color/white"
+        android:layout_marginBottom="8dp"
+        android:textSize="17sp"
+        app:layout_constraintStart_toStartOf="@id/container_screen"
+        app:layout_constraintBottom_toTopOf="@id/container_screen" />
+
+    <LinearLayout
+        android:id="@+id/container_screen"
+        android:layout_width="335dp"
+        android:layout_height="110dp"        android:layout_marginTop="35dp"
+        android:background="@drawable/bg_grey"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:baselineAligned="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/container_flash">
+
+        <LinearLayout android:id="@+id/screen1min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginStart="10dp" android:layout_marginEnd="11dp" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_1" android:textColor="@color/white" android:textSize="14sp"/>
+        </LinearLayout>
+        <LinearLayout android:id="@+id/screen5min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_5" android:textColor="@color/white" android:textSize="14sp"/>
+        </LinearLayout>
+        <LinearLayout android:id="@+id/screen10min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_10" android:textColor="@color/white" android:textSize="14sp"/>
+        </LinearLayout>
+        <LinearLayout android:id="@+id/screenNever" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_never" android:textColor="@color/white" android:textSize="14sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 3. 闪烁自动关闭部分 -->
+    <TextView
+        android:id="@+id/label_blink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/blink_auto_off"
+        android:textColor="@color/white"
+        android:layout_marginBottom="8dp"
+        android:textSize="17sp"
+        app:layout_constraintStart_toStartOf="@id/container_blink"
+        app:layout_constraintBottom_toTopOf="@id/container_blink" />
+
+    <LinearLayout
+        android:id="@+id/container_blink"
+        android:layout_width="335dp"
+        android:layout_height="110dp"        android:layout_marginTop="35dp"
+        android:background="@drawable/bg_grey"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:baselineAligned="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/container_screen">
+
+        <LinearLayout android:id="@+id/blink1min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginStart="10dp" android:layout_marginEnd="11dp" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_1" android:textColor="@color/white" android:textSize="14sp"/>
+        </LinearLayout>
+        <LinearLayout android:id="@+id/blink5min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_5" android:textColor="@color/white" android:textSize="14sp"/>
+        </LinearLayout>
+        <LinearLayout android:id="@+id/blink10min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_10" android:textColor="@color/white" android:textSize="14sp"/>
+        </LinearLayout>
+        <LinearLayout android:id="@+id/blinkNever" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_never" android:textColor="@color/white" android:textSize="14sp"/>
+        </LinearLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

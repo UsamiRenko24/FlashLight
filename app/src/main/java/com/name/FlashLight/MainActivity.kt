@@ -72,7 +72,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         binding.bottomNav.setOnItemSelectedListener { item -> handleNavigation(item.itemId) }
 
         binding.btnSwitch.setOnStateChangedListener { isEnabled ->
-            binding.btnSwitch.feedback()
+            // 这里修改：不再依赖全局的缓存状态，而是直接根据传入的 isEnabled 来执行震动。
+            // 解决开启震动时没反馈的问题。
+            VibrationManager.vibrate(binding.btnSwitch, forceEnabled = isEnabled)
+
             lifecycleScope.launch {
                 DataStoreManager.setVibrationEnabled(this@MainActivity, isEnabled)
             }

@@ -1,13 +1,16 @@
 package com.name.FlashLight
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.transition.AutoTransition
+import android.transition.TransitionManager
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.lifecycleScope
 import com.name.FlashLight.databinding.ScreenLightBinding
 import kotlinx.coroutines.Job
@@ -24,6 +27,8 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
 
     private var currentBrightnessLevel = 1
     private var currentColorLevel = 0
+    private var isColorMode = false
+    private var isOptionsShown = false
     
     private val colorMap = mapOf(0 to "#FFFFFFFF", 1 to "#FFFFF8DC", 2 to "#FFF0F8FF")
     private val brightnessMap = mapOf(0 to 40, 1 to 70, 2 to 100)
@@ -40,19 +45,26 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // 【核心修复】：响应式监听内存仓库的变化
         observeSessionChanges()
 
         lifecycleScope.launch {
-            // 1. 获取自动关闭时长
             totalTimeMinutes = DataStoreManager.getScreenAutoOffTime(this@ScreenLightActiveActivity).first()
             startTimer()
             timeRepository.startRecording(TimeRepository.TYPE_SCREEN_LIGHT)
         }
 
-        setupInitialState()
         setupClickListeners()
         setupBackPressedCallback()
+
+        // 初始隐藏调节选项
+        binding.layoutOptionsContainer.visibility = View.GONE
+        binding.layoutBottomDesc.visibility = View.VISIBLE
+
+        binding.root.post {
+            updateUI()
+            updateColorSelectionUI(currentColorLevel)
+            updateModeUI(0.0f) // 初始亮度模式
+        }
     }
 
     private fun observeSessionChanges() {
@@ -61,6 +73,7 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
                 if (level != -1) {
                     currentBrightnessLevel = level
                     updateUI()
+                    if (isOptionsShown && !isColorMode) updateSliderThumb(level)
                 }
             }
         }
@@ -69,6 +82,7 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
                 if (level != -1) {
                     currentColorLevel = level
                     updateUI()
+                    updateColorSelectionUI(level)
                 }
             }
         }
@@ -78,67 +92,132 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
         val brightnessValue = brightnessMap[currentBrightnessLevel] ?: 70
         val colorHex = colorMap[currentColorLevel] ?: "#FFFFFFFF"
         
-        // 混合背景色
         val brightness = (brightnessValue * 2.55).toInt()
         val color = Color.parseColor(colorHex)
-        val mixedColor = String.format("#%02X%02X%02X", 
-            Color.red(color) * brightness / 255, 
-            Color.green(color) * brightness / 255, 
-            Color.blue(color) * brightness / 255)
+        val mixedColor = Color.rgb(
+            Color.red(color) * brightness / 255,
+            Color.green(color) * brightness / 255,
+            Color.blue(color) * brightness / 255
+        )
         
-        binding.mainPage.setBackgroundColor(Color.parseColor(mixedColor))
+        binding.card2.backgroundTintList = ColorStateList.valueOf(mixedColor)
         
-        // 更新标题
-        val bText = when (currentBrightnessLevel) { 0 -> getString(R.string.brightness_low) 1 -> getString(R.string.brightness_medium) else -> getString(R.string.brightness_high) }
-        val cText = when (currentColorLevel) { 0 -> getString(R.string.color_pure) 1 -> getString(R.string.color_warm) else -> getString(R.string.color_cold) }
-        binding.tvTitle.text = "$cText - $bText"
-
-        // 更新选中项透明度
-        binding.sun1.alpha = if (currentBrightnessLevel == 0) 1.0f else 0.5f
-        binding.sun2.alpha = if (currentBrightnessLevel == 1) 1.0f else 0.5f
-        binding.sun3.alpha = if (currentBrightnessLevel == 2) 1.0f else 0.5f
+        val bText = when (currentBrightnessLevel) { 
+            0 -> getString(R.string.brightness_low) 
+            1 -> getString(R.string.brightness_medium) 
+            else -> getString(R.string.brightness_high) 
+        }
+        val cText = when (currentColorLevel) { 
+            0 -> getString(R.string.color_pure) 
+            1 -> getString(R.string.color_warm) 
+            else -> getString(R.string.color_cold) 
+        }
         
-        binding.color1.alpha = if (currentColorLevel == 0) 1.0f else 0.5f
-        binding.color2.alpha = if (currentColorLevel == 1) 1.0f else 0.5f
-        binding.color3.alpha = if (currentColorLevel == 2) 1.0f else 0.5f
-    }
-
-    private fun setupInitialState() {
-        binding.card2.visibility = View.GONE
-        binding.card3.visibility = View.GONE
+        binding.tvLightInfo.text = "$cText\n$bText"
     }
 
     private fun setupClickListeners() {
-        binding.sun.setOnClickListener { binding.card2.visibility = if (binding.card2.visibility == View.VISIBLE) View.GONE
-        else View.VISIBLE; binding.card3.visibility = View.GONE }
-        binding.palette.setOnClickListener { binding.card3.visibility = if (binding.card3.visibility == View.VISIBLE) View.GONE
-        else View.VISIBLE; binding.card2.visibility = View.GONE }
-        binding.settings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
-        binding.close.setOnClickListener { finish() }
+        binding.ivSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
+        binding.traceback.setOnClickListener { finish() }
 
-        // 点击调节：只改内存仓库
-        binding.sun1.setOnClickListener { it.feedback(); ScreenSessionRepository.updateBrightness(0) }
-        binding.sun2.setOnClickListener { it.feedback(); ScreenSessionRepository.updateBrightness(1) }
-        binding.sun3.setOnClickListener { it.feedback(); ScreenSessionRepository.updateBrightness(2) }
+        // 亮度切换
+        binding.cardLeft.setOnClickListener { it.feedback(); ScreenSessionRepository.updateBrightness(0) }
+        binding.cardMiddle.setOnClickListener { it.feedback(); ScreenSessionRepository.updateBrightness(1) }
+        binding.cardRight.setOnClickListener { it.feedback(); ScreenSessionRepository.updateBrightness(2) }
 
-        binding.color1.setOnClickListener { it.feedback(); ScreenSessionRepository.updateColor(0) }
-        binding.color2.setOnClickListener { it.feedback(); ScreenSessionRepository.updateColor(1) }
-        binding.color3.setOnClickListener { it.feedback(); ScreenSessionRepository.updateColor(2) }
+        // 颜色切换
+        binding.cardLeft1.setOnClickListener { it.feedback(); ScreenSessionRepository.updateColor(0) }
+        binding.cardMiddle1.setOnClickListener { it.feedback(); ScreenSessionRepository.updateColor(1) }
+        binding.cardRight1.setOnClickListener { it.feedback(); ScreenSessionRepository.updateColor(2) }
+
+        // 模式切换
+        binding.btnModeBrightness.setOnClickListener {
+            showOptionsIfNeeded()
+            if (isColorMode) {
+                isColorMode = false
+                updateModeUI(0.0f)
+                updateSliderThumb(currentBrightnessLevel)
+                binding.viewBrightnessThumb.visibility = View.VISIBLE
+                binding.viewSliderTrack.visibility = View.VISIBLE
+                binding.tvBrightnessLabel.text = "Brightness"
+            }
+        }
+        binding.btnModeColor.setOnClickListener {
+            showOptionsIfNeeded()
+            if (!isColorMode) {
+                isColorMode = true
+                updateModeUI(1.0f)
+                binding.viewBrightnessThumb.visibility = View.GONE
+                binding.viewSliderTrack.visibility = View.GONE
+                binding.tvBrightnessLabel.text = "Color"
+            }
+        }
+    }
+
+    private fun showOptionsIfNeeded() {
+        if (!isOptionsShown) {
+            isOptionsShown = true
+            binding.layoutOptionsContainer.visibility = View.VISIBLE
+        }
+    }
+
+    private fun updateModeUI(bias: Float) {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(binding.layoutModeSwitcher)
+        constraintSet.setHorizontalBias(R.id.view_mode_thumb, bias)
+        
+        TransitionManager.beginDelayedTransition(binding.layoutModeSwitcher, AutoTransition().apply {
+            duration = 200
+            interpolator = DecelerateInterpolator()
+        })
+        constraintSet.applyTo(binding.layoutModeSwitcher)
+
+        binding.groupBrightnessOptions.visibility = if (isColorMode) View.GONE else View.VISIBLE
+        binding.groupColorOptions.visibility = if (isColorMode) View.VISIBLE else View.GONE
+        
+        binding.btnModeBrightness.alpha = if (isColorMode) 0.5f else 1.0f
+        binding.btnModeColor.alpha = if (isColorMode) 1.0f else 0.5f
+    }
+
+    private fun updateSliderThumb(level: Int) {
+        val bias = when (level) {
+            0 -> 0.0f
+            1 -> 0.5f
+            else -> 1.0f
+        }
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(binding.layoutOptionsContainer)
+        constraintSet.setHorizontalBias(R.id.view_brightness_thumb, bias)
+        
+        TransitionManager.beginDelayedTransition(binding.layoutOptionsContainer, AutoTransition().apply {
+            duration = 250
+            interpolator = DecelerateInterpolator()
+        })
+        constraintSet.applyTo(binding.layoutOptionsContainer)
+    }
+
+    private fun updateColorSelectionUI(level: Int) {
+        val views = listOf(binding.cardLeft1, binding.cardMiddle1, binding.cardRight1)
+        views.forEachIndexed { index, view ->
+            view.alpha = if (index == level) 1.0f else 0.5f
+            view.animate().scaleX(if (index == level) 1.2f else 1.0f)
+                .scaleY(if (index == level) 1.2f else 1.0f)
+                .setDuration(200).start()
+        }
     }
 
     private fun startTimer() {
         timerJob?.cancel()
         startTime = System.currentTimeMillis()
-        timerJob = lifecycleScope.launch { // 启动协程
-            while (true) { // 只要任务没被取消，就一直循环
+        timerJob = lifecycleScope.launch {
+            while (true) {
                 val elapsedMinutes = (System.currentTimeMillis() - startTime)/ 60000f
                 if (elapsedMinutes < 114514 && elapsedMinutes >= totalTimeMinutes){
                     stopTimer()
                     navigateToMain()
                     break
                 }
-                updateUI() // 逻辑入口
-                delay(1000)   // 挂起 1 秒，不卡界面
+                delay(1000)
             }
         }
     }
@@ -146,7 +225,6 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
     private fun stopTimer() {
         timerJob?.cancel()
         timerJob = null
-        updateUI()
     }
 
     private fun navigateToMain() {
