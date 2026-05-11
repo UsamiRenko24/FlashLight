@@ -13,7 +13,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.name.FlashLight.databinding.BlinkBinding
 import com.name.FlashLight.utils.PageConstants
 import kotlinx.coroutines.Job
@@ -24,16 +26,13 @@ import utils.*
 
 /**
  * 工业级模块化闪烁页面
- * 职责：负责闪烁功能的配置控制及硬件 Session 生命周期管理
  */
 class BlinkActivity : BaseActivity<BlinkBinding>() {
 
-    // --- 1. 模块化声明 (声明式配置) ---
     override val pageTrackName = PageConstants.PAGE_BLINK
     override val isBatteryMonitorEnabled = true
     override val isLowBatteryCheckEnabled = true
 
-    // --- 2. 局部会话状态 ---
     private var isBlinking = false
     private var selectedFrequency = 1  
     private var currentAutoOffMinutes = 5
@@ -42,37 +41,30 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
     private var blinkJob: Job? = null
     private var timerJob: Job? = null
 
-    // --- 3. 硬件管理与 UI 常量 ---
     private var isScreenLightSelected = false
     private var isFlashlightSelected = true   
     private lateinit var cameraManager: CameraManager
     private var cameraId: String? = null
-    private val selectedBlueColor = Color.parseColor("#4786EF")
+    
+    private val selectedBlueColor = Color.parseColor("#2AE1F8")
 
     override fun createBinding(): BlinkBinding = BlinkBinding.inflate(layoutInflater)
 
-    /**
-     * 职责模块 A: 初始化 UI 静态表现
-     */
     override fun initViews() {
         SoundManager.initSoundPool(this)
         initHardware()
+        binding.bottomNav.selectedItemId = R.id.nav_blink
         
-        // 设置初始选中状态
         selectFrequencyUI(1)
         binding.layoutBlink.isSelected = true
         updateSourceLayoutUI(binding.layoutBlink, true)
     }
 
-    /**
-     * 职责模块 B: 事件监听集中营
-     */
     @SuppressLint("ClickableViewAccessibility")
     override fun initListeners() {
         binding.traceback.setOnClickListener { stopBlinkingSession(); handleBackPress() }
         binding.ivSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
 
-        // SOS 跳转逻辑
         binding.SOS.setOnTouchListener { v, event ->
             handleTouchAnimation(v, event)
             if (event.action == MotionEvent.ACTION_UP) {
@@ -82,16 +74,16 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
             true
         }
 
-        // 光源选择
         binding.layoutScreenLight.setOnClickListener { if (!isBlinking) toggleSourceSelection(true) }
         binding.layoutBlink.setOnClickListener { if (!isBlinking) toggleSourceSelection(false) }
 
-        // 频率卡片点击
         binding.cardLeft.setOnClickListener { if (!isBlinking) selectFrequencyUI(0) }
         binding.cardMiddle.setOnClickListener { if (!isBlinking) selectFrequencyUI(1) }
         binding.cardRight.setOnClickListener { if (!isBlinking) selectFrequencyUI(2) }
 
-        // 主开关控制 (利用基类模块化权限请求)
+        binding.bottomNav.setOnItemSelectedListener { item ->
+            handleNavigation(item.itemId)
+        }
         binding.btnStartBlink.setOnTouchListener { v, event ->
             handleTouchAnimation(v, event)
             if (event.action == MotionEvent.ACTION_UP) {
@@ -103,20 +95,87 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
         }
     }
 
-    /**
-     * 职责模块 C: 响应式观察
-     */
     override fun initObservers() {
+
         lifecycleScope.launch {
-            // 实时同步 DataStore 里的自动关闭时长
-            DataStoreManager.getBlinkAutoOffTime(this@BlinkActivity).collectLatest { minutes ->
-                currentAutoOffMinutes = minutes
+
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                launch {
+
+                    DataStoreManager
+                        .getBlinkAutoOffTime(this@BlinkActivity)
+                        .collectLatest { minutes ->
+
+                            currentAutoOffMinutes = minutes
+
+                            android.util.Log.d(
+                                "AUTO_OFF",
+                                "minutes=$minutes"
+                            )
+                        }
+                }
             }
         }
     }
 
-    // --- 核心业务会话 (Session) ---
+    private fun handleNavigation(itemId: Int): Boolean {
 
+        when (itemId) {
+
+            R.id.nav_blink -> return true
+
+            R.id.nav_flashlight -> {
+                startActivity(
+                    Intent(this, FlashlightActivity::class.java)
+                )
+                finish()
+                overridePendingTransition(
+                    android.R.anim.fade_in,
+                    android.R.anim.fade_out
+                )
+                return false
+            }
+
+            R.id.nav_home -> {
+                startActivity(
+                    Intent(this, MainActivity::class.java)
+                )
+                finish()
+                overridePendingTransition(
+                    android.R.anim.fade_in,
+                    android.R.anim.fade_out
+                )
+                return false
+            }
+
+            R.id.nav_stats -> {
+                startActivity(
+                    Intent(this, StatsActivity::class.java)
+                )
+                finish()
+                overridePendingTransition(
+                    android.R.anim.fade_in,
+                    android.R.anim.fade_out
+                )
+                return false
+            }
+
+            R.id.nav_settings -> {
+                startActivity(
+                    Intent(this, SettingsActivity::class.java)
+                )
+                finish()
+                overridePendingTransition(
+                    android.R.anim.fade_in,
+                    android.R.anim.fade_out
+                )
+                return false
+            }
+        }
+
+        return false
+    }
     private fun startBlinkingSession() {
         if (!isScreenLightSelected && !isFlashlightSelected) {
             Toast.makeText(this, getString(R.string.at_least_choose_one_light_source), Toast.LENGTH_SHORT).show()
@@ -127,7 +186,6 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
 
         val interval = when (selectedFrequency) { 0 -> 1000L; 1 -> 500L; 2 -> 200L; else -> 500L }
         
-        // A. 开启硬件闪烁协程 (Blink Job)
         blinkJob?.cancel()
         blinkJob = lifecycleScope.launch {
             var isOn = false
@@ -138,7 +196,6 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
             }
         }
 
-        // B. 开启计时与判定协程 (Timer Job)
         startTimerJob()
     }
 
@@ -178,8 +235,6 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
         } else false
     }
 
-    // --- 硬件驱动层 ---
-
     private fun initHardware() {
         cameraManager = getSystemService(CAMERA_SERVICE) as CameraManager
         try {
@@ -192,10 +247,14 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
     }
 
     private fun applyHardwareLightState(on: Boolean) {
+        if (isFinishing || isDestroyed) return
+        
         if (isScreenLightSelected) {
-            val lp = window.attributes
-            lp.screenBrightness = if (on) 1.0f else -1.0f
-            window.attributes = lp
+            try {
+                val lp = window.attributes
+                lp.screenBrightness = if (on) 1.0f else -1.0f
+                window.attributes = lp
+            } catch (e: Exception) { e.printStackTrace() }
         }
         if (isFlashlightSelected) {
             try { cameraId?.let { cameraManager.setTorchMode(it, on) } } catch (e: Exception) { }
@@ -216,8 +275,6 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
         }
     }
 
-    // --- 辅助 UI 逻辑 (保持纯净) ---
-
     private fun updateSourceLayoutUI(layout: LinearLayout, selected: Boolean) {
         for (i in 0 until layout.childCount) {
             val child = layout.getChildAt(i)
@@ -231,7 +288,6 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
         val cards = listOf(binding.cardLeft, binding.cardMiddle, binding.cardRight)
         cards.forEachIndexed { i, card ->
             card.isSelected = (i == level)
-            // 【核心修复】：遍历卡片内所有子 View，确保所有 TextView 都能正确变色
             for (j in 0 until card.childCount) {
                 val child = card.getChildAt(j)
                 if (child is TextView) {
@@ -242,7 +298,6 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
     }
 
     private fun updateActionUI(active: Boolean) {
-        binding.btnStartBlink.text = if (active) getString(R.string.btn_blink) else getString(R.string.btn_blink)
         binding.btnStartBlink.alpha = if (active) 0.3f else 1.0f
         binding.SOS.isEnabled = !active
         binding.SOS.alpha = if (active) 0.3f else 1.0f
@@ -260,14 +315,11 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
 
     private fun navigateToMain() {
         startActivity(Intent(this, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK })
+        overridePendingTransition(0, 0)
         finish()
     }
 
     override fun stopAllFeatures() { if (isBlinking) stopBlinkingSession() }
     override fun onPause() { super.onPause(); if (isBlinking) stopBlinkingSession() }
-    
-    // 行为钩子实现
-    override fun onBatteryStatusChanged(info: utils.BatteryRepository.BatteryInfo) {
-        // 子类接收电池信息通知
-    }
+    override fun onBatteryStatusChanged(info: BatteryRepository.BatteryInfo) {}
 }

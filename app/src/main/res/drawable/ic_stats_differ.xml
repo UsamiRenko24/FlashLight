@@ -8,7 +8,7 @@
         android:fillColor="#FFCE64"
         android:fillAlpha="0.34"
         android:pathData="M17,17m-17,0a17,17 0,1 1,34 0a17,17 0,1 1,-34 0" />
-    <!-- Stats Bars Icon -->
+    <!-- Stats Bars -->
     <path
         android:strokeColor="#FFFFFF"
         android:strokeWidth="1"

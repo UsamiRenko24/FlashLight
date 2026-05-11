@@ -6,11 +6,14 @@
     <uses-permission android:name="android.permission.BATTERY_STATS"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"
-        android:maxSdkVersion="22" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <uses-feature
         android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.camera.flash"
         android:required="false" />
 
     <application
@@ -29,15 +32,22 @@
             android:exported="false">
         </activity>
 
+        <!-- 核心修复：应用 Splash 主题 -->
         <activity
             android:name=".SplashActivity"
             android:exported="true"
+            android:theme="@style/Theme.FlashLight.Splash"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".OnboardingActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <activity android:name=".FlashlightActivity" android:exported="true" />
         <activity android:name=".BlinkActivity" android:exported="true" />

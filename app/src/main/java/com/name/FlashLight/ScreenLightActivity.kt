@@ -8,6 +8,7 @@ import android.transition.AutoTransition
 import android.transition.TransitionManager
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
@@ -46,6 +47,23 @@ class ScreenLightActivity : BaseActivity<ScreenBinding>() {
 
     override fun createBinding(): ScreenBinding = ScreenBinding.inflate(layoutInflater)
 
+    override fun onResume() {
+        super.onResume()
+
+        if (
+            AutoBrightnessManager
+                .getAutoBrightnessState(this)
+        ) {
+
+            val lp = window.attributes
+
+            lp.screenBrightness =
+                WindowManager.LayoutParams
+                    .BRIGHTNESS_OVERRIDE_NONE
+
+            window.attributes = lp
+        }
+    }
     /**
      * 职责模块 A: 初始化静态 UI 与资源
      */
@@ -82,7 +100,7 @@ class ScreenLightActivity : BaseActivity<ScreenBinding>() {
             })
         }
 
-        binding.tvScreenTime.setOnClickListener {
+        binding.layoutAutoOff.setOnClickListener {
             startActivity(Intent(this, AutomaticActivity::class.java))
         }
 

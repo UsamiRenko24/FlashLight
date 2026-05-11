@@ -3,12 +3,10 @@ package com.name.FlashLight
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Color
+import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
-import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -18,33 +16,27 @@ import androidx.lifecycle.lifecycleScope
 import com.name.FlashLight.databinding.SosBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import utils.BatteryRepository
 import utils.DataStoreManager
 import utils.TimeRepository
 import utils.toCountdownDisplay
-import utils.toDetailedTime
 import utils.toDigitalTime
 
 class SOSActivity : BaseActivity<SosBinding>() {
 
-    // 手电筒控制
     private lateinit var cameraManager: CameraManager
     private var cameraId: String? = null
 
-    // SOS闪烁控制
     private var isSosActive = false
     private var sosHandler = Handler(Looper.getMainLooper())
+    private var cycleCount = 0
+    private var startTime = 0L
 
-    // 统计相关
-    private var cycleCount = 0  // 当前会话的循环次数
-    private var startTime = 0L  // 开始时间
-
-    private val Timerhandler = Handler(Looper.getMainLooper())
-    private lateinit var timerRunnable: Runnable
+    private val timerHandler = Handler(Looper.getMainLooper())
     private var isTimerRunning = false
-
     private var haloAnimator: AnimatorSet? = null
+    private var currentAutoOffMinutes = 5
 
-    // SOS摩斯码时序
     companion object {
         private const val DOT_ON = 200L
         private const val DASH_ON = 600L
@@ -63,213 +55,63 @@ class SOSActivity : BaseActivity<SosBinding>() {
 
     private enum class Signal { DOT, DASH, GAP, CYCLE_GAP }
 
-    override fun createBinding(): SosBinding {
-        return SosBinding.inflate(layoutInflater)
-    }
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        initViews()
-        initFlashlight()
-        updateBatteryInfo()
-        startBatteryMonitor()
-        initTimer()
-
-        timeRepository.startRecording(TimeRepository.TYPE_BLINK)
-        startRecording()
-        startTime = System.currentTimeMillis()
-
-        startSOS()
-        startTimer()
-        startHaloAnimation() 
-    }
+    override fun createBinding(): SosBinding = SosBinding.inflate(layoutInflater)
 
     override fun initViews() {
         binding.siganl.text = ". . . _ _ _ . . ."
-        binding.tvSosCycles.text = "0${getString(R.string.times)}"
+        binding.tvSosCycles.text = "0 ${getString(R.string.times)}"
+        // XML 中 ID 是 last_time，ViewBinding 转为 lastTime
         binding.lastTime.text = "00:00"
+        initFlashlight()
+        startHaloAnimation()
     }
 
-    private fun startHaloAnimation() {
-        if (haloAnimator != null) return
-        binding.sosHalo.visibility = View.VISIBLE
-        binding.sosHalo.translationZ = 4f 
-
-        val scaleX = ObjectAnimator.ofFloat(binding.sosHalo, "scaleX", 1.0f, 1.15f)
-        val scaleY = ObjectAnimator.ofFloat(binding.sosHalo, "scaleY", 1.0f, 1.15f)
-        val alpha = ObjectAnimator.ofFloat(binding.sosHalo, "alpha", 1.0f, 1.2f)
-
-        scaleX.repeatCount = ValueAnimator.INFINITE
-        scaleX.repeatMode = ValueAnimator.REVERSE
-        scaleY.repeatCount = ValueAnimator.INFINITE
-        scaleY.repeatMode = ValueAnimator.REVERSE
-        alpha.repeatCount = ValueAnimator.INFINITE
-        alpha.repeatMode = ValueAnimator.REVERSE
-
-        haloAnimator = AnimatorSet().apply {
-            playTogether(scaleX, scaleY, alpha)
-            duration = 1000 
-            interpolator = AccelerateDecelerateInterpolator()
-            start()
-        }
+    override fun initListeners() {
+        binding.traceback.setOnClickListener { handleBackPress() }
     }
 
-    private fun initTimer() {
-        timerRunnable = object : Runnable {
-            override fun run() {
-                if (isTimerRunning) {
-                    updateDuration()  
-                    Timerhandler.postDelayed(this, 1000)
-                }
-            }
-        }
-    }
-
-    private fun startRecording() {
-        startTime = System.currentTimeMillis()
-        isTimerRunning = true
-        cycleCount = 0  
-        binding.tvSosCycles.text = "0${getString(R.string.times)}"
-        Timerhandler.post(timerRunnable)
-    }
-
-    private fun stopRecording() {
-        isTimerRunning = false
-        Timerhandler.removeCallbacks(timerRunnable)
-    }
-
-    private fun updateDuration() {
-        // 1. 计算已经过的时间
-        val elapsedMinutes = (System.currentTimeMillis() - startTime) / 1000f / 60f
-        binding.lastTime.text = elapsedMinutes.toDigitalTime()
-
-        // 2. 获取配置的自动关闭总时间
-        val autoOffMinutes = getAutoOffTime()
-        val remainingMinutes = (autoOffMinutes - elapsedMinutes).coerceAtLeast(0f)
-
-        // 3. 【核心精简】一行代码搞定：文字会自动在 “04:59” 和 “永不关闭” 之间切换
-        binding.remainTime.text = remainingMinutes.toCountdownDisplay(autoOffMinutes, this)
-
-        // 4. 只有在需要倒计时时才更新进度条和执行退出
-        if (autoOffMinutes < 114514) {
-            val progress = (elapsedMinutes * 100 / autoOffMinutes).toInt().coerceIn(0, 100)
-            binding.progressBlink.progress = progress
-            if (remainingMinutes <= 0) navigateToMain()
-        } else {
-            binding.progressBlink.progress = 0
-        }
-    }
-
-    private fun navigateToMain() {
-        val intent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        startActivity(intent)
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-        finish()
-    }
-
-    private fun startSOS() {
-        if (cameraId == null) return
-
-        isSosActive = true
-        val sosRunnable = object : Runnable {
-            var sequenceIndex = 0
-
-            override fun run() {
-                if (!isSosActive) return
-                val signal = sosSequence[sequenceIndex]
-
-                when (signal) {
-                    Signal.DOT -> {
-                        setFlashlightAndColor(true)
-                        sosHandler.postDelayed({
-                            setFlashlightAndColor(false)
-                            moveToNext()
-                        }, DOT_ON)
-                    }
-                    Signal.DASH -> {
-                        setFlashlightAndColor(true)
-                        sosHandler.postDelayed({
-                            setFlashlightAndColor(false)
-                            moveToNext()
-                        }, DASH_ON)
-                    }
-                    Signal.GAP -> {
-                        setFlashlightAndColor(false)
-                        moveToNextDelayed(CHAR_GAP)
-                    }
-                    Signal.CYCLE_GAP -> {
-                        setFlashlightAndColor(false)
-                        sequenceIndex = -1
-                        runOnUiThread {
-                            cycleCount++
-                            binding.tvSosCycles.text = "$cycleCount ${getString(R.string.times)}"
-                        }
-                        moveToNextDelayed(CYCLE_GAP)
-                    }
-                }
-            }
-
-            private fun moveToNext() {
-                sequenceIndex++
-                if (sequenceIndex < sosSequence.size) sosHandler.post(this)
-            }
-
-            private fun moveToNextDelayed(delay: Long) {
-                sequenceIndex++
-                if (sequenceIndex < sosSequence.size) sosHandler.postDelayed(this, delay)
-            }
-        }
-        sosHandler.post(sosRunnable)
-    }
-
-    private fun updateBatteryInfo() {
-        val batteryIntent = registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-        batteryIntent?.let { intent ->
-            val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-            val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
-            val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-
-            val batteryPct = if (level > 0 && scale > 0) level * 100f / scale else 0f
-            val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
-
-            val statusText = when {
-                status == BatteryManager.BATTERY_STATUS_FULL -> getString(R.string.battery_status_full)
-                isCharging -> getString(R.string.battery_charging)
-                else -> getString(R.string.battery_not_charging)
-            }
-
-            binding.tvBatteryPercent.text = String.format("%.0f%%", batteryPct)
-            binding.tvBatteryStatus.text = statusText
-        }
-    }
-
-    private fun getAutoOffTime(): Int {
-        var currentAutoOffMinutes = 5
+    override fun initObservers() {
         lifecycleScope.launch {
             DataStoreManager.getFlashlightAutoOffTime(this@SOSActivity).collectLatest { minutes ->
                 currentAutoOffMinutes = minutes
             }
         }
-        return currentAutoOffMinutes
     }
 
-    private fun initFlashlight() {
-        cameraManager = getSystemService(CAMERA_SERVICE) as CameraManager
-        try {
-            cameraId = cameraManager.cameraIdList.firstOrNull { id ->
-                val characteristics = cameraManager.getCameraCharacteristics(id)
-                characteristics.get(android.hardware.camera2.CameraCharacteristics.FLASH_INFO_AVAILABLE) ?: false
-            }
-        } catch (e: Exception) { }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // 自动开始逻辑
+        timeRepository.startRecording(TimeRepository.TYPE_BLINK)
+        startTime = System.currentTimeMillis()
+        isTimerRunning = true
+        startSOS()
+        startTimer()
+    }
+
+    private fun startHaloAnimation() {
+        if (haloAnimator != null) return
+        binding.sosHalo.visibility = View.VISIBLE
+        val scaleX = ObjectAnimator.ofFloat(binding.sosHalo, "scaleX", 1.0f, 1.15f)
+        val scaleY = ObjectAnimator.ofFloat(binding.sosHalo, "scaleY", 1.0f, 1.15f)
+        val alpha = ObjectAnimator.ofFloat(binding.sosHalo, "alpha", 0.6f, 1.0f)
+
+        listOf(scaleX, scaleY, alpha).forEach {
+            it.repeatCount = ValueAnimator.INFINITE
+            it.repeatMode = ValueAnimator.REVERSE
+        }
+
+        haloAnimator = AnimatorSet().apply {
+            playTogether(scaleX, scaleY, alpha)
+            duration = 1000
+            interpolator = AccelerateDecelerateInterpolator()
+            start()
+        }
     }
 
     private fun startTimer() {
-        val timerHandler = Handler(Looper.getMainLooper())
         val timerRunnable = object : Runnable {
             override fun run() {
-                if (isSosActive) {
+                if (isTimerRunning && !isFinishing) {
                     updateDuration()
                     timerHandler.postDelayed(this, 1000)
                 }
@@ -278,44 +120,108 @@ class SOSActivity : BaseActivity<SosBinding>() {
         timerHandler.post(timerRunnable)
     }
 
-    private fun setFlashlightAndColor(on: Boolean) {
-        try { cameraManager.setTorchMode(cameraId!!, on) } catch (e: Exception) { }
-        runOnUiThread {
-            binding.siganl.setTextColor(if (on) Color.WHITE else Color.parseColor("#FF9E9E9E"))
+    private fun updateDuration() {
+        val elapsedMinutes = (System.currentTimeMillis() - startTime) / 60000f
+        binding.lastTime.text = elapsedMinutes.toDigitalTime()
+
+        val remainingMinutes = (currentAutoOffMinutes - elapsedMinutes).coerceAtLeast(0f)
+        binding.remainTime.text = remainingMinutes.toCountdownDisplay(currentAutoOffMinutes, this)
+
+        if (currentAutoOffMinutes < 114514) {
+            val progress = (elapsedMinutes * 100 / currentAutoOffMinutes).toInt().coerceIn(0, 100)
+            binding.progressBlink.progress = progress
+            if (remainingMinutes <= 0) navigateToMain()
         }
     }
 
-    private fun startBatteryMonitor() {
-        val handler = Handler(Looper.getMainLooper())
-        val runnable = object : Runnable {
+    private fun navigateToMain() {
+        startActivity(Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        })
+        finish()
+    }
+
+    private fun startSOS() {
+        if (cameraId == null) return
+        isSosActive = true
+        val sosRunnable = object : Runnable {
+            var sequenceIndex = 0
             override fun run() {
-                updateBatteryInfo()
-                handler.postDelayed(this, 1000)
+                if (!isSosActive || isFinishing) return
+                val signal = sosSequence[sequenceIndex]
+                when (signal) {
+                    Signal.DOT -> {
+                        setFlashlightAndColor(true)
+                        sosHandler.postDelayed({ setFlashlightAndColor(false); moveToNext() }, DOT_ON)
+                    }
+                    Signal.DASH -> {
+                        setFlashlightAndColor(true)
+                        sosHandler.postDelayed({ setFlashlightAndColor(false); moveToNext() }, DASH_ON)
+                    }
+                    Signal.GAP -> {
+                        setFlashlightAndColor(false)
+                        moveToNextDelayed(CHAR_GAP)
+                    }
+                    Signal.CYCLE_GAP -> {
+                        setFlashlightAndColor(false)
+                        sequenceIndex = -1
+                        cycleCount++
+                        binding.tvSosCycles.text = "$cycleCount ${getString(R.string.times)}"
+                        moveToNextDelayed(CYCLE_GAP)
+                    }
+                }
+            }
+            private fun moveToNext() {
+                sequenceIndex++
+                if (sequenceIndex < sosSequence.size) sosHandler.post(this)
+            }
+            private fun moveToNextDelayed(delay: Long) {
+                sequenceIndex++
+                if (sequenceIndex < sosSequence.size) sosHandler.postDelayed(this, delay)
             }
         }
-        handler.post(runnable)
+        sosHandler.post(sosRunnable)
+    }
+
+    private fun setFlashlightAndColor(on: Boolean) {
+        if (isFinishing || isDestroyed) return
+        try { cameraId?.let { cameraManager.setTorchMode(it, on) } } catch (e: Exception) {}
+        runOnUiThread {
+            binding.siganl.setTextColor(if (on) Color.WHITE else Color.parseColor("#666666"))
+            binding.ivSosIcon.setColorFilter(if (on) Color.parseColor("#FFCE64") else Color.parseColor("#666666"))
+        }
+    }
+
+    override fun onBatteryStatusChanged(info: BatteryRepository.BatteryInfo) {
+        binding.apply {
+            tvBatteryPercent.text = info.levelText
+            tvBatteryStatus.text = info.status
+            ivBatteryIcon.setImageResource(info.iconRes)
+        }
+    }
+
+    private fun initFlashlight() {
+        cameraManager = getSystemService(CAMERA_SERVICE) as CameraManager
+        try {
+            cameraId = cameraManager.cameraIdList.firstOrNull { id ->
+                val chars = cameraManager.getCameraCharacteristics(id)
+                chars.get(CameraCharacteristics.FLASH_INFO_AVAILABLE) == true
+            }
+        } catch (e: Exception) {}
     }
 
     override fun onPause() {
-        timeRepository.stopRecording(TimeRepository.TYPE_BLINK)
-        stopRecording()
-        super.onPause()
         isSosActive = false
+        isTimerRunning = false
         sosHandler.removeCallbacksAndMessages(null)
-        try { cameraManager.setTorchMode(cameraId!!, false) } catch (e: Exception) { }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (!isTimerRunning) startRecording()
-        if (!isSosActive) startSOS()
+        timerHandler.removeCallbacksAndMessages(null)
+        try { cameraId?.let { cameraManager.setTorchMode(it, false) } } catch (e: Exception) {}
+        timeRepository.stopRecording(TimeRepository.TYPE_BLINK)
+        super.onPause()
     }
 
     override fun onDestroy() {
-        if (isSosActive) stopRecording()
-        super.onDestroy()
-        isSosActive = false
-        sosHandler.removeCallbacksAndMessages(null)
         haloAnimator?.cancel()
+        super.onDestroy()
     }
 }

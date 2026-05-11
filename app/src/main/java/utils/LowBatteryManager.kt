@@ -31,18 +31,15 @@ object LowBatteryManager {
 
     /**
      * 检查电量及充电状态
-     * @param isCharging 是否正在充电。如果是，则不进入或退出低电量模式。
      */
     fun checkBatteryLevel(context: Context, level: Int, isCharging: Boolean = false) {
         if (!isProtectionEnabled(context)) return
 
         val isActive = isLowBatteryModeActive(context)
         
-        // 退出条件：电量高于阈值 OR 正在充电
         if ((level > LOW_BATTERY_THRESHOLD || isCharging) && isActive) {
             exitLowBatteryMode(context)
         } 
-        // 进入条件：电量低于等于阈值 AND 不在充电 AND 当前未激活
         else if (level <= LOW_BATTERY_THRESHOLD && !isCharging && !isActive) {
             enterLowBatteryMode(context, level)
         }
@@ -54,6 +51,7 @@ object LowBatteryManager {
         stopAllFeatures(context)
 
         handler.postDelayed({
+            // 启动 LowBatteryActivity 时清理任务栈，避免冗余的 Window 状态
             val intent = Intent(context, LowBatteryActivity::class.java).apply {
                 putExtra("battery_level", level)
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -66,7 +64,6 @@ object LowBatteryManager {
         setModeActive(context, false)
         restoreSystemBrightness(context)
         
-        // 发送通知，让 LowBatteryActivity 知道该自动关闭了
         val intent = Intent("ACTION_EXIT_LOW_BATTERY_DISPLAY")
         intent.setPackage(context.packageName)
         context.sendBroadcast(intent)
@@ -74,12 +71,19 @@ object LowBatteryManager {
 
     /**
      * 核心方法：应用 30% 亮度
+     * 增加 isFinishing 校验防止 DeadObjectException
      */
     fun applyLowBatteryBrightness(context: Context) {
-        if (isLowBatteryModeActive(context) && context is Activity) {
-            val layoutParams = context.window.attributes
-            layoutParams.screenBrightness = 0.3f
-            context.window.attributes = layoutParams
+        if (context is Activity && !context.isFinishing && !context.isDestroyed) {
+            if (isLowBatteryModeActive(context)) {
+                try {
+                    val layoutParams = context.window.attributes
+                    layoutParams.screenBrightness = 0.3f
+                    context.window.attributes = layoutParams
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
         }
     }
 
@@ -87,10 +91,14 @@ object LowBatteryManager {
      * 恢复系统默认亮度
      */
     fun restoreSystemBrightness(context: Context) {
-        if (context is Activity) {
-            val layoutParams = context.window.attributes
-            layoutParams.screenBrightness = -1.0f // -1 表示恢复系统设置
-            context.window.attributes = layoutParams
+        if (context is Activity && !context.isFinishing && !context.isDestroyed) {
+            try {
+                val layoutParams = context.window.attributes
+                layoutParams.screenBrightness = -1.0f 
+                context.window.attributes = layoutParams
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

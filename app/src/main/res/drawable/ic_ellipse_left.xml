@@ -1,9 +1,10 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="40dp"
-    android:height="40dp"
-    android:viewportWidth="40"
-    android:viewportHeight="40">
-    <path
-        android:fillColor="#273135"
-        android:pathData="M39.5,0.5m-39.5,0a39.5,39.5 0,1 1,79 0a39.5,39.5 0,1 1,-79 0" />
-</vector>
+<!-- bg_corner_right_top.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <solid android:color="#273135"/>
+
+    <corners
+        android:topRightRadius="12dp"
+        android:bottomLeftRadius="40dp"/>
+
+</shape>

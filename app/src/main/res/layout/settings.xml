@@ -10,8 +10,8 @@
 
     <ImageView
         android:id="@+id/traceback"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginStart="16dp"
         android:contentDescription="返回"
         android:src="@drawable/traceback"
@@ -29,16 +29,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/iv_settings"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="16dp"
-        android:contentDescription="设置"
-        android:src="@drawable/ic_equalizer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_title" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_view"
@@ -72,11 +62,15 @@
 
                 <!-- 自动关闭时间 -->
                 <LinearLayout
+                    android:id="@+id/layout_auto_off"
                     android:layout_width="match_parent"
                     android:layout_height="68dp"
                     android:gravity="center_vertical"
                     android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
+                    android:paddingEnd="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
 
                     <ImageView
                         android:layout_width="34dp"
@@ -110,7 +104,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#33FFFFFF" />
+                    android:background="#131313" />
 
                 <!-- 启动模式 -->
                 <LinearLayout
@@ -141,13 +135,18 @@
                             android:textSize="14sp" />
                     </LinearLayout>
 
-                    <Spinner
-                        android:id="@+id/spinner_startup_mode"
+                    <!-- 使用 TextView 模拟 Spinner -->
+                    <TextView
+                        android:id="@+id/tv_startup_mode"
                         android:layout_width="100dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="32dp"
                         android:background="@drawable/bg_spinner_button"
-                        android:dropDownSelector="@drawable/spinner_selector_gold"
-                        android:popupBackground="@drawable/bg_spinner_popup_gold" />
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        tools:text="上次用" />
                 </LinearLayout>
 
                 <View
@@ -184,13 +183,18 @@
                             android:textSize="14sp" />
                     </LinearLayout>
 
-                    <Spinner
-                        android:id="@+id/spinner_brightness"
+                    <!-- 使用 TextView 模拟 Spinner -->
+                    <TextView
+                        android:id="@+id/tv_brightness"
                         android:layout_width="100dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="32dp"
                         android:background="@drawable/bg_spinner_button"
-                        android:dropDownSelector="@drawable/spinner_selector_gold"
-                        android:popupBackground="@drawable/bg_spinner_popup_gold" />
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        tools:text="中亮度" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -242,13 +246,18 @@
 
                     </LinearLayout>
 
-                    <Spinner
-                        android:id="@+id/spinner_language"
+                    <!-- 使用 TextView 模拟 Spinner -->
+                    <TextView
+                        android:id="@+id/tv_language"
                         android:layout_width="100dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="32dp"
                         android:background="@drawable/bg_spinner_button"
-                        android:dropDownSelector="@drawable/spinner_selector_gold"
-                        android:popupBackground="@drawable/bg_spinner_popup_gold" />
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        tools:text="简体中文" />
                 </LinearLayout>
 
 
@@ -260,7 +269,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
-                android:text="功能设置"
+                android:text="@string/function_setting"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
 
@@ -396,7 +405,10 @@
                     android:layout_height="70dp"
                     android:gravity="center_vertical"
                     android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
+                    android:paddingEnd="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
 
                     <ImageView
                         android:layout_width="34dp"
@@ -488,12 +500,10 @@
 
     <View
         android:id="@+id/divider"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#666666"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:background="#131313"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"

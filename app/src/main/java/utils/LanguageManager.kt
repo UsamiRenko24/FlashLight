@@ -1,6 +1,5 @@
 package utils
 
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
@@ -8,6 +7,7 @@ import android.os.Build
 import android.os.LocaleList
 import androidx.appcompat.app.AppCompatActivity
 import java.util.*
+import android.content.Context
 
 /**
  * 语言管理器 - 负责应用的多语言切换功能
@@ -24,8 +24,8 @@ object LanguageManager {
     const val LANGUAGE_JAPANESE = "ja"
     const val LANGUAGE_KOREAN = "ko"
 
-    // 默认语言（简体中文）
-    const val DEFAULT_LANGUAGE = LANGUAGE_CHINESE
+    // 默认语言（已从 LANGUAGE_CHINESE 改为 LANGUAGE_ENGLISH）
+    const val DEFAULT_LANGUAGE = LANGUAGE_ENGLISH
 
     /**
      * 获取 SharedPreferences 实例
@@ -48,7 +48,6 @@ object LanguageManager {
     fun saveLanguage(context: Context, languageCode: String) {
         val prefs = getPrefs(context)
         prefs.edit().putString(KEY_LANGUAGE, languageCode).apply()
-        println("💾 语言设置已保存: $languageCode")
     }
 
     /**
@@ -80,9 +79,7 @@ object LanguageManager {
         return when (languageCode) {
             LANGUAGE_CHINESE -> "简体中文"
             LANGUAGE_ENGLISH -> "English"
-            LANGUAGE_JAPANESE -> "日本語"
-            LANGUAGE_KOREAN -> "한국어"
-            else -> "简体中文"
+            else -> "English"
         }
     }
 
@@ -92,10 +89,8 @@ object LanguageManager {
      */
     fun getSupportedLanguages(): List<Pair<String, String>> {
         return listOf(
-            LANGUAGE_CHINESE to "简体中文",
             LANGUAGE_ENGLISH to "English",
-            LANGUAGE_JAPANESE to "日本語",
-            LANGUAGE_KOREAN to "한국어"
+            LANGUAGE_CHINESE to "简体中文",
         )
     }
 
@@ -106,9 +101,7 @@ object LanguageManager {
         return when (languageCode) {
             LANGUAGE_CHINESE -> Locale.SIMPLIFIED_CHINESE
             LANGUAGE_ENGLISH -> Locale.ENGLISH
-            LANGUAGE_JAPANESE -> Locale.JAPANESE
-            LANGUAGE_KOREAN -> Locale.KOREAN
-            else -> Locale.SIMPLIFIED_CHINESE
+            else -> Locale.ENGLISH
         }
     }
 
@@ -149,7 +142,7 @@ object LanguageManager {
             @Suppress("DEPRECATION")
             config.locale = locale
             @Suppress("DEPRECATION")
-            context.resources.updateConfiguration(config, context.resources.displayMetrics)
+            context.resources.updateConfiguration(config, context.resources.configuration.orientation.let { context.resources.displayMetrics })
             return context
         }
     }

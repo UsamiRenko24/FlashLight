@@ -8,15 +8,6 @@
     tools:context=".MainActivity"
     android:background="#0E0E0E">
 
-    <!-- 页面顶部全局装饰 -->
-    <ImageView
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:src="@drawable/ic_ellipse_left"
-        android:rotation="180"
-        android:alpha="0.15"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_title"
@@ -59,7 +50,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title">
 
-        <!-- 左侧电量组：通过 gravity="center" 实现真正的水平垂直居中 -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -82,7 +72,7 @@
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:src="@drawable/ic_battery_75"
-                        android:layout_marginEnd="6dp"/> <!-- 缩小间距，让百分比靠过来 -->
+                        android:layout_marginEnd="6dp"/>
 
                     <TextView
                         android:id="@+id/tv_battery_percent"
@@ -105,7 +95,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- 右侧统计组 -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -188,13 +177,13 @@
             android:textSize="11sp"/>
     </LinearLayout>
 
-    <ImageView
+    <View
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/ic_ellipse_left"
         android:alpha="0.4"
+        android:background="@drawable/ic_ellipse_left"
         app:layout_constraintTop_toTopOf="@id/layout_screen_light"
-        app:layout_constraintEnd_toEndOf="@id/layout_screen_light" />
+        app:layout_constraintEnd_toEndOf="@id/layout_screen_light"/>
 
     <LinearLayout
         android:id="@+id/layout_blink"
@@ -228,13 +217,13 @@
             android:textSize="11sp"/>
     </LinearLayout>
 
-    <ImageView
+    <View
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/ic_ellipse_right"
         android:alpha="0.4"
+        android:background="@drawable/ic_ellipse_right"
         app:layout_constraintTop_toTopOf="@id/layout_blink"
-        app:layout_constraintEnd_toEndOf="@id/layout_blink" />
+        app:layout_constraintEnd_toEndOf="@id/layout_blink"/>
 
     <TextView
         android:id="@+id/tv_quick_settings_label"
@@ -265,14 +254,19 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <!-- 拓宽区域：自动关闭时间 -->
             <LinearLayout
+                android:id="@+id/layout_auto_off"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingStart="16dp"
-                android:paddingEnd="16dp">
+                android:paddingEnd="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight="1"

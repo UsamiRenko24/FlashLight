@@ -31,7 +31,12 @@ object DataStoreManager {
     fun getFlashlightAutoOffTime(context: Context): Flow<Int> = context.dataStore.data.map { it[KEY_AUTO_OFF_FLASHLIGHT] ?: 5 }
     fun getScreenAutoOffTime(context: Context): Flow<Int> = context.dataStore.data.map { it[KEY_AUTO_OFF_SCREEN] ?: 5 }
     fun getBlinkAutoOffTime(context: Context): Flow<Int> = context.dataStore.data.map { it[KEY_AUTO_OFF_BLINK] ?: 5 }
-    fun getLanguage(context: Context): Flow<String> = context.dataStore.data.map { it[KEY_LANGUAGE] ?: "zh" }
+    
+    // 核心同步：使用 LanguageManager 的默认配置
+    fun getLanguage(context: Context): Flow<String> = context.dataStore.data.map { 
+        it[KEY_LANGUAGE] ?: LanguageManager.DEFAULT_LANGUAGE 
+    }
+
     fun getStartupMode(context: Context): Flow<Int> = context.dataStore.data.map { it[KEY_STARTUP_MODE] ?: 1 }
     fun getDefaultBrightness(context: Context): Flow<Int> = context.dataStore.data.map { it[KEY_DEFAULT_BRIGHTNESS] ?: 1 }
 

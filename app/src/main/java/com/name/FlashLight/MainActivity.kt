@@ -2,10 +2,12 @@ package com.name.FlashLight
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Bundle
 import android.view.MotionEvent
-import android.view.View
 import android.view.animation.OvershootInterpolator
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.name.FlashLight.databinding.ActivityMainBinding
 import com.name.FlashLight.utils.PageConstants
 import kotlinx.coroutines.flow.collectLatest
@@ -19,30 +21,22 @@ import utils.toDetailedTime
 import utils.toDigitalTime
 
 /**
- * 模块化重构后的主页
+ * 模块化重构后的主页 - 已修复导入污染
  */
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
-    // 本地缓存变量
     private var flashlightAutoOffMinutes = 5
 
-    // --- 1. 声明式配置 ---
     override val pageTrackName = PageConstants.PAGE_HOME
     override val isBatteryMonitorEnabled = true
     override val isLowBatteryCheckEnabled = true
 
     override fun createBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
 
-    /**
-     * 模块 A: 初始化静态视图
-     */
     override fun initViews() {
         binding.bottomNav.selectedItemId = R.id.nav_home
     }
 
-    /**
-     * 模块 B: 事件监听
-     */
     override fun initListeners() {
         setupFlashlightTouchEffect()
 
@@ -65,44 +59,38 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
-        binding.tvTime.setOnClickListener {
+        // 拓宽触发区域
+        binding.layoutAutoOff.setOnClickListener {
             startActivity(Intent(this, AutomaticActivity::class.java))
         }
 
         binding.bottomNav.setOnItemSelectedListener { item -> handleNavigation(item.itemId) }
 
-        binding.btnSwitch.setOnStateChangedListener { isEnabled ->
-            // 这里修改：不再依赖全局的缓存状态，而是直接根据传入的 isEnabled 来执行震动。
-            // 解决开启震动时没反馈的问题。
+        binding.btnSwitch.setOnStateChangedListener { isEnabled: Boolean ->
             VibrationManager.vibrate(binding.btnSwitch, forceEnabled = isEnabled)
-
             lifecycleScope.launch {
                 DataStoreManager.setVibrationEnabled(this@MainActivity, isEnabled)
             }
         }
     }
 
-    /**
-     * 模块 C: 响应式观察
-     */
     override fun initObservers() {
-        // 监听震动配置
         lifecycleScope.launch {
-            DataStoreManager.isVibrationEnabled(this@MainActivity).collectLatest { isEnabled ->
-                binding.btnSwitch.setCheckedSilently(isEnabled)
-            }
-        }
-
-        // 监听自动关闭时间联动
-        lifecycleScope.launch {
-            DataStoreManager.getFlashlightAutoOffTime(this@MainActivity).collectLatest { minutes ->
-                flashlightAutoOffMinutes = minutes
-                updateAutoOffDisplay(minutes)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    DataStoreManager.isVibrationEnabled(this@MainActivity).collectLatest { isEnabled: Boolean ->
+                        binding.btnSwitch.setCheckedSilently(isEnabled)
+                    }
+                }
+                launch {
+                    DataStoreManager.getFlashlightAutoOffTime(this@MainActivity).collectLatest { minutes: Int ->
+                        flashlightAutoOffMinutes = minutes
+                        updateAutoOffDisplay(minutes)
+                    }
+                }
             }
         }
     }
-
-    // --- 业务逻辑与钩子重写 ---
 
     override fun onResume() {
         super.onResume()
@@ -110,6 +98,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     override fun onBatteryStatusChanged(info: BatteryRepository.BatteryInfo) {
+        if (isFinishing || isDestroyed) return
         binding.apply {
             tvBatteryPercent.text = info.levelText
             tvBatteryStatus.text = info.status
@@ -118,7 +107,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private fun updateAutoOffDisplay(minutes: Int) {
-        binding.tvTime.text = if (minutes >= 114514) getString(R.string.auto_off_never) 
+        if (isFinishing || isDestroyed) return
+        binding.tvTime.text = if (minutes >= 114514) getString(R.string.auto_off_never)
                              else minutes.toFloat().toDetailedTime(this)
     }
 
@@ -143,14 +133,29 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             true
         }
     }
+
     private fun handleNavigation(itemId: Int): Boolean {
-        when (itemId) {
-            R.id.nav_home -> return true
-            R.id.nav_settings -> { startActivity(Intent(this, SettingsActivity::class.java)); return false }
-            R.id.nav_flashlight -> { startActivity(Intent(this, FlashlightActivity::class.java)); return false }
-            R.id.nav_blink -> { startActivity(Intent(this, BlinkActivity::class.java)); return false }
-            R.id.nav_stats -> { startActivity(Intent(this, StatsActivity::class.java)); return false }
+        if (itemId == R.id.nav_home) return true
+
+        val targetClass = when (itemId) {
+            R.id.nav_settings -> SettingsActivity::class.java
+            R.id.nav_flashlight -> FlashlightActivity::class.java
+            R.id.nav_blink -> BlinkActivity::class.java
+            R.id.nav_stats -> StatsActivity::class.java
+            else -> null
         }
+
+        targetClass?.let {
+            startActivity(Intent(this, it))
+            // 注意：新版 Android 建议使用 overrideActivityTransition
+            @Suppress("DEPRECATION")
+            overridePendingTransition(
+                android.R.anim.fade_in,
+                android.R.anim.fade_out
+            )
+            return false
+        }
+
         return false
     }
 }

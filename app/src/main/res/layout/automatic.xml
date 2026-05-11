@@ -11,8 +11,8 @@
     <ImageView
         android:id="@+id/traceback"
         android:src="@drawable/traceback"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginStart="16dp"
         android:contentDescription="返回"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,16 +66,16 @@
         app:layout_constraintTop_toBottomOf="@id/tv_title">
 
         <LinearLayout android:id="@+id/flash1min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginStart="10dp" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_1" android:textColor="@color/white" android:textSize="14sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_1" android:textColor="@color/white" android:textSize="14sp"/>
         </LinearLayout>
         <LinearLayout android:id="@+id/flash5min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_5" android:textColor="@color/white" android:textSize="14sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_5" android:textColor="@color/white" android:textSize="14sp"/>
         </LinearLayout>
         <LinearLayout android:id="@+id/flash10min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_10" android:textColor="@color/white" android:textSize="14sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_10" android:textColor="@color/white" android:textSize="14sp"/>
         </LinearLayout>
         <LinearLayout android:id="@+id/flashNever" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_never" android:textColor="@color/white" android:textSize="14sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_never" android:textColor="@color/white" android:textSize="14sp"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -104,16 +104,16 @@
         app:layout_constraintTop_toBottomOf="@id/container_flash">
 
         <LinearLayout android:id="@+id/screen1min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginStart="10dp" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_1" android:textColor="@color/white" android:textSize="14sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_1" android:textColor="@color/white" android:textSize="14sp"/>
         </LinearLayout>
         <LinearLayout android:id="@+id/screen5min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_5" android:textColor="@color/white" android:textSize="14sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_5" android:textColor="@color/white" android:textSize="14sp"/>
         </LinearLayout>
         <LinearLayout android:id="@+id/screen10min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_10" android:textColor="@color/white" android:textSize="14sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_10" android:textColor="@color/white" android:textSize="14sp"/>
         </LinearLayout>
         <LinearLayout android:id="@+id/screenNever" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_never" android:textColor="@color/white" android:textSize="14sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_never" android:textColor="@color/white" android:textSize="14sp"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -142,16 +142,16 @@
         app:layout_constraintTop_toBottomOf="@id/container_screen">
 
         <LinearLayout android:id="@+id/blink1min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginStart="10dp" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_1" android:textColor="@color/white" android:textSize="14sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_1" android:gravity="center" android:textColor="@color/white" android:textSize="14sp"/>
         </LinearLayout>
         <LinearLayout android:id="@+id/blink5min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_5" android:textColor="@color/white" android:textSize="14sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_5" android:gravity="center" android:textColor="@color/white" android:textSize="14sp"/>
         </LinearLayout>
         <LinearLayout android:id="@+id/blink10min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_10" android:textColor="@color/white" android:textSize="14sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_10" android:gravity="center" android:textColor="@color/white" android:textSize="14sp"/>
         </LinearLayout>
         <LinearLayout android:id="@+id/blinkNever" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_never" android:textColor="@color/white" android:textSize="14sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_never" android:gravity="center" android:textColor="@color/white" android:textSize="14sp"/>
         </LinearLayout>
     </LinearLayout>
 

@@ -3,11 +3,8 @@ plugins {
 }
 android {
     namespace = "com.name.FlashLight"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 36
+    
     defaultConfig {
         applicationId = "com.name.FlashLight"
         minSdk = 29
@@ -50,14 +47,13 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("androidx.localbroadcastmanager:localbroadcastmanager:1.1.0")
-    // DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
-// Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-// Lifecycle
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
-// Activity Result API
     implementation("androidx.activity:activity-ktx:1.8.0")
     implementation("androidx.fragment:fragment-ktx:1.6.1")
+    
+    // SplashScreen API
+    implementation("androidx.core:core-splashscreen:1.0.1")
 }

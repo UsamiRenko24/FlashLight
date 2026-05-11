@@ -2,49 +2,74 @@ package com.name.FlashLight
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
+import com.name.FlashLight.databinding.ActivitySplashBinding
 import com.name.FlashLight.utils.PageNavigator
 import com.name.FlashLight.utils.PageUsageRecorder
 import com.name.FlashLight.utils.StartupModeManager
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import utils.AppLaunchManager
+import utils.DataStoreManager
 
 class SplashActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivitySplashBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        // 1. 调用系统 SplashScreen API (必须在 super.onCreate 之前)
+        // 这会衔接系统启动动画，并应用我们在 themes.xml 中设置的“透明图标”样式
+        installSplashScreen()
+
         super.onCreate(savedInstanceState)
+        binding = ActivitySplashBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            // 1. 读取当前设置的启动模式
-            val mode = StartupModeManager.getStartupMode(this)
-            Log.d("SplashDebug", "当前启动模式: $mode")
+        // 2. 启动您的全屏大图 (launcher_bg) 的淡入动画
+        startSplashAnimation()
 
-            // 2. 根据模式决定跳转
-            val intent = when (mode) {
-                StartupModeManager.MODE_LAST_USED -> {
-                    val lastPage = StartupModeManager.getLastPage(this)
-                    Log.d("SplashDebug", "记住上次: $lastPage")
-                    PageNavigator.getPageIntent(this, lastPage)
-                }
-                StartupModeManager.MODE_HOME -> {
-                    Log.d("SplashDebug", "跳转到主页")
-                    Intent(this, MainActivity::class.java)
-                }
-                StartupModeManager.MODE_MOST_USED -> {
-                    val mostUsed = PageUsageRecorder.getMostUsedPage(this)
-                    Log.d("SplashDebug", "最常用: $mostUsed")
-                    PageNavigator.getPageIntent(this, mostUsed)
-                }
-                else -> {
-                    Log.d("SplashDebug", "默认跳转到主页")
-                    Intent(this, MainActivity::class.java)
-                }
-            }
+        lifecycleScope.launch {
+            // 停留 800ms 展示大图，然后根据逻辑分发跳转
+            delay(800)
 
-            // 3. 执行跳转
+            if (isFinishing || isDestroyed) return@launch
+
+            val intent = resolveLaunchIntent()
             startActivity(intent)
             finish()
-        }, 500)
+            // 使用淡入淡出切换，避免生硬感
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        }
+    }
+
+    private fun startSplashAnimation() {
+        binding.ivSplash.alpha = 0f
+        binding.ivSplash.animate()
+            .alpha(1f)
+            .setDuration(600)
+            .start()
+    }
+
+    private suspend fun resolveLaunchIntent(): Intent {
+        val isFirstLaunch = AppLaunchManager.isFirstLaunch(this)
+        if (isFirstLaunch) {
+            return Intent(this, OnboardingActivity::class.java)
+        }
+
+        val mode = DataStoreManager.getStartupMode(this).first()
+        return when (mode) {
+            StartupModeManager.MODE_LAST_USED -> {
+                val lastPage = StartupModeManager.getLastPage(this)
+                PageNavigator.getPageIntent(this, lastPage)
+            }
+            StartupModeManager.MODE_MOST_USED -> {
+                val mostUsed = PageUsageRecorder.getMostUsedPage(this)
+                PageNavigator.getPageIntent(this, mostUsed)
+            }
+            else -> Intent(this, MainActivity::class.java)
+        }
     }
 }

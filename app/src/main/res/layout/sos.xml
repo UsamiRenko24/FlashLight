@@ -30,7 +30,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- SOS红色光晕层 -->
     <View
         android:id="@+id/sos_halo"
         android:layout_width="0dp"
@@ -58,7 +57,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title">
 
+        <!-- 关键修复：添加 iv_sos_icon -->
         <ImageView
+            android:id="@+id/iv_sos_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="10dp"
@@ -126,9 +127,7 @@
                 app:layout_constraintStart_toEndOf="@+id/middle"
                 app:layout_constraintBottom_toBottomOf="@id/middle"
                 android:textSize="14sp"/>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </LinearLayout>
 
     <LinearLayout
@@ -156,7 +155,6 @@
                 android:text="@string/last_time"
                 android:textColor="@color/white"
                 android:textSize="16sp"/>
-
             <TextView
                 android:id="@+id/last_time"
                 android:layout_width="0dp"
@@ -167,12 +165,13 @@
                 android:text="time"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
-
         </LinearLayout>
+
         <View android:layout_width="match_parent"
             android:layout_marginTop="18dp"
             android:layout_height="1dp"
             android:background="#33FFFFFF" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -184,7 +183,6 @@
                 android:text="@string/signal_loop"
                 android:textColor="@color/white"
                 android:textSize="16sp"/>
-
             <TextView
                 android:id="@+id/tv_sos_cycles"
                 android:layout_width="wrap_content"
@@ -195,18 +193,21 @@
                 android:text="loop"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
-
         </LinearLayout>
+
         <View android:layout_width="match_parent"
             android:layout_marginTop="18dp"
             android:layout_height="1dp"
             android:background="#33FFFFFF" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp">
+            <!-- 关键修复：添加 iv_battery_icon -->
             <ImageView
+                android:id="@+id/iv_battery_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_battery_75"/>
@@ -228,7 +229,6 @@
                 android:textColor="@color/white"
                 android:layout_marginEnd="16dp"
                 android:textSize="16sp" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -242,7 +242,6 @@
                 android:layout_marginStart="16dp"
                 android:textColor="@color/grey"
                 android:textSize="12sp"/>
-
             <TextView
                 android:id="@+id/remain_time"
                 android:layout_width="wrap_content"
@@ -253,8 +252,8 @@
                 android:layout_marginEnd="16dp"
                 android:textColor="@color/grey"
                 android:textSize="12sp" />
-
         </LinearLayout>
+
         <ProgressBar
             android:id="@+id/progress_blink"
             android:layout_width="match_parent"
@@ -264,9 +263,5 @@
             android:layout_marginEnd="16dp"
             style="?android:attr/progressBarStyleHorizontal"
             android:progressDrawable="@drawable/progress_bar" />
-
     </LinearLayout>
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

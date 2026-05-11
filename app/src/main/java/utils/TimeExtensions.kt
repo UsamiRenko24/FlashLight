@@ -31,14 +31,53 @@ fun Float.toCountdownDisplay(autoOffMinutes: Int, context: Context): String {
 /**
  * 将分钟数 (Float) 转换为带单位的统计格式 (例如: 0.5 -> "30秒")
  */
-fun Float.toDetailedTime(context: Context): String {
+fun Float.toDetailedTime(
+    context: Context
+): String {
+
+    val totalSeconds =
+        (this * 60).toInt()
+
+    val hours =
+        totalSeconds / 3600
+
+    val minutes =
+        (totalSeconds % 3600) / 60
+
+    val seconds =
+        totalSeconds % 60
+
     return when {
-        this < 1 -> "${(this * 60).toInt()}${context.getString(R.string.second)}"
-        this < 60 -> "${this.toInt()}${context.getString(R.string.minute)}"
+
+        hours > 0 -> {
+
+            if (minutes > 0) {
+
+                "${hours}${context.getString(R.string.hour)}" +
+                        "${minutes}${context.getString(R.string.minute)}"
+
+            } else {
+
+                "${hours}${context.getString(R.string.hour)}"
+            }
+        }
+
+        minutes > 0 -> {
+
+            if (seconds > 0) {
+
+                "${minutes}${context.getString(R.string.minute)}" +
+                        "${seconds}${context.getString(R.string.second)}"
+
+            } else {
+
+                "${minutes}${context.getString(R.string.minute)}"
+            }
+        }
+
         else -> {
-            val h = this.toInt() / 60
-            val m = this.toInt() % 60
-            "${h}${context.getString(R.string.hour)}${m}${context.getString(R.string.minute)}"
+
+            "${seconds}${context.getString(R.string.second)}"
         }
     }
 }

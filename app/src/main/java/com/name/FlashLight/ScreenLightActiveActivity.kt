@@ -56,14 +56,14 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
         setupClickListeners()
         setupBackPressedCallback()
 
-        // 初始隐藏调节选项
+        // 初始隐藏调节选项容器，保持显示底部状态描述
         binding.layoutOptionsContainer.visibility = View.GONE
         binding.layoutBottomDesc.visibility = View.VISIBLE
 
         binding.root.post {
             updateUI()
             updateColorSelectionUI(currentColorLevel)
-            updateModeUI(0.0f) // 初始亮度模式
+            updateModeUI(0.0f) // 初始化为亮度模式样式
         }
     }
 
@@ -120,12 +120,12 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
         binding.ivSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
         binding.traceback.setOnClickListener { finish() }
 
-        // 亮度切换
+        // 亮度圆点区域点击
         binding.cardLeft.setOnClickListener { it.feedback(); ScreenSessionRepository.updateBrightness(0) }
         binding.cardMiddle.setOnClickListener { it.feedback(); ScreenSessionRepository.updateBrightness(1) }
         binding.cardRight.setOnClickListener { it.feedback(); ScreenSessionRepository.updateBrightness(2) }
 
-        // 颜色切换
+        // 颜色圆点点击
         binding.cardLeft1.setOnClickListener { it.feedback(); ScreenSessionRepository.updateColor(0) }
         binding.cardMiddle1.setOnClickListener { it.feedback(); ScreenSessionRepository.updateColor(1) }
         binding.cardRight1.setOnClickListener { it.feedback(); ScreenSessionRepository.updateColor(2) }
@@ -137,9 +137,6 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
                 isColorMode = false
                 updateModeUI(0.0f)
                 updateSliderThumb(currentBrightnessLevel)
-                binding.viewBrightnessThumb.visibility = View.VISIBLE
-                binding.viewSliderTrack.visibility = View.VISIBLE
-                binding.tvBrightnessLabel.text = "Brightness"
             }
         }
         binding.btnModeColor.setOnClickListener {
@@ -147,9 +144,6 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
             if (!isColorMode) {
                 isColorMode = true
                 updateModeUI(1.0f)
-                binding.viewBrightnessThumb.visibility = View.GONE
-                binding.viewSliderTrack.visibility = View.GONE
-                binding.tvBrightnessLabel.text = "Color"
             }
         }
     }
@@ -172,9 +166,21 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
         })
         constraintSet.applyTo(binding.layoutModeSwitcher)
 
-        binding.groupBrightnessOptions.visibility = if (isColorMode) View.GONE else View.VISIBLE
-        binding.groupColorOptions.visibility = if (isColorMode) View.VISIBLE else View.GONE
+        // 核心修复：根据模式显隐所有相关组件
+        val isBrightnessMode = !isColorMode
+        val brightnessVisibility = if (isBrightnessMode) View.VISIBLE else View.GONE
+        val colorVisibility = if (isColorMode) View.VISIBLE else View.GONE
+
+        // 控制亮度滑块相关组件的显示与隐藏
+        binding.groupBrightnessOptions.visibility = brightnessVisibility
+        binding.viewSliderTrack.visibility = brightnessVisibility
+        binding.viewBrightnessProgress.visibility = brightnessVisibility
+        binding.viewBrightnessThumb.visibility = brightnessVisibility
         
+        // 控制颜色圆点容器的显示与隐藏
+        binding.groupColorOptions.visibility = colorVisibility
+        
+        // 更新按钮透明度反馈
         binding.btnModeBrightness.alpha = if (isColorMode) 0.5f else 1.0f
         binding.btnModeColor.alpha = if (isColorMode) 1.0f else 0.5f
     }
@@ -199,10 +205,10 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
     private fun updateColorSelectionUI(level: Int) {
         val views = listOf(binding.cardLeft1, binding.cardMiddle1, binding.cardRight1)
         views.forEachIndexed { index, view ->
-            view.alpha = if (index == level) 1.0f else 0.5f
-            view.animate().scaleX(if (index == level) 1.2f else 1.0f)
-                .scaleY(if (index == level) 1.2f else 1.0f)
-                .setDuration(200).start()
+            val isSelected = index == level
+            view.alpha = if (isSelected) 1.0f else 0.5f
+            val scale = if (isSelected) 1.2f else 1.0f
+            view.animate().scaleX(scale).scaleY(scale).setDuration(200).start()
         }
     }
 

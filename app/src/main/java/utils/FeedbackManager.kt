@@ -26,14 +26,12 @@ object FeedbackManager {
 
         val appContext = context.applicationContext
 
-        // 持续观察震动设置
         scope.launch {
             DataStoreManager.isVibrationEnabled(appContext).collectLatest {
                 isVibrationEnabled = it
             }
         }
 
-        // 持续观察声音设置
         scope.launch {
             DataStoreManager.isSoundEnabled(appContext).collectLatest {
                 isSoundEnabled = it

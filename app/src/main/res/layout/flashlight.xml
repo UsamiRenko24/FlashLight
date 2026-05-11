@@ -34,8 +34,8 @@
 
     <ImageView
         android:id="@+id/iv_settings"
-        android:layout_width="27dp"
-        android:layout_height="27dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginEnd="16dp"
         android:src="@drawable/ic_equalizer"
         android:contentDescription="设置"
@@ -53,8 +53,8 @@
         android:background="@drawable/bg_grey"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title">
@@ -291,7 +291,6 @@
             </LinearLayout>
         </LinearLayout>
         <FrameLayout
-            android:id="@+id/frameLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <ProgressBar
@@ -309,13 +308,13 @@
                 android:layout_marginTop="30dp">
                 <TextView
                     android:id="@+id/last_time"
-                    android:layout_width="wrap_content"
+                    android:layout_width="64dp"
+                    android:fontFamily="monospace"
                     android:layout_height="wrap_content"
                     android:text="00:00"
                     android:layout_marginStart="20dp"
                     android:textSize="14sp"
-                    android:textColor="@color/grey"
-                    android:layout_weight="1" />
+                    android:textColor="@color/grey" />
                 <TextView
                     android:id="@+id/tv_total_time2"
                     android:layout_width="wrap_content"
@@ -323,7 +322,9 @@
                     android:text="5分钟"
                     android:textSize="14sp"
                     android:layout_marginEnd="20dp"
-                    android:textColor="@color/grey" />
+                    android:textColor="@color/grey"
+                    android:gravity="end"
+                    android:layout_weight="1"/>
             </LinearLayout>
         </FrameLayout>
     </LinearLayout>
@@ -352,7 +353,7 @@
             android:orientation="vertical"
             android:gravity="center_vertical"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="50dp">
+            android:layout_marginEnd="16dp">
             <TextView
                 android:id="@+id/tv_temperature"
                 android:layout_width="wrap_content"
@@ -369,4 +370,22 @@
                 android:textSize="12sp"/>
         </LinearLayout>
     </LinearLayout>
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#131313"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_bottom_nav"
+        app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="@color/bottom_nav_color"
+        app:itemTextColor="@color/bottom_nav_color"
+        app:itemBackground="@null"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

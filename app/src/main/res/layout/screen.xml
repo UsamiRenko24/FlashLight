@@ -12,8 +12,8 @@
     <ImageView
         android:id="@+id/traceback"
         android:src="@drawable/traceback"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginStart="16dp"
         android:contentDescription="返回"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +60,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_tips"
-            app:tint="#B2B2B2" />
+            app:tint="@color/black" />
         <TextView
             android:id="@+id/tv_light_info"
             android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
             android:layout_marginTop="8dp"
             android:text="白光 - 亮度"
             android:textSize="18sp"
-            android:textColor="#B2B2B2" />
+            android:textColor="@color/black" />
     </LinearLayout>
 
     <!-- 椭圆滑块亮度选择器 -->
@@ -297,6 +297,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
+            android:id="@+id/layoutAutoOff"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"

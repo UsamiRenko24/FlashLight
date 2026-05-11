@@ -11,8 +11,8 @@
     <ImageView
         android:id="@+id/traceback"
         android:src="@drawable/traceback"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginStart="16dp"
         android:contentDescription="返回"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,15 +44,12 @@
         android:id="@+id/card1"
         android:layout_width="343dp"
         android:layout_height="155dp"
-        android:layout_marginStart="44dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="44dp"
         android:background="@drawable/bg_grey"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title">
-
 
         <LinearLayout
             android:layout_width="310dp"
@@ -81,17 +78,16 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="310dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp">
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_sos"
-                android:layout_marginTop="1dp"/>
+                android:layout_marginTop="3dp"
+                android:layout_marginStart="16dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -99,15 +95,19 @@
                 android:textColor="@color/white"
                 android:layout_marginStart="12dp"
                 android:textSize="14sp" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/SOS"
                 android:layout_width="86dp"
                 android:layout_height="30dp"
-                android:layout_marginStart="93dp"
                 android:background="@drawable/bg_sos_button"
                 android:text="@string/btn_sos"
                 android:textColor="@color/white"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:layout_marginEnd="16dp"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -292,5 +292,24 @@
             android:textSize="18sp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#131313"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_bottom_nav"
+        app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="@color/bottom_nav_color"
+        app:itemTextColor="@color/bottom_nav_color"
+        app:itemBackground="@null"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

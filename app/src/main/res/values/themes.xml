@@ -28,4 +28,11 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">14sp</item>
     </style>
+    <!-- SplashScreen API Theme -->
+    <style name="Theme.FlashLight.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#000000</item>
+        <!-- 核心修改：将图标设为透明 -->
+        <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
+        <item name="postSplashScreenTheme">@style/Theme.FlashLight</item>
+    </style>
 </resources>

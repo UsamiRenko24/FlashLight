@@ -60,8 +60,8 @@
     <string name="screen_light_started">Screen light started</string>
     <string name="screen_light_ended">Screen light stopped</string>
     <string name="at_least_choose_one_light_source">Please select at least one light source</string>
-    <string name="overheat_reminder">Temperature too high, please pause usage</string>
-    <string name="normal_temperature">Device temperature normal</string>
+    <string name="overheat_reminder">Temperature is too high, please pause usage</string>
+    <string name="normal_temperature">Device temperature is normal</string>
     <string name="hour">hour</string>
     <string name="minute">minute</string>
     <string name="second">second</string>
@@ -92,6 +92,7 @@
     <string name="setting_sound">Sound Feedback</string>
     <string name="sound_feedback">Plays sound effects on operation</string>
     <string name="eye_protection_mode">Eye Protection Mode</string>
+    <string name="notification_info">Permission to modify system settings is required.\n\nAllow it to enable the auto brightness feature.</string>
     <string name="auto_brightness_adjustment">Auto brightness adjustment to protect eyesight</string>
     <string name="data_management">Data Management</string>
     <string name="usage_stats">Usage Statistics</string>
@@ -122,8 +123,8 @@
     <string name="title_sos_signal">SOS Distress Signal</string>
     <string name="title_morse_code">Morse Code</string>
     <string name="morse_code">Standard Morse Code</string>
-    <string name="short_signal">. . .\nShort\nSignal</string>
-    <string name="long_signal">_ _ _\nLong\nSignal</string>
+    <string name="short_signal">. . .\nShort Signal</string>
+    <string name="long_signal">_ _ _\nLong Signal</string>
     <string name="last_time">Duration</string>
     <string name="signal_loop">Signal Cycles</string>
     <string name="battery_status">Battery Status</string>
@@ -156,10 +157,10 @@
     <string name="flashlight_auto_off">Flashlight Auto Off</string>
     <string name="screen_auto_off">Screen Light Auto Off</string>
     <string name="blink_auto_off">Blink Effect Auto Off</string>
-    <string name="auto_off_1">1 minute</string>
-    <string name="auto_off_5">5 minutes</string>
-    <string name="auto_off_10">10 minutes</string>
-    <string name="auto_off_never">Never turn off</string>
+    <string name="auto_off_1">1\nminute</string>
+    <string name="auto_off_5">5\nminutes</string>
+    <string name="auto_off_10">10\nminutes</string>
+    <string name="auto_off_never">Never\nturn off</string>
     <string name="battery_health_excellent">excellent</string>
     <string name="battery_health_good">good</string>
     <string name="battery_health_fair">fair</string>
