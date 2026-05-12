@@ -14,7 +14,7 @@ object ResetScheduler {
 
     // 启动每日重置任务
     fun scheduleDailyReset(context: Context) {
-        val workManager = WorkManager.Companion.getInstance(context)
+        val workManager = WorkManager.getInstance(context)
 
         // 计算到明天0点的延迟时间
         val delay = calculateDelayToMidnight()

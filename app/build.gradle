@@ -20,6 +20,7 @@ dependencies {
     implementation Deps.viewpager2
     implementation Deps.splashscreen
     implementation Deps.swiperefreshlayout
+    implementation Deps.datastore_preferences
 
     implementation Deps.gson
     implementation Deps.glide
@@ -40,5 +41,5 @@ dependencies {
     // 归因
     implementation "com.android.installreferrer:installreferrer:2.2"
 
-    implementation Deps.androidx_worker
+    implementation Deps.worker_runtime
 }

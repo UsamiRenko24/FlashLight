@@ -45,7 +45,8 @@ object Deps {
     const val swiperefreshlayout = "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     const val material = "com.google.android.material:material:1.13.0"
     const val fragment = "androidx.fragment:fragment:1.8.9"
-    const val androidx_worker = "androidx.work:work-runtime-ktx:2.9.0"
+    const val worker_runtime = "androidx.work:work-runtime-ktx:2.9.0"
+    const val datastore_preferences = "androidx.datastore:datastore-preferences:1.0.0"
 
     // Lifecycle
     const val lifecycle_runtime_ktx =
