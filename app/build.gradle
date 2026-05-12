@@ -1,0 +1,44 @@
+apply {
+    from "${rootDir.path}/config/gradle/app.gradle"
+    from "${rootDir.path}/config/gradle/firebase.gradle"
+
+    from "android_guard.gradle"
+}
+
+android {
+    namespace "com.name.flashlight"
+}
+
+dependencies {
+    implementation fileTree(include: ['*.aar', '*.jar'], dir: 'libs')
+
+    implementation Deps.core_ktx
+    implementation Deps.appcompat
+    implementation Deps.material
+    implementation Deps.constraintlayout
+    implementation Deps.recyclerview
+    implementation Deps.viewpager2
+    implementation Deps.splashscreen
+    implementation Deps.swiperefreshlayout
+
+    implementation Deps.gson
+    implementation Deps.glide
+    implementation Deps.coil
+
+    // 数据请求
+    implementation Deps.okhttp
+    implementation Deps.okhttp_logging
+
+    // Firebase
+    //noinspection GradleDependency
+    implementation platform("com.google.firebase:firebase-bom:34.2.0")
+    implementation "com.google.firebase:firebase-analytics"
+    implementation "com.google.firebase:firebase-crashlytics"
+    implementation "com.google.firebase:firebase-messaging"
+    implementation "com.google.firebase:firebase-config"
+
+    // 归因
+    implementation "com.android.installreferrer:installreferrer:2.2"
+
+    implementation Deps.androidx_worker
+}

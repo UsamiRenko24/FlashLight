@@ -303,7 +303,7 @@
 
                     </LinearLayout>
 
-                    <com.name.FlashLight.SlidingButton
+                    <com.name.flashlight.SlidingButton
                         android:id="@+id/btn_vibration"
                         android:layout_width="40dp"
                         android:layout_height="20dp" />
@@ -338,7 +338,7 @@
 
                     </LinearLayout>
 
-                    <com.name.FlashLight.SlidingButton
+                    <com.name.flashlight.SlidingButton
                         android:id="@+id/sliding_sound"
                         android:layout_width="40dp"
                         android:layout_height="20dp" />
@@ -373,7 +373,7 @@
 
                     </LinearLayout>
 
-                    <com.name.FlashLight.SlidingButton
+                    <com.name.flashlight.SlidingButton
                         android:id="@+id/sliding_auto_brightness"
                         android:layout_width="40dp"
                         android:layout_height="20dp" />

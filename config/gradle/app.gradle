@@ -1,0 +1,175 @@
+apply {
+    plugin "com.android.application"
+    plugin "kotlin-android"
+    plugin "kotlin-parcelize"
+    plugin "kotlin-kapt"
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = "JVM_17"
+        suppressWarnings = true
+    }
+}
+
+android {
+    compileSdk Android.compileSdk
+
+    defaultConfig {
+        if (Options.IS_PUBLISH) {
+            println "applicationId ========= ${Android.applicationId}"
+            applicationId Android.applicationId
+        } else {
+            println "applicationId ========= ${Android.applicationId_test}"
+            applicationId Android.applicationId_test
+        }
+
+        minSdk Android.minSdk
+        targetSdk Android.targetSdk
+        versionCode Android.versionCode
+        versionName Android.versionName
+
+        //配置so库架构
+        //noinspection ChromeOsAbiSupport
+        ndk { abiFilters 'armeabi-v7a', 'arm64-v8a'/*, 'x86', 'x86_64'*/ }
+
+        consumerProguardFiles file('.').listFiles(new FilenameFilter() {
+            @Override
+            boolean accept(File file, String s) {
+                return s.endsWith('.pro')
+            }
+        })
+    }
+    buildTypes {
+        release {
+            //开启以下三条，打开混淆
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    //减少编译错误和忽略 lint 检查
+    packagingOptions {
+        doNotStrip '*/armeabi-v7a/*.so'
+        doNotStrip '*/arm64-v8a/*.so'
+
+        exclude 'META-INF/*'
+        exclude 'LICENSE.txt'
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.getMajorVersion()
+        suppressWarnings = true
+    }
+    buildFeatures {
+        viewBinding true
+        dataBinding = true
+        buildConfig = true
+    }
+    bundle {
+        language {
+            // This property is set to true by default.
+            // You can specify `false` to turn off
+            // generating configuration APKs for language resources.
+            // These resources are instead packaged with each base and
+            // feature APK.
+            // Continue reading below to learn about situations when an app
+            // might change setting to `false`, otherwise consider leaving
+            // the default on for more optimized downloads.
+            enableSplit = false
+        }
+//        density {
+//            // This property is set to true by default.
+//            enableSplit = true
+//        }
+//        abi {
+//            // This property is set to true by default.
+//            enableSplit = true
+//        }
+    }
+}
+
+configAppSigning project
+
+def configAppSigning(Project project) {
+    def signFile
+    if (Options.IS_PUBLISH) {
+        signFile = file("${rootDir.path}/config/sign/keystore.properties")
+    } else {
+        signFile = file("${rootDir.path}/config/sign_test/keystore.properties")
+    }
+    if (signFile == null || !signFile.exists()) {
+        println "$project.name config sign failure..."
+        return
+    }
+
+    println "$project.name config sign start..."
+    project.android {
+        Properties properties = new Properties()
+        properties.load(new FileInputStream(signFile))
+        signingConfigs {
+            release {
+                keyAlias properties['keyAlias']
+                keyPassword properties['keyPassword']
+                storeFile new File(signFile.getParent(), properties['storeFile'])
+                storePassword properties['storePassword']
+
+                v1SigningEnabled true  //打包时默认勾选 V1（Jar Signature）
+                v2SigningEnabled true  //打包时默认勾选 V2（Full APK Signature）
+            }
+        }
+        buildTypes.release.signingConfig signingConfigs.release
+        buildTypes.debug.signingConfig signingConfigs.release
+    }
+    println "$project.name config sign end..."
+}
+
+afterEvaluate {
+    android.applicationVariants.all { variant ->
+        if (variant.buildType.name != "release") {
+            return
+        }
+
+        //assembleRelease
+        tasks.named("assemble${variant.name.capitalize()}").configure {
+            doLast {
+                def outputFile = variant.outputs.first().outputFile
+                def outputFileName = outputFile.name
+                def intoFile = new File(project.rootDir.path + "/apk")
+                def intoFileName = "${Android.appName}${variant.versionName}.apk"
+                copy {
+                    from outputFile
+                    into intoFile
+                    rename(outputFileName, intoFileName)
+                }
+            }
+        }
+
+        //bundleRelease
+        tasks.named("bundle${variant.name.capitalize()}").configure {
+            doLast {
+                def outputPath = "${buildDir}/outputs/bundle/${variant.name.capitalize()}"
+                def allAabFile = project.fileTree(outputPath).findAll()
+                if (allAabFile.size() != 0) {
+                    def outputFile = allAabFile.first()
+                    def outputFileName = outputFile.name
+                    def intoFile = new File(project.rootDir.path + "/apk")
+                    def intoFileName = "${Android.appName}${variant.versionName}.aab"
+                    copy {
+                        from outputFile
+                        into intoFile
+                        rename(outputFileName, intoFileName)
+                    }
+                }
+            }
+        }
+    }
+}

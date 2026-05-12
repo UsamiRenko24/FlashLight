@@ -1,0 +1,267 @@
+if (!Options.IS_PUBLISH) {
+    apply plugin: "android-guard"
+
+    /**
+     * AndroidGuard 插件配置
+     *
+     * 用于配置 Android 项目的混淆规则，所有配置项均为可选。
+     * 警告：任务执行后不可逆，请务必提前备份代码！
+     *
+     * 可用 Gradle 任务：
+     * - packageChange    : 更改 manifest 包名
+     * - moveDir          : 移动源码目录
+     * - xmlClassGuard    : 混淆类名和包名
+     * - resGuard         : 混淆资源名称
+     * - declarationChange: 混淆声明（字段名、方法名等）
+     * - customStringChange: 混淆自定义字符串
+     * - stringFog        : 字符串加密
+     * - dictionary       : 生成混淆字典
+     * - delete           : 删除混淆生成的映射文件
+     */
+    androidGuard {
+
+        /**
+         * 包名更改映射表，配合 `packageChange` 任务使用
+         *
+         * 功能：更改 AndroidManifest.xml 中的 package（namespace）属性
+         * 特性：
+         * - 仅更改 package 属性，不会更改 applicationId
+         * - 自动同步到所有相关引用文件（Java/Kotlin 源码、XML 等）
+         * - 不会更改项目物理目录结构
+         * - 原始包名必须完全匹配，否则更改失败
+         *
+         * 格式：[原始包名: 目标包名]
+         */
+        packageChange = ["": ""]
+
+        /**
+         * 目录移动映射表，配合 `moveDir` 任务使用
+         *
+         * 功能：批量移动源码目录，支持同时移动多个目录
+         * 特性：
+         * - 将原目录下所有文件（包括子目录）移动到目标目录
+         * - 自动同步更新所有相关引用（import 语句、全限定类名等）
+         *
+         * 格式：[原始目录路径: 目标目录路径]
+         */
+        moveDir = ["": ""]
+
+        /**
+         * 资源混淆白名单，配合 `resGuard` 任务使用
+         *
+         * 功能：指定不参与混淆的资源项
+         * 适用场景：
+         * - 通过 getIdentifier() 动态获取的资源
+         * - 第三方 SDK 要求固定名称的资源
+         * - 系统要求固定名称的资源（如应用图标）
+         *
+         * 匹配规则：
+         * - 精确匹配：R.mipmap.ic_launcher
+         * - 前缀通配：R.drawable.ic_*（匹配所有 ic_ 开头的 drawable）
+         * - 类型通配：R.raw.*（匹配所有 raw 资源）
+         * - styleable：R.styleable.CustomView
+         */
+        resWhiteList = [
+                "R.string.app_name",
+                "R.raw.keep",
+                "R.id.@android:id/message",
+        ]
+
+        /**
+         * 类混淆白名单，配合 `xmlClassGuard` 任务使用
+         *
+         * 功能：指定不参与混淆的类或包
+         * 适用场景：
+         * - 反射调用的类
+         * - 第三方 SDK 回调类
+         * - JNI 调用的类
+         * - 序列化/反序列化相关类
+         *
+         * 匹配规则：
+         * - 精确类名：com.example.MainActivity
+         * - 包名匹配：com.example.view（该包下所有类）
+         * - 通配符：com.example.*（该包及子包下所有类）
+         */
+        classWhiteList = [
+        ]
+
+        /**
+         * 自定义字符串混淆映射表，配合 `customStringChange` 任务使用
+         *
+         * 功能：混淆项目中指定的自定义字符串
+         * 特性：
+         * - 仅替换文件内容中的字符串值
+         * - 不会影响文件名称和包名
+         * - 混淆结果写入 guard-custom-string-mapping.txt
+         *
+         * 格式：[待混淆字符串: 是否仅小写]
+         * - key：需要被混淆的原始字符串
+         * - value：true=混淆值仅小写字母；false=可包含大小写字母
+         */
+        customStringMap = [
+        ]
+
+        /**
+         * 声明混淆白名单，配合 `declarationChange` 任务使用
+         *
+         * 功能：指定不参与声明混淆的标识符
+         * 适用场景：
+         * - 序列化字段（JSON/XML 映射字段）
+         * - 反射调用的方法或字段
+         * - Android 生命周期方法
+         * - 接口回调方法
+         *
+         * 匹配规则：
+         * - 完整类名：com.example.User（该类所有声明不混淆）
+         * - 方法/字段名：onCreate（所有同名声明不混淆）
+         */
+        declarationWhiteList = [
+        ]
+
+        /**
+         * 字符串加密白名单，配合 `stringFog` 任务使用
+         *
+         * 功能：指定不参与字符串加密的字符串值
+         * 说明：字符串加密会将源码中的明文字符串转换为加密形式，运行时解密
+         * 适用场景：
+         * - 调试用字符串
+         * - 日志标签
+         * - 不需要保护的公开字符串
+         *
+         * 格式：字符串精确匹配
+         */
+        stringFogWhiteList = [
+        ]
+
+        /**
+         * 字符串加密模块白名单，配合 `stringFog` 任务使用
+         *
+         * 功能：指定不参与字符串加密的整个模块
+         * 特性：该模块下所有字符串都不会被加密
+         * 适用场景：
+         * - 第三方库模块
+         * - 公共基础模块
+         * - 不需要字符串保护的模块
+         *
+         * 格式：模块名称（与 settings.gradle 中定义的模块名一致）
+         */
+        stringFogModuleWhiteList = [
+        ]
+
+        /**
+         * 自定义字符串混淆模块白名单，配合 `customStringChange` 任务使用
+         *
+         * 功能：指定不参与自定义字符串混淆的整个模块
+         *
+         * 格式：模块名称（与 settings.gradle 中定义的模块名一致）
+         */
+        customStringModuleWhiteList = [
+        ]
+
+        /**
+         * 声明混淆模块白名单，配合 `declarationChange` 任务使用
+         *
+         * 功能：指定不参与声明混淆的整个模块
+         * 特性：该模块下所有字段名、方法名等声明都不会被混淆
+         *
+         * 格式：模块名称（与 settings.gradle 中定义的模块名一致）
+         */
+        declarationModuleWhiteList = [
+        ]
+
+        /**
+         * 资源混淆模块白名单，配合 `resGuard` 任务使用
+         *
+         * 功能：指定不参与资源混淆的整个模块
+         * 特性：该模块下所有资源都不会被重命名
+         *
+         * 格式：模块名称（与 settings.gradle 中定义的模块名一致）
+         */
+        resModuleWhiteList = [
+        ]
+
+        /**
+         * 类混淆模块白名单，配合 `xmlClassGuard` 任务使用
+         *
+         * 功能：指定不参与类混淆的整个模块
+         * 特性：该模块下所有类的包名和类名都不会被混淆
+         *
+         * 格式：模块名称（与 settings.gradle 中定义的模块名一致）
+         */
+        xmlClassModuleWhiteList = [
+        ]
+
+        /**
+         * 绝对白名单，优先级最高的类混淆白名单
+         *
+         * 功能：指定绝对不参与任何类混淆处理的类
+         * 特性：无论其他配置如何，该名单中的类都会被完全保护
+         * 适用场景：
+         * - 核心入口类
+         * - 必须保持原始名称的关键类
+         * - 与外部系统交互的接口类
+         *
+         * 格式：完整类名
+         */
+        absoluteWhiteList = [
+        ]
+
+        /**
+         * 类混淆指定扫描列表，配合 `xmlClassGuard` 任务使用
+         *
+         * 功能：指定需要扫描并参与类混淆的特定包或类
+         * 特性：
+         * - 当 xmlClassFeatures.allClasses = false 时，此配置可扩展混淆范围
+         * - 除了默认的四大组件、View、Fragment 外，额外扫描指定的包或类
+         * - 适用于需要混淆但不属于默认扫描范围的自定义类
+         *
+         * 适用场景：
+         * - 自定义的业务逻辑类需要混淆
+         * - 特定包下的工具类需要混淆
+         * - 非标准组件但需要保护的类
+         *
+         * 匹配规则：
+         * - 包名：com.example.fragment（该包下所有类）
+         * - 完整类名：com.example.utils.Helper（指定类）
+         * - 通配符：com.example.*（该包及子包下所有类）
+         *
+         * 注意：
+         * - 此配置与 classWhiteList 互斥，白名单优先级更高
+         * - 扫描列表中的类仍会受到白名单规则的约束
+         */
+        classScanList = [
+        ]
+
+        /**
+         * 声明混淆功能开关，配合 `declarationChange` 任务使用
+         *
+         * 用于精细控制哪些类型的声明需要参与混淆
+         * 混淆结果写入 guard-declaration-mapping.txt
+         */
+        declarationFeatures {
+            staticConstant = false      // 混淆静态常量字段名（如 PARAMS_OBJ -> UVGUS）
+            instanceVariable = false   // 混淆实例变量字段名（如 mName -> frYuRP）
+            methodName = false         // 混淆方法名（如 initView -> mxUPO）
+            methodParameter = false    // 混淆方法参数名（如 savedInstanceState -> n3mOZz）
+            enumConstant = false        // 混淆枚举常量名（如 MONDAY -> N6U）
+        }
+
+        /**
+         * 类混淆功能开关，配合 `xmlClassGuard` 任务使用
+         *
+         * 用于控制类混淆的范围
+         * 混淆结果写入 guard-xml-class-mapping.txt
+         */
+        xmlClassFeatures {
+            // true：混淆项目中所有符合条件的类
+            // false：仅混淆四大组件（Activity/Service/BroadcastReceiver/ContentProvider）
+            //        及自定义 View、Fragment 相关的类
+            allClasses = false
+
+            // 是否在混淆包名时添加项目包名前缀
+            // true（默认）：混淆后的包名会添加项目包名前缀（例如：com.example.abc）
+            // false：混淆后的包名不添加项目包名前缀（例如：abc）
+            usePackagePrefix = true
+        }
+    }
+}

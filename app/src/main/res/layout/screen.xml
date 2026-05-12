@@ -339,7 +339,7 @@
                 android:text="@string/eye_protection_mode"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
-            <com.name.FlashLight.SlidingButton
+            <com.name.flashlight.SlidingButton
                 android:id="@+id/sliding_auto_brightness"
                 android:layout_marginEnd="16dp"
                 android:layout_width="42dp"

@@ -1,0 +1,43 @@
+apply {
+    if (Options.IS_PUBLISH) {
+        plugin 'com.google.gms.google-services'     //Google services Gradle plugin
+        plugin 'com.google.firebase.crashlytics'    //Firebase Crashlytics Gradle plugin
+    }
+}
+
+afterEvaluate {
+    if (Options.IS_PUBLISH) {
+        copyGsFile()
+    } else {
+        deleteGsFile()
+    }
+}
+
+//delete google-services.json 文件
+private def deleteGsFile() {
+    def source = "${projectDir.path}/google-services.json"
+    def file = new File(source)
+    if (file.exists()) {
+        file.delete()
+    }
+}
+
+//copy google-services.json 文件
+private def copyGsFile() {
+    def source = "${rootDir.path}/config/google-services.json"
+    def dest = "${projectDir.path}/google-services.json"
+    //noinspection GroovyUnusedAssignment
+    def n = 0
+
+    try {
+        def fis = new FileInputStream(source)
+        def fos = new FileOutputStream(dest)
+        while ((n = fis.read()) != -1) {
+            fos.write(n)
+        }
+        fis.close()
+        fos.close()
+    } catch (IOException e) {
+        e.printStackTrace()
+    }
+}

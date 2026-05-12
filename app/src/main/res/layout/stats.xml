@@ -317,7 +317,7 @@
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:layout_weight="1"/>
-            <com.name.FlashLight.SlidingButton
+            <com.name.flashlight.SlidingButton
                 android:id="@+id/btn_low_battery"
                 android:layout_width="40dp"
                 android:layout_height="20dp"
@@ -344,7 +344,7 @@
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:layout_weight="1"/>
-            <com.name.FlashLight.SlidingButton
+            <com.name.flashlight.SlidingButton
                 android:id="@+id/btn_brightness"
                 android:layout_width="40dp"
                 android:layout_height="20dp"
@@ -371,7 +371,7 @@
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:layout_weight="1"/>
-            <com.name.FlashLight.SlidingButton
+            <com.name.flashlight.SlidingButton
                 android:id="@+id/btn_temperature_switch"
                 android:layout_width="40dp"
                 android:layout_height="20dp"
