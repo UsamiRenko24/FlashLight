@@ -4,5 +4,5 @@
     <!-- 滑块主色调：你要求的亮金色 (#FFCE64) -->
     <solid android:color="#FFCE64" />
     <!-- 90dp 圆角，使其呈现完美椭圆状 -->
-    <corners android:radius="90dp" />
+    <corners android:radius="@dimen/sw_dp_90" />
 </shape>

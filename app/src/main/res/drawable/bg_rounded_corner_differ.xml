@@ -4,12 +4,12 @@
 
     <!-- 圆角设置 -->
     <corners
-        android:radius="8dp"/>
+        android:radius="@dimen/sw_dp_8"/>
 
 
     <!-- 边框设置 -->
     <stroke
-        android:width="2dp"
+        android:width="@dimen/sw_dp_2"
         android:color="#374151" />
 
     <!-- 填充颜色 -->
@@ -17,9 +17,9 @@
 
     <!-- 内边距（可选） -->
     <padding
-        android:left="10dp"
-        android:top="10dp"
-        android:right="10dp"
-        android:bottom="10dp"/>
+        android:left="@dimen/sw_dp_10"
+        android:top="@dimen/sw_dp_10"
+        android:right="@dimen/sw_dp_10"
+        android:bottom="@dimen/sw_dp_10"/>
 
 </shape>

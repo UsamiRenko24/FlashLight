@@ -11,8 +11,8 @@
     <!-- 可滑动区域 -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/sw_dp_0"
+        android:layout_height="@dimen/sw_dp_0"
         android:fillViewport="true"
         android:overScrollMode="never"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,13 +25,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="24dp">
+        android:paddingBottom="@dimen/sw_dp_24">
     <ImageView
         android:id="@+id/traceback"
         android:src="@drawable/traceback"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="16dp"
+        android:layout_width="@dimen/sw_dp_32"
+        android:layout_height="@dimen/sw_dp_32"
+        android:layout_marginStart="@dimen/sw_dp_16"
         android:contentDescription="返回"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_title"/>
@@ -40,29 +40,29 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/sw_dp_10"
         android:text="@string/title_battery_monitor"
 
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="@dimen/sw_dp_20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/iv_settings"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="@dimen/sw_dp_24"
+        android:layout_height="@dimen/sw_dp_24"
+        android:layout_marginEnd="@dimen/sw_dp_16"
         android:src="@drawable/ic_equalizer"
         android:contentDescription="设置"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_title" />
     <LinearLayout
         android:id="@+id/card_container1"
-        android:layout_width="335dp"
-        android:layout_height="174dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="@dimen/sw_dp_335"
+        android:layout_height="@dimen/sw_dp_174"
+        android:layout_marginTop="@dimen/sw_dp_20"
         android:background="@drawable/bg_grey"
         android:orientation="vertical"
         android:gravity="center"
@@ -73,9 +73,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="-4dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp">
+            android:layout_marginTop="@dimen/sw_dp_m_4"
+            android:layout_marginStart="@dimen/sw_dp_16"
+            android:layout_marginEnd="@dimen/sw_dp_16">
             <ImageView
                 android:id="@+id/iv_battery_icon"
                 android:layout_width="wrap_content"
@@ -87,8 +87,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="85%"
-                android:textSize="14sp"
-                android:layout_marginStart="10dp"
+                android:textSize="@dimen/sw_dp_14"
+                android:layout_marginStart="@dimen/sw_dp_10"
                 android:textColor="@color/white"
                 android:layout_weight="1"/>
 
@@ -98,26 +98,26 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:text="充电中"
-                android:textSize="14sp"
+                android:textSize="@dimen/sw_dp_14"
                 android:textColor="@color/white" />
         </LinearLayout>
         <View android:layout_width="match_parent"
-            android:layout_marginTop="16dp"
-            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/sw_dp_16"
+            android:layout_height="@dimen/sw_dp_1"
             android:background="#33FFFFFF" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp">
+            android:layout_marginTop="@dimen/sw_dp_16"
+            android:layout_marginStart="@dimen/sw_dp_16"
+            android:layout_marginEnd="@dimen/sw_dp_16">
             <TextView
                 android:id="@+id/tv_state"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/time_to_full"
-                android:textSize="14sp"
+                android:textSize="@dimen/sw_dp_14"
                 android:textColor="@color/grey"
                 android:layout_weight="1"/>
             <TextView
@@ -125,25 +125,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1小时"
-                android:textSize="14sp"
+                android:textSize="@dimen/sw_dp_14"
                 android:textColor="@color/white"/>
         </LinearLayout>
         <View android:layout_width="match_parent"
-            android:layout_marginTop="16dp"
-            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/sw_dp_16"
+            android:layout_height="@dimen/sw_dp_1"
             android:background="#33FFFFFF" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp">
+            android:layout_marginTop="@dimen/sw_dp_16"
+            android:layout_marginStart="@dimen/sw_dp_16"
+            android:layout_marginEnd="@dimen/sw_dp_16">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/battery_health"
-                android:textSize="14sp"
+                android:textSize="@dimen/sw_dp_14"
                 android:textColor="@color/grey"
                 android:layout_weight="1"/>
             <TextView
@@ -151,7 +151,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/battery_health_excellent"
-                android:textSize="14sp"
+                android:textSize="@dimen/sw_dp_14"
                 android:textColor="@color/white"/>
         </LinearLayout>
 
@@ -162,18 +162,18 @@
         android:layout_height="wrap_content"
         android:text="@string/today_usage"
         android:textColor="@color/white"
-        android:textSize="16sp"
-        android:layout_marginTop="10dp"
+        android:textSize="@dimen/sw_dp_16"
+        android:layout_marginTop="@dimen/sw_dp_10"
         app:layout_constraintStart_toStartOf="@id/card_container2"
         app:layout_constraintTop_toBottomOf="@id/card_container1"/>
     <LinearLayout
         android:id="@+id/card_container2"
-        android:layout_width="335dp"
-        android:layout_height="239dp"
+        android:layout_width="@dimen/sw_dp_335"
+        android:layout_height="@dimen/sw_dp_239"
         android:background="@drawable/bg_grey"
         android:orientation="vertical"
-        android:layout_marginTop="8dp"
-        android:padding="16dp"
+        android:layout_marginTop="@dimen/sw_dp_8"
+        android:padding="@dimen/sw_dp_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/stats">
@@ -181,11 +181,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
-                android:layout_width="80dp"
+                android:layout_width="@dimen/sw_dp_80"
                 android:layout_height="wrap_content"
                 android:text="@string/title_flashlight"
                 android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textSize="@dimen/sw_dp_14"
                 android:layout_weight="1"/>
             <TextView
                 android:id="@+id/tv_flashlight_time"
@@ -193,25 +193,25 @@
                 android:layout_height="wrap_content"
                 android:text="time"
                 android:textColor="@color/grey"
-                android:textSize="14sp"/>
+                android:textSize="@dimen/sw_dp_14"/>
         </LinearLayout>
         <ProgressBar
             android:id="@+id/progress_flashlight"
             android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_marginTop="10dp"
+            android:layout_height="@dimen/sw_dp_5"
+            android:layout_marginTop="@dimen/sw_dp_10"
             style="?android:attr/progressBarStyleHorizontal"
             android:progressDrawable="@drawable/progress_bar_gold" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="@dimen/sw_dp_20">
             <TextView
-                android:layout_width="80dp"
+                android:layout_width="@dimen/sw_dp_80"
                 android:layout_height="wrap_content"
                 android:text="@string/title_screen_light"
                 android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textSize="@dimen/sw_dp_14"
                 android:layout_weight="1"/>
             <TextView
                 android:id="@+id/tv_screen_light_time"
@@ -219,25 +219,25 @@
                 android:layout_height="wrap_content"
                 android:text="time"
                 android:textColor="@color/grey"
-                android:textSize="14sp"/>
+                android:textSize="@dimen/sw_dp_14"/>
         </LinearLayout>
         <ProgressBar
             android:id="@+id/progress_screen_light"
             android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_marginTop="8dp"
+            android:layout_height="@dimen/sw_dp_5"
+            android:layout_marginTop="@dimen/sw_dp_8"
             style="?android:attr/progressBarStyleHorizontal"
             android:progressDrawable="@drawable/progress_bar_gold" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="@dimen/sw_dp_20">
             <TextView
-                android:layout_width="80dp"
+                android:layout_width="@dimen/sw_dp_80"
                 android:layout_height="wrap_content"
                 android:text="@string/title_blink"
                 android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textSize="@dimen/sw_dp_14"
                 android:layout_weight="1"/>
             <TextView
                 android:id="@+id/tv_blink_time"
@@ -245,32 +245,32 @@
                 android:layout_height="wrap_content"
                 android:text="time"
                 android:textColor="@color/grey"
-                android:textSize="14sp"/>
+                android:textSize="@dimen/sw_dp_14"/>
         </LinearLayout>
         <ProgressBar
             android:id="@+id/progress_blink"
             android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_marginTop="8dp"
+            android:layout_height="@dimen/sw_dp_5"
+            android:layout_marginTop="@dimen/sw_dp_8"
             style="?android:attr/progressBarStyleHorizontal"
             android:progressDrawable="@drawable/progress_bar_gold" />
         <View
             android:id="@+id/divider1"
             android:layout_width="wrap_content"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/sw_dp_1"
             android:background="#666666"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/sw_dp_20"
             app:layout_constraintBottom_toTopOf="@+id/bottom_nav" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="@dimen/sw_dp_20">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/total_usage"
                 android:textColor="@color/white"
-                android:textSize="14sp"/>
+                android:textSize="@dimen/sw_dp_14"/>
             <TextView
                 android:id="@+id/tv_total_time"
                 android:layout_width="match_parent"
@@ -278,7 +278,7 @@
                 android:gravity="end"
                 android:text="24分钟"
                 android:textColor="@color/white"
-                android:textSize="14sp"/>
+                android:textSize="@dimen/sw_dp_14"/>
         </LinearLayout>
     </LinearLayout>
     <TextView
@@ -287,17 +287,17 @@
         android:layout_height="wrap_content"
         android:text="@string/battery_management"
         android:textColor="@color/white"
-        android:textSize="16sp"
-        android:layout_marginTop="16dp"
+        android:textSize="@dimen/sw_dp_16"
+        android:layout_marginTop="@dimen/sw_dp_16"
         app:layout_constraintStart_toStartOf="@id/card_container3"
         app:layout_constraintTop_toBottomOf="@id/card_container2" />
     <LinearLayout
         android:id="@+id/card_container3"
-        android:layout_width="335dp"
-        android:layout_height="174dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginEnd="44dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="@dimen/sw_dp_335"
+        android:layout_height="@dimen/sw_dp_174"
+        android:layout_marginStart="@dimen/sw_dp_44"
+        android:layout_marginEnd="@dimen/sw_dp_44"
+        android:layout_marginTop="@dimen/sw_dp_8"
         android:background="@drawable/bg_grey"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
@@ -307,74 +307,74 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:layout_marginTop="18dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp">
+            android:layout_marginTop="@dimen/sw_dp_18"
+            android:layout_marginStart="@dimen/sw_dp_16"
+            android:layout_marginEnd="@dimen/sw_dp_16">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/low_battery_protection"
                 android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textSize="@dimen/sw_dp_14"
                 android:layout_weight="1"/>
             <com.name.flashlight.SlidingButton
                 android:id="@+id/btn_low_battery"
-                android:layout_width="40dp"
-                android:layout_height="20dp"
+                android:layout_width="@dimen/sw_dp_40"
+                android:layout_height="@dimen/sw_dp_20"
                 android:gravity="end" />
         </LinearLayout>
         <View
             android:id="@+id/divider2"
             android:layout_width="wrap_content"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/sw_dp_1"
             android:background="#666666"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="@dimen/sw_dp_18"
             app:layout_constraintBottom_toTopOf="@+id/bottom_nav" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:layout_marginTop="18dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp">
+            android:layout_marginTop="@dimen/sw_dp_18"
+            android:layout_marginStart="@dimen/sw_dp_16"
+            android:layout_marginEnd="@dimen/sw_dp_16">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/intelligent_brightness_adjustment"
                 android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textSize="@dimen/sw_dp_14"
                 android:layout_weight="1"/>
             <com.name.flashlight.SlidingButton
                 android:id="@+id/btn_brightness"
-                android:layout_width="40dp"
-                android:layout_height="20dp"
+                android:layout_width="@dimen/sw_dp_40"
+                android:layout_height="@dimen/sw_dp_20"
                 android:gravity="end" />
         </LinearLayout>
         <View
             android:id="@+id/divider3"
             android:layout_width="wrap_content"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/sw_dp_1"
             android:background="#666666"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="@dimen/sw_dp_18"
             app:layout_constraintBottom_toTopOf="@+id/bottom_nav" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:layout_marginTop="18dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp">
+            android:layout_marginTop="@dimen/sw_dp_18"
+            android:layout_marginStart="@dimen/sw_dp_16"
+            android:layout_marginEnd="@dimen/sw_dp_16">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/temperature_monitor"
                 android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textSize="@dimen/sw_dp_14"
                 android:layout_weight="1"/>
             <com.name.flashlight.SlidingButton
                 android:id="@+id/btn_temperature_switch"
-                android:layout_width="40dp"
-                android:layout_height="20dp"
+                android:layout_width="@dimen/sw_dp_40"
+                android:layout_height="@dimen/sw_dp_20"
                 android:gravity="end" />
         </LinearLayout>
     </LinearLayout>
@@ -385,7 +385,7 @@
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/sw_dp_1"
         android:background="#131313"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav" />
 

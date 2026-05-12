@@ -12,9 +12,9 @@
     <ImageView
         android:id="@+id/traceback"
         android:src="@drawable/traceback"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="16dp"
+        android:layout_width="@dimen/sw_dp_32"
+        android:layout_height="@dimen/sw_dp_32"
+        android:layout_marginStart="@dimen/sw_dp_16"
         android:contentDescription="返回"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_title"
@@ -24,10 +24,10 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/sw_dp_16"
         android:text="@string/title_screen_light"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="@dimen/sw_dp_20"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,9 +35,9 @@
 
     <ImageView
         android:id="@+id/iv_settings"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="@dimen/sw_dp_24"
+        android:layout_height="@dimen/sw_dp_24"
+        android:layout_marginEnd="@dimen/sw_dp_16"
         android:src="@drawable/ic_equalizer"
         android:contentDescription="设置"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,9 +47,9 @@
     <!-- 预览区域 -->
     <LinearLayout
         android:id="@+id/card1"
-        android:layout_width="343dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="@dimen/sw_dp_343"
+        android:layout_height="@dimen/sw_dp_150"
+        android:layout_marginTop="@dimen/sw_dp_24"
         android:background="@drawable/bg_rounded_corner"
         android:orientation="vertical"
         android:gravity="center"
@@ -57,26 +57,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/sw_dp_40"
+            android:layout_height="@dimen/sw_dp_40"
             android:src="@drawable/ic_tips"
             app:tint="@color/black" />
         <TextView
             android:id="@+id/tv_light_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/sw_dp_8"
             android:text="白光 - 亮度"
-            android:textSize="18sp"
+            android:textSize="@dimen/sw_dp_18"
             android:textColor="@color/black" />
     </LinearLayout>
 
     <!-- 椭圆滑块亮度选择器 -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_brightness_slider"
-        android:layout_width="344dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="15dp"
+        android:layout_width="@dimen/sw_dp_344"
+        android:layout_height="@dimen/sw_dp_40"
+        android:layout_marginTop="@dimen/sw_dp_15"
         android:background="@drawable/bg_brightness_track"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -85,8 +85,8 @@
         <!-- 滑块背景 (Thumb) -->
         <View
             android:id="@+id/view_brightness_thumb"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/sw_dp_0"
+            android:layout_height="@dimen/sw_dp_40"
             android:background="@drawable/bg_brightness_thumb"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -105,7 +105,7 @@
 
             <TextView
                 android:id="@+id/card_left"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/sw_dp_0"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:clickable="true"
@@ -113,11 +113,11 @@
                 android:gravity="center"
                 android:text="@string/brightness_card_low"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sw_dp_14" />
 
             <TextView
                 android:id="@+id/card_middle"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/sw_dp_0"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:clickable="true"
@@ -125,11 +125,11 @@
                 android:gravity="center"
                 android:text="@string/brightness_card_medium"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sw_dp_14" />
 
             <TextView
                 android:id="@+id/card_right"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/sw_dp_0"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:clickable="true"
@@ -137,7 +137,7 @@
                 android:gravity="center"
                 android:text="@string/brightness_card_high"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sw_dp_14" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -145,11 +145,11 @@
         android:id="@+id/label_color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginStart="@dimen/sw_dp_44"
+        android:layout_marginTop="@dimen/sw_dp_15"
         android:text="@string/title_color"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="@dimen/sw_dp_16"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_brightness_slider"/>
@@ -157,29 +157,29 @@
     <!-- 色彩选择组 -->
     <LinearLayout
         android:id="@+id/layout_color_group"
-        android:layout_width="343dp"
+        android:layout_width="@dimen/sw_dp_343"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="12dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="@dimen/sw_dp_12"
+        android:layout_marginStart="@dimen/sw_dp_16"
+        android:layout_marginEnd="@dimen/sw_dp_16"
         app:layout_constraintTop_toBottomOf="@id/label_color"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:id="@+id/card_left1"
-            android:layout_width="343dp"
-            android:layout_height="57dp"
+            android:layout_width="@dimen/sw_dp_343"
+            android:layout_height="@dimen/sw_dp_57"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
+            android:paddingStart="@dimen/sw_dp_16"
+            android:paddingEnd="@dimen/sw_dp_16"
             android:background="@drawable/bg_color_card_selector">
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/sw_dp_24"
+                android:layout_height="@dimen/sw_dp_24"
                 android:src="@drawable/bg_white"/>
 
             <TextView
@@ -189,31 +189,31 @@
                 android:layout_weight="1"
                 android:text="@string/color_pure"
                 android:textColor="@color/white"
-                android:layout_marginStart="12dp"/>
+                android:layout_marginStart="@dimen/sw_dp_12"/>
 
             <!-- 勾选 icon -->
             <ImageView
                 android:id="@+id/iv_check_pure"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="@dimen/sw_dp_20"
+                android:layout_height="@dimen/sw_dp_20"
                 android:src="@drawable/ic_check"
                 android:visibility="gone"/>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/card_middle1"
-            android:layout_width="343dp"
-            android:layout_height="57dp"
+            android:layout_width="@dimen/sw_dp_343"
+            android:layout_height="@dimen/sw_dp_57"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:layout_marginTop="12dp"
+            android:paddingStart="@dimen/sw_dp_16"
+            android:paddingEnd="@dimen/sw_dp_16"
+            android:layout_marginTop="@dimen/sw_dp_12"
             android:background="@drawable/bg_color_card_selector">
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/sw_dp_24"
+                android:layout_height="@dimen/sw_dp_24"
                 android:src="@drawable/bg_warm_white"/>
 
             <TextView
@@ -223,31 +223,31 @@
                 android:layout_weight="1"
                 android:text="@string/color_warm"
                 android:textColor="@color/white"
-                android:layout_marginStart="12dp"/>
+                android:layout_marginStart="@dimen/sw_dp_12"/>
 
             <!-- 勾选 icon -->
             <ImageView
                 android:id="@+id/iv_check_warm"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="@dimen/sw_dp_20"
+                android:layout_height="@dimen/sw_dp_20"
                 android:src="@drawable/ic_check"
                 android:visibility="gone"/>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/card_right1"
-            android:layout_width="343dp"
-            android:layout_height="57dp"
+            android:layout_width="@dimen/sw_dp_343"
+            android:layout_height="@dimen/sw_dp_57"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:layout_marginTop="12dp"
+            android:paddingStart="@dimen/sw_dp_16"
+            android:paddingEnd="@dimen/sw_dp_16"
+            android:layout_marginTop="@dimen/sw_dp_12"
             android:background="@drawable/bg_color_card_selector">
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/sw_dp_24"
+                android:layout_height="@dimen/sw_dp_24"
                 android:src="@drawable/bg_cold_white"/>
 
             <TextView
@@ -257,13 +257,13 @@
                 android:layout_weight="1"
                 android:text="@string/color_cold"
                 android:textColor="@color/white"
-                android:layout_marginStart="12dp"/>
+                android:layout_marginStart="@dimen/sw_dp_12"/>
 
             <!-- 勾选 icon -->
             <ImageView
                 android:id="@+id/iv_check_cold"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="@dimen/sw_dp_20"
+                android:layout_height="@dimen/sw_dp_20"
                 android:src="@drawable/ic_check"
                 android:visibility="gone"/>
         </LinearLayout>
@@ -271,24 +271,24 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/card2"
-        android:layout_width="343dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="@dimen/sw_dp_343"
+        android:layout_height="@dimen/sw_dp_53"
+        android:layout_marginTop="@dimen/sw_dp_20"
         android:background="@drawable/btn_light_blue_selector"
         app:layout_constraintTop_toBottomOf="@+id/layout_color_group"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/btn_screen"
-        android:textSize="16sp"
+        android:textSize="@dimen/sw_dp_16"
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:elevation="4dp" />
+        android:elevation="@dimen/sw_dp_4" />
 
     <LinearLayout
         android:id="@+id/bottom_settings"
-        android:layout_width="343dp"
-        android:layout_height="115dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="@dimen/sw_dp_343"
+        android:layout_height="@dimen/sw_dp_115"
+        android:layout_marginTop="@dimen/sw_dp_20"
         android:background="@drawable/bg_grey"
         android:orientation="vertical"
         android:gravity="center_vertical"
@@ -299,7 +299,7 @@
         <LinearLayout
             android:id="@+id/layoutAutoOff"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/sw_dp_0"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -307,43 +307,43 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/sw_dp_16"
                 android:text="@string/setting_auto_off"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sw_dp_14" />
             <TextView
                 android:id="@+id/tv_screen_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="@dimen/sw_dp_16"
                 android:text="5分钟"
                 android:textColor="#8E8E93"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sw_dp_14" />
         </LinearLayout>
 
         <View android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/sw_dp_1"
             android:background="#33FFFFFF" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/sw_dp_0"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="horizontal">
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="@dimen/sw_dp_0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/sw_dp_16"
                 android:text="@string/eye_protection_mode"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sw_dp_14" />
             <com.name.flashlight.SlidingButton
                 android:id="@+id/sliding_auto_brightness"
-                android:layout_marginEnd="16dp"
-                android:layout_width="42dp"
-                android:layout_height="22dp" />
+                android:layout_marginEnd="@dimen/sw_dp_16"
+                android:layout_width="@dimen/sw_dp_42"
+                android:layout_height="@dimen/sw_dp_22" />
         </LinearLayout>
     </LinearLayout>
 

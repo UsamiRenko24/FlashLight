@@ -12,9 +12,9 @@
     <ImageView
         android:id="@+id/traceback"
         android:src="@drawable/traceback"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="16dp"
+        android:layout_width="@dimen/sw_dp_32"
+        android:layout_height="@dimen/sw_dp_32"
+        android:layout_marginStart="@dimen/sw_dp_16"
         android:contentDescription="返回"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_title" />
@@ -23,10 +23,10 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/sw_dp_10"
         android:text="@string/title_flashlight"
         android:textColor="@color/white"
-        android:textSize="19sp"
+        android:textSize="@dimen/sw_dp_19"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -34,9 +34,9 @@
 
     <ImageView
         android:id="@+id/iv_settings"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="@dimen/sw_dp_24"
+        android:layout_height="@dimen/sw_dp_24"
+        android:layout_marginEnd="@dimen/sw_dp_16"
         android:src="@drawable/ic_equalizer"
         android:contentDescription="设置"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,23 +45,23 @@
     <!-- 电池与时间卡片：同步 MainActivity 布局 -->
     <LinearLayout
         android:id="@+id/card_container"
-        android:layout_width="335dp"
-        android:layout_height="87dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginEnd="44dp"
-        android:layout_marginTop="30dp"
+        android:layout_width="@dimen/sw_dp_335"
+        android:layout_height="@dimen/sw_dp_87"
+        android:layout_marginStart="@dimen/sw_dp_44"
+        android:layout_marginEnd="@dimen/sw_dp_44"
+        android:layout_marginTop="@dimen/sw_dp_30"
         android:background="@drawable/bg_grey"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
+        android:paddingStart="@dimen/sw_dp_20"
+        android:paddingEnd="@dimen/sw_dp_20"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title">
 
         <!-- 左侧电量组：完美居中 -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="@dimen/sw_dp_0"
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
@@ -78,10 +78,10 @@
 
                     <ImageView
                         android:id="@+id/iv_battery_icon"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="@dimen/sw_dp_30"
+                        android:layout_height="@dimen/sw_dp_30"
                         android:src="@drawable/ic_battery_75"
-                        android:layout_marginEnd="4dp"/>
+                        android:layout_marginEnd="@dimen/sw_dp_4"/>
 
                     <TextView
                         android:id="@+id/tv_battery_percent"
@@ -89,7 +89,7 @@
                         android:layout_height="wrap_content"
                         android:text="85%"
                         android:textColor="@color/white"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/sw_dp_14"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -99,8 +99,8 @@
                     android:layout_height="wrap_content"
                     android:text="充电中"
                     android:textColor="#8E8E93"
-                    android:textSize="13sp"
-                    android:layout_marginTop="2dp"/>
+                    android:textSize="@dimen/sw_dp_13"
+                    android:layout_marginTop="@dimen/sw_dp_2"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -120,17 +120,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00:15"
-                android:layout_marginTop="9dp"
+                android:layout_marginTop="@dimen/sw_dp_9"
                 android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textSize="@dimen/sw_dp_14"
                 android:textStyle="bold"/>
         </LinearLayout>
     </LinearLayout>
 
     <View
         android:id="@+id/view_halo"
-        android:layout_width="260dp"
-        android:layout_height="260dp"
+        android:layout_width="@dimen/sw_dp_260"
+        android:layout_height="@dimen/sw_dp_260"
         android:alpha="0"
         android:visibility="gone"
         android:background="@drawable/bg_flashlight_halo"
@@ -141,12 +141,12 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_flashlight"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:layout_marginTop="30dp"
+        android:layout_width="@dimen/sw_dp_160"
+        android:layout_height="@dimen/sw_dp_160"
+        android:layout_marginTop="@dimen/sw_dp_30"
         android:background="@drawable/btn_flashlight_off"
         android:stateListAnimator="@null"
-        android:elevation="0dp"
+        android:elevation="@dimen/sw_dp_0"
         app:layout_constraintTop_toBottomOf="@+id/card_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -157,23 +157,23 @@
         android:layout_height="wrap_content"
         android:text="@string/btn_off"
         android:textColor="#E0E0E0"
-        android:textSize="13sp"
-        android:elevation="10dp"
-        android:layout_marginBottom="28dp"
+        android:textSize="@dimen/sw_dp_13"
+        android:elevation="@dimen/sw_dp_10"
+        android:layout_marginBottom="@dimen/sw_dp_28"
         app:layout_constraintBottom_toBottomOf="@id/btn_flashlight"
         app:layout_constraintStart_toStartOf="@id/btn_flashlight"
         app:layout_constraintEnd_toEndOf="@id/btn_flashlight" />
 
     <LinearLayout
-        android:layout_width="343dp"
-        android:layout_height="145dp"
+        android:layout_width="@dimen/sw_dp_343"
+        android:layout_height="@dimen/sw_dp_145"
         android:id="@+id/container"
         app:layout_constraintTop_toBottomOf="@+id/btn_flashlight"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:orientation="vertical"
-        android:layout_marginTop="28dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="@dimen/sw_dp_28"
+        android:layout_marginBottom="@dimen/sw_dp_16"
         android:background="@drawable/bg_grey">
         <TextView
             android:id="@+id/textView"
@@ -181,10 +181,10 @@
             android:layout_height="wrap_content"
             android:text="@string/brightness_level"
             android:textColor="@color/white"
-            android:textSize="16sp"
-            android:layout_marginStart="11dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="14dp"
+            android:textSize="@dimen/sw_dp_16"
+            android:layout_marginStart="@dimen/sw_dp_11"
+            android:layout_marginTop="@dimen/sw_dp_16"
+            android:layout_marginBottom="@dimen/sw_dp_14"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_flashlight" />
@@ -194,12 +194,12 @@
             android:orientation="horizontal">
             <LinearLayout
                 android:id="@+id/card_left"
-                android:layout_width="98dp"
-                android:layout_height="80dp"
+                android:layout_width="@dimen/sw_dp_98"
+                android:layout_height="@dimen/sw_dp_80"
                 android:background="@drawable/bg_rounded_selector"
                 android:orientation="vertical"
-                android:layout_marginStart="11dp"
-                android:layout_marginEnd="14dp"
+                android:layout_marginStart="@dimen/sw_dp_11"
+                android:layout_marginEnd="@dimen/sw_dp_14"
                 android:gravity="center">
                 <TextView
                     android:layout_width="wrap_content"
@@ -207,13 +207,13 @@
                     android:text="@string/brightness_card_low"
                     android:textColor="@color/white"
                     android:gravity="center"
-                    android:textSize="15dp"/>
+                    android:textSize="@dimen/sw_dp_15"/>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/card_middle"
-                android:layout_width="98dp"
-                android:layout_height="80dp"
+                android:layout_width="@dimen/sw_dp_98"
+                android:layout_height="@dimen/sw_dp_80"
                 android:background="@drawable/bg_rounded_selector"
                 android:orientation="vertical"
                 app:layout_constraintHorizontal_chainStyle="packed"
@@ -224,16 +224,16 @@
                     android:text="@string/brightness_card_medium"
                     android:textColor="@color/white"
                     android:gravity="center"
-                    android:textSize="15dp"/>
+                    android:textSize="@dimen/sw_dp_15"/>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/card_right"
-                android:layout_width="98dp"
-                android:layout_height="80dp"
+                android:layout_width="@dimen/sw_dp_98"
+                android:layout_height="@dimen/sw_dp_80"
                 android:background="@drawable/bg_rounded_selector"
                 android:orientation="vertical"
-                android:layout_marginStart="14dp"
+                android:layout_marginStart="@dimen/sw_dp_14"
                 android:gravity="center">
                 <TextView
                     android:layout_width="wrap_content"
@@ -241,7 +241,7 @@
                     android:text="@string/brightness_card_high"
                     android:textColor="@color/white"
                     android:gravity="center"
-                    android:textSize="15dp"/>
+                    android:textSize="@dimen/sw_dp_15"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -249,9 +249,9 @@
 
     <LinearLayout
         android:id="@+id/card"
-        android:layout_width="343dp"
-        android:layout_height="114dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="@dimen/sw_dp_343"
+        android:layout_height="@dimen/sw_dp_114"
+        android:layout_marginTop="@dimen/sw_dp_10"
         android:background="@drawable/bg_grey"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/container"
@@ -260,11 +260,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="16dp">
+            android:layout_marginStart="@dimen/sw_dp_20"
+            android:layout_marginTop="@dimen/sw_dp_16">
             <ImageView
-                android:layout_width="34dp"
-                android:layout_height="34dp"
+                android:layout_width="@dimen/sw_dp_34"
+                android:layout_height="@dimen/sw_dp_34"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_clock"/>
             <LinearLayout
@@ -274,19 +274,19 @@
                 <TextView
                     android:id="@+id/tv_total_time1"
                     android:layout_width="wrap_content"
-                    android:layout_height="19dp"
+                    android:layout_height="@dimen/sw_dp_19"
                     android:text="5分钟"
-                    android:textSize="14sp"
-                    android:layout_marginStart="10dp"
+                    android:textSize="@dimen/sw_dp_14"
+                    android:layout_marginStart="@dimen/sw_dp_10"
                     android:layout_weight="1"
                     android:textColor="@color/white"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/setting_auto_off"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="3dp"
-                    android:textSize="10sp"
+                    android:layout_marginStart="@dimen/sw_dp_10"
+                    android:layout_marginTop="@dimen/sw_dp_3"
+                    android:textSize="@dimen/sw_dp_10"
                     android:textColor="@color/grey"/>
             </LinearLayout>
         </LinearLayout>
@@ -296,32 +296,32 @@
             <ProgressBar
                 android:id="@+id/progress_flashlight"
                 android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:layout_marginTop="19dp"
-                android:layout_marginStart="19dp"
-                android:layout_marginEnd="19dp"
+                android:layout_height="@dimen/sw_dp_3"
+                android:layout_marginTop="@dimen/sw_dp_19"
+                android:layout_marginStart="@dimen/sw_dp_19"
+                android:layout_marginEnd="@dimen/sw_dp_19"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:progressDrawable="@drawable/progress_bar" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp">
+                android:layout_marginTop="@dimen/sw_dp_30">
                 <TextView
                     android:id="@+id/last_time"
-                    android:layout_width="64dp"
+                    android:layout_width="@dimen/sw_dp_64"
                     android:fontFamily="monospace"
                     android:layout_height="wrap_content"
                     android:text="00:00"
-                    android:layout_marginStart="20dp"
-                    android:textSize="14sp"
+                    android:layout_marginStart="@dimen/sw_dp_20"
+                    android:textSize="@dimen/sw_dp_14"
                     android:textColor="@color/grey" />
                 <TextView
                     android:id="@+id/tv_total_time2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="5分钟"
-                    android:textSize="14sp"
-                    android:layout_marginEnd="20dp"
+                    android:textSize="@dimen/sw_dp_14"
+                    android:layout_marginEnd="@dimen/sw_dp_20"
                     android:textColor="@color/grey"
                     android:gravity="end"
                     android:layout_weight="1"/>
@@ -331,9 +331,9 @@
 
     <LinearLayout
         android:id="@+id/temperature_container"
-        android:layout_width="343dp"
-        android:layout_height="84dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="@dimen/sw_dp_343"
+        android:layout_height="@dimen/sw_dp_84"
+        android:layout_marginTop="@dimen/sw_dp_10"
         android:background="@drawable/bg_grey"
         android:gravity="center_vertical"
         android:visibility="gone"
@@ -342,9 +342,9 @@
         app:layout_constraintEnd_toEndOf="parent">
         <ImageView
             android:id="@+id/iv_temperature"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
-            android:layout_marginStart="20dp"
+            android:layout_width="@dimen/sw_dp_34"
+            android:layout_height="@dimen/sw_dp_34"
+            android:layout_marginStart="@dimen/sw_dp_20"
             android:layout_gravity="center_vertical"
             android:src="@drawable/temperature" />
         <LinearLayout
@@ -352,28 +352,28 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:gravity="center_vertical"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp">
+            android:layout_marginStart="@dimen/sw_dp_16"
+            android:layout_marginEnd="@dimen/sw_dp_16">
             <TextView
                 android:id="@+id/tv_temperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/normal_temperature"
                 android:textColor="@color/white"
-                android:textSize="14sp"/>
+                android:textSize="@dimen/sw_dp_14"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="@dimen/sw_dp_6"
                 android:text="@string/allow_for_ventilation"
                 android:textColor="@color/grey"
-                android:textSize="12sp"/>
+                android:textSize="@dimen/sw_dp_12"/>
         </LinearLayout>
     </LinearLayout>
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/sw_dp_1"
         android:background="#131313"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav" />
 

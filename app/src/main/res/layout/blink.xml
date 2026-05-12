@@ -11,9 +11,9 @@
     <ImageView
         android:id="@+id/traceback"
         android:src="@drawable/traceback"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="16dp"
+        android:layout_width="@dimen/sw_dp_32"
+        android:layout_height="@dimen/sw_dp_32"
+        android:layout_marginStart="@dimen/sw_dp_16"
         android:contentDescription="返回"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_title"/>
@@ -22,19 +22,19 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/sw_dp_10"
         android:text="@string/title_blink"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="@dimen/sw_dp_20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/iv_settings"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="@dimen/sw_dp_24"
+        android:layout_height="@dimen/sw_dp_24"
+        android:layout_marginEnd="@dimen/sw_dp_16"
         android:src="@drawable/ic_equalizer"
         android:contentDescription="设置"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,9 +42,9 @@
 
     <LinearLayout
         android:id="@+id/card1"
-        android:layout_width="343dp"
-        android:layout_height="155dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="@dimen/sw_dp_343"
+        android:layout_height="@dimen/sw_dp_155"
+        android:layout_marginTop="@dimen/sw_dp_20"
         android:background="@drawable/bg_grey"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,10 +52,10 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_title">
 
         <LinearLayout
-            android:layout_width="310dp"
-            android:layout_height="80dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="13dp"
+            android:layout_width="@dimen/sw_dp_310"
+            android:layout_height="@dimen/sw_dp_80"
+            android:layout_marginStart="@dimen/sw_dp_16"
+            android:layout_marginTop="@dimen/sw_dp_13"
             android:background="@drawable/bg_rounded"
             android:orientation="vertical">
             <TextView
@@ -65,60 +65,60 @@
                 android:layout_gravity="center"
                 android:text=". . . _ _ _ . . ."
                 android:textColor="@color/white"
-                android:textSize="30sp" />
+                android:textSize="@dimen/sw_dp_30" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/title_morse_code"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/sw_dp_10"
                 android:textColor="@color/grey"
-                android:textSize="14sp" />
+                android:textSize="@dimen/sw_dp_14" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="@dimen/sw_dp_16">
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/sw_dp_24"
+                android:layout_height="@dimen/sw_dp_24"
                 android:src="@drawable/ic_sos"
-                android:layout_marginTop="3dp"
-                android:layout_marginStart="16dp"/>
+                android:layout_marginTop="@dimen/sw_dp_3"
+                android:layout_marginStart="@dimen/sw_dp_16"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_sos_signal"
                 android:textColor="@color/white"
-                android:layout_marginStart="12dp"
-                android:textSize="14sp" />
+                android:layout_marginStart="@dimen/sw_dp_12"
+                android:textSize="@dimen/sw_dp_14" />
             <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="@dimen/sw_dp_0"
+                android:layout_height="@dimen/sw_dp_0"
                 android:layout_weight="1"/>
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/SOS"
-                android:layout_width="86dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/sw_dp_86"
+                android:layout_height="@dimen/sw_dp_30"
                 android:background="@drawable/bg_sos_button"
                 android:text="@string/btn_sos"
                 android:textColor="@color/white"
-                android:textSize="12sp"
-                android:layout_marginEnd="16dp"/>
+                android:textSize="@dimen/sw_dp_12"
+                android:layout_marginEnd="@dimen/sw_dp_16"/>
         </LinearLayout>
 
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/card2"
-        android:layout_width="343dp"
-        android:layout_height="306dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginEnd="44dp"
-        android:layout_marginTop="40dp"
+        android:layout_width="@dimen/sw_dp_343"
+        android:layout_height="@dimen/sw_dp_306"
+        android:layout_marginStart="@dimen/sw_dp_44"
+        android:layout_marginEnd="@dimen/sw_dp_44"
+        android:layout_marginTop="@dimen/sw_dp_40"
         android:background="@drawable/bg_grey"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/card1"
@@ -127,9 +127,9 @@
 
         <LinearLayout
             android:id="@+id/layout_blink"
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="20dp"
+            android:layout_width="@dimen/sw_dp_100"
+            android:layout_height="@dimen/sw_dp_40"
+            android:layout_marginTop="@dimen/sw_dp_20"
             android:background="@drawable/bg_rounded_selector"
             app:layout_constraintEnd_toStartOf="@+id/layout_screen_light"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -149,14 +149,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/title_flashlight"
                 android:textColor="@color/white"
-                android:textSize="16sp"/>
+                android:textSize="@dimen/sw_dp_16"/>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/layout_screen_light"
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="11dp"
+            android:layout_width="@dimen/sw_dp_100"
+            android:layout_height="@dimen/sw_dp_40"
+            android:layout_marginStart="@dimen/sw_dp_11"
             android:background="@drawable/bg_rounded_selector"
             app:layout_constraintTop_toTopOf="@id/layout_blink"
             app:layout_constraintStart_toEndOf="@id/layout_blink"
@@ -174,10 +174,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="@dimen/sw_dp_4"
                 android:text="@string/screen"
                 android:textColor="@color/white"
-                android:textSize="16sp"/>
+                android:textSize="@dimen/sw_dp_16"/>
         </LinearLayout>
         <TextView
             android:id="@+id/textView"
@@ -185,103 +185,103 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="11dp"
+            android:layout_marginTop="@dimen/sw_dp_20"
+            android:layout_marginStart="@dimen/sw_dp_11"
             android:text="@string/blink_frequency"
             android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:textSize="@dimen/sw_dp_18"/>
 
         <LinearLayout
             android:id="@+id/card_left"
             android:layout_width="wrap_content"
-            android:minWidth="98dp"
-            android:layout_height="80dp"
+            android:minWidth="@dimen/sw_dp_98"
+            android:layout_height="@dimen/sw_dp_80"
             android:background="@drawable/bg_rounded_selector"
             android:orientation="vertical"
-            android:layout_marginEnd="15dp"
+            android:layout_marginEnd="@dimen/sw_dp_15"
             android:gravity="center"
-            android:padding="4dp"
+            android:padding="@dimen/sw_dp_4"
             app:layout_constraintEnd_toStartOf="@+id/card_middle"
             app:layout_constraintTop_toTopOf="@+id/card_middle">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/sw_dp_5"
                 android:text="@string/frequency_low"
-                android:textSize="18sp"
+                android:textSize="@dimen/sw_dp_18"
                 android:textColor="@color/pure_white" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/sw_dp_5"
                 android:text="1Hz"
-                android:textSize="18sp"
+                android:textSize="@dimen/sw_dp_18"
                 android:textColor="@color/pure_white" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/card_middle"
             android:layout_width="wrap_content"
-            android:minWidth="98dp"
-            android:layout_height="80dp"
+            android:minWidth="@dimen/sw_dp_98"
+            android:layout_height="@dimen/sw_dp_80"
             android:background="@drawable/bg_rounded_selector"
             android:orientation="vertical"
-            android:padding="4dp"
+            android:padding="@dimen/sw_dp_4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             android:gravity="center"
             app:layout_constraintTop_toBottomOf="@+id/textView"
-            android:layout_marginTop="14dp">
+            android:layout_marginTop="@dimen/sw_dp_14">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/sw_dp_5"
                 android:text="@string/frequency_medium"
-                android:textSize="18sp"
+                android:textSize="@dimen/sw_dp_18"
                 android:textColor="@color/pure_white" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/sw_dp_5"
                 android:text="3Hz"
-                android:textSize="18sp"
+                android:textSize="@dimen/sw_dp_18"
                 android:textColor="@color/pure_white" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/card_right"
             android:layout_width="wrap_content"
-            android:minWidth="98dp"
-            android:layout_height="80dp"
+            android:minWidth="@dimen/sw_dp_98"
+            android:layout_height="@dimen/sw_dp_80"
             android:background="@drawable/bg_rounded_selector"
             android:orientation="vertical"
-            android:padding="4dp"
-            android:layout_marginStart="15dp"
+            android:padding="@dimen/sw_dp_4"
+            android:layout_marginStart="@dimen/sw_dp_15"
             android:gravity="center"
             app:layout_constraintStart_toEndOf="@+id/card_middle"
             app:layout_constraintTop_toTopOf="@+id/card_middle">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/sw_dp_5"
                 android:text="@string/frequency_high"
-                android:textSize="18sp"
+                android:textSize="@dimen/sw_dp_18"
                 android:textColor="@color/pure_white" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/sw_dp_5"
                 android:text="5Hz"
-                android:textSize="18sp"
+                android:textSize="@dimen/sw_dp_18"
                 android:textColor="@color/pure_white" />
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_start_blink"
-            android:layout_width="323dp"
-            android:layout_height="53dp"
-            android:layout_marginTop="30dp"
+            android:layout_width="@dimen/sw_dp_323"
+            android:layout_height="@dimen/sw_dp_53"
+            android:layout_marginTop="@dimen/sw_dp_30"
             android:gravity="center"
             android:background="@drawable/btn_light_blue_selector"
             app:layout_constraintStart_toStartOf="parent"
@@ -289,14 +289,14 @@
             app:layout_constraintTop_toBottomOf="@+id/card_left"
             android:text="@string/btn_blink"
             android:textColor="@color/white"
-            android:textSize="18sp"/>
+            android:textSize="@dimen/sw_dp_18"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/sw_dp_1"
         android:background="#131313"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav" />
 

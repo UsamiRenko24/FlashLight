@@ -11,9 +11,9 @@
     <ImageView
         android:id="@+id/traceback"
         android:src="@drawable/traceback"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="16dp"
+        android:layout_width="@dimen/sw_dp_32"
+        android:layout_height="@dimen/sw_dp_32"
+        android:layout_marginStart="@dimen/sw_dp_16"
         android:contentDescription="返回"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_title" />
@@ -22,37 +22,37 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="@dimen/sw_dp_28"
         android:text="@string/title_sos"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="@dimen/sw_dp_20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/sos_halo"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/sw_dp_0"
+        android:layout_height="@dimen/sw_dp_0"
         android:alpha="0"
         android:background="@drawable/bg_sos_halo"
         app:layout_constraintTop_toTopOf="@id/card1"
         app:layout_constraintBottom_toBottomOf="@id/card1"
         app:layout_constraintStart_toStartOf="@id/card1"
         app:layout_constraintEnd_toEndOf="@id/card1"
-        android:layout_margin="-25dp"/>
+        android:layout_margin="@dimen/sw_dp_m_25"/>
 
     <LinearLayout
         android:id="@+id/card1"
-        android:layout_width="343dp"
-        android:layout_height="211dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="44dp"
+        android:layout_width="@dimen/sw_dp_343"
+        android:layout_height="@dimen/sw_dp_211"
+        android:layout_marginStart="@dimen/sw_dp_44"
+        android:layout_marginTop="@dimen/sw_dp_30"
+        android:layout_marginEnd="@dimen/sw_dp_44"
         android:background="@drawable/bg_grey"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:elevation="8dp"
+        android:elevation="@dimen/sw_dp_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title">
@@ -60,9 +60,9 @@
         <!-- 关键修复：添加 iv_sos_icon -->
         <ImageView
             android:id="@+id/iv_sos_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="10dp"
+            android:layout_width="@dimen/sw_dp_40"
+            android:layout_height="@dimen/sw_dp_40"
+            android:layout_marginTop="@dimen/sw_dp_10"
             android:layout_gravity="center"
             android:src="@drawable/ic_sos" />
 
@@ -72,16 +72,16 @@
             android:text="@string/sos_signal"
             android:textColor="#B1091C"
             android:textStyle="bold"
-            android:textSize="18sp" />
+            android:textSize="@dimen/sw_dp_18" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/morse_code"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="@dimen/sw_dp_6"
             android:textColor="@color/grey"
-            android:textSize="14sp" />
+            android:textSize="@dimen/sw_dp_14" />
 
         <TextView
             android:id="@+id/siganl"
@@ -90,22 +90,22 @@
             android:gravity="center"
             android:text=". . . _ _ _ . . ."
             android:textColor="@color/white"
-            android:textSize="30sp" />
+            android:textSize="@dimen/sw_dp_30" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="@dimen/sw_dp_10">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/short_signal"
-                android:layout_marginEnd="28dp"
+                android:layout_marginEnd="@dimen/sw_dp_28"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toStartOf="@+id/middle"
                 app:layout_constraintBottom_toBottomOf="@id/middle"
-                android:textSize="14sp"/>
+                android:textSize="@dimen/sw_dp_14"/>
             <TextView
                 android:id="@+id/middle"
                 android:layout_width="wrap_content"
@@ -116,27 +116,27 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:textSize="14sp"/>
+                android:textSize="@dimen/sw_dp_14"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/short_signal"
-                android:layout_marginStart="28dp"
+                android:layout_marginStart="@dimen/sw_dp_28"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toEndOf="@+id/middle"
                 app:layout_constraintBottom_toBottomOf="@id/middle"
-                android:textSize="14sp"/>
+                android:textSize="@dimen/sw_dp_14"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/card2"
-        android:layout_width="343dp"
-        android:layout_height="223dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginEnd="44dp"
-        android:layout_marginTop="30dp"
+        android:layout_width="@dimen/sw_dp_343"
+        android:layout_height="@dimen/sw_dp_223"
+        android:layout_marginStart="@dimen/sw_dp_44"
+        android:layout_marginEnd="@dimen/sw_dp_44"
+        android:layout_marginTop="@dimen/sw_dp_30"
         android:background="@drawable/bg_grey"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/card1"
@@ -146,65 +146,65 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="18dp">
+            android:layout_marginStart="@dimen/sw_dp_16"
+            android:layout_marginTop="@dimen/sw_dp_18">
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="@dimen/sw_dp_0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/last_time"
                 android:textColor="@color/white"
-                android:textSize="16sp"/>
+                android:textSize="@dimen/sw_dp_16"/>
             <TextView
                 android:id="@+id/last_time"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/sw_dp_0"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="@dimen/sw_dp_16"
                 android:layout_weight="1"
                 android:text="time"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="@dimen/sw_dp_16" />
         </LinearLayout>
 
         <View android:layout_width="match_parent"
-            android:layout_marginTop="18dp"
-            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/sw_dp_18"
+            android:layout_height="@dimen/sw_dp_1"
             android:background="#33FFFFFF" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="18dp">
+            android:layout_marginStart="@dimen/sw_dp_16"
+            android:layout_marginTop="@dimen/sw_dp_18">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/signal_loop"
                 android:textColor="@color/white"
-                android:textSize="16sp"/>
+                android:textSize="@dimen/sw_dp_16"/>
             <TextView
                 android:id="@+id/tv_sos_cycles"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:layout_weight="1"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="@dimen/sw_dp_16"
                 android:text="loop"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="@dimen/sw_dp_16" />
         </LinearLayout>
 
         <View android:layout_width="match_parent"
-            android:layout_marginTop="18dp"
-            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/sw_dp_18"
+            android:layout_height="@dimen/sw_dp_1"
             android:background="#33FFFFFF" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp">
+            android:layout_marginStart="@dimen/sw_dp_16"
+            android:layout_marginTop="@dimen/sw_dp_16">
             <!-- 关键修复：添加 iv_battery_icon -->
             <ImageView
                 android:id="@+id/iv_battery_icon"
@@ -213,13 +213,13 @@
                 android:src="@drawable/ic_battery_75"/>
             <TextView
                 android:id="@+id/tv_battery_percent"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/sw_dp_0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="state"
                 android:textColor="@color/white"
-                android:textSize="16sp"
-                android:layout_marginStart="10dp"/>
+                android:textSize="@dimen/sw_dp_16"
+                android:layout_marginStart="@dimen/sw_dp_10"/>
             <TextView
                 android:id="@+id/tv_battery_status"
                 android:layout_width="wrap_content"
@@ -227,21 +227,21 @@
                 android:gravity="end"
                 android:text=" - status"
                 android:textColor="@color/white"
-                android:layout_marginEnd="16dp"
-                android:textSize="16sp" />
+                android:layout_marginEnd="@dimen/sw_dp_16"
+                android:textSize="@dimen/sw_dp_16" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="@dimen/sw_dp_10">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/auto_stop_countdown"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/sw_dp_16"
                 android:textColor="@color/grey"
-                android:textSize="12sp"/>
+                android:textSize="@dimen/sw_dp_12"/>
             <TextView
                 android:id="@+id/remain_time"
                 android:layout_width="wrap_content"
@@ -249,18 +249,18 @@
                 android:gravity="end"
                 android:layout_weight="1"
                 android:text="time"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="@dimen/sw_dp_16"
                 android:textColor="@color/grey"
-                android:textSize="12sp" />
+                android:textSize="@dimen/sw_dp_12" />
         </LinearLayout>
 
         <ProgressBar
             android:id="@+id/progress_blink"
             android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_height="@dimen/sw_dp_3"
+            android:layout_marginTop="@dimen/sw_dp_12"
+            android:layout_marginStart="@dimen/sw_dp_16"
+            android:layout_marginEnd="@dimen/sw_dp_16"
             style="?android:attr/progressBarStyleHorizontal"
             android:progressDrawable="@drawable/progress_bar" />
     </LinearLayout>

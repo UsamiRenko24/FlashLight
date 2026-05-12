@@ -12,10 +12,10 @@
 
     <!-- 工业级：自动关闭时间卡片样式 -->
     <style name="TimerCardStyle">
-        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_width">@dimen/sw_dp_0</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:layout_margin">4dp</item>
+        <item name="android:layout_margin">@dimen/sw_dp_4</item>
         <item name="android:background">@drawable/bg_rounded_selector</item>
         <item name="android:gravity">center</item>
         <item name="android:clickable">true</item>
@@ -26,7 +26,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/sw_dp_14</item>
     </style>
     <!-- SplashScreen API Theme -->
     <style name="Theme.FlashLight.Splash" parent="Theme.SplashScreen">

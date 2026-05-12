@@ -11,9 +11,9 @@
     <ImageView
         android:id="@+id/traceback"
         android:src="@drawable/traceback"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="16dp"
+        android:layout_width="@dimen/sw_dp_32"
+        android:layout_height="@dimen/sw_dp_32"
+        android:layout_marginStart="@dimen/sw_dp_16"
         android:contentDescription="返回"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_title"/>
@@ -22,10 +22,10 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/sw_dp_10"
         android:text="@string/auto_off_time"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="@dimen/sw_dp_20"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,9 +33,9 @@
 
     <ImageView
         android:id="@+id/iv_settings"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="@dimen/sw_dp_24"
+        android:layout_height="@dimen/sw_dp_24"
+        android:layout_marginEnd="@dimen/sw_dp_16"
         android:src="@drawable/ic_equalizer"
         android:contentDescription="设置"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,15 +48,15 @@
         android:layout_height="wrap_content"
         android:text="@string/flashlight_auto_off"
         android:textColor="@color/white"
-        android:layout_marginBottom="8dp"
-        android:textSize="17sp"
+        android:layout_marginBottom="@dimen/sw_dp_8"
+        android:textSize="@dimen/sw_dp_17"
         app:layout_constraintStart_toStartOf="@id/container_flash"
         app:layout_constraintBottom_toTopOf="@id/container_flash" />
 
     <LinearLayout
         android:id="@+id/container_flash"
-        android:layout_width="335dp"
-        android:layout_height="110dp"        android:layout_marginTop="47dp"
+        android:layout_width="@dimen/sw_dp_335"
+        android:layout_height="@dimen/sw_dp_110"        android:layout_marginTop="@dimen/sw_dp_47"
         android:background="@drawable/bg_grey"
         android:orientation="horizontal"
         android:gravity="center_vertical"
@@ -65,17 +65,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title">
 
-        <LinearLayout android:id="@+id/flash1min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginStart="10dp" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_1" android:textColor="@color/white" android:textSize="14sp"/>
+        <LinearLayout android:id="@+id/flash1min" android:layout_width="@dimen/sw_dp_71" android:layout_height="@dimen/sw_dp_70" android:background="@drawable/bg_rounded_selector" android:layout_marginStart="@dimen/sw_dp_10" android:layout_marginEnd="@dimen/sw_dp_11" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_1" android:textColor="@color/white" android:textSize="@dimen/sw_dp_14"/>
         </LinearLayout>
-        <LinearLayout android:id="@+id/flash5min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_5" android:textColor="@color/white" android:textSize="14sp"/>
+        <LinearLayout android:id="@+id/flash5min" android:layout_width="@dimen/sw_dp_71" android:layout_height="@dimen/sw_dp_70" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="@dimen/sw_dp_11" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_5" android:textColor="@color/white" android:textSize="@dimen/sw_dp_14"/>
         </LinearLayout>
-        <LinearLayout android:id="@+id/flash10min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_10" android:textColor="@color/white" android:textSize="14sp"/>
+        <LinearLayout android:id="@+id/flash10min" android:layout_width="@dimen/sw_dp_71" android:layout_height="@dimen/sw_dp_70" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="@dimen/sw_dp_11" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_10" android:textColor="@color/white" android:textSize="@dimen/sw_dp_14"/>
         </LinearLayout>
-        <LinearLayout android:id="@+id/flashNever" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_never" android:textColor="@color/white" android:textSize="14sp"/>
+        <LinearLayout android:id="@+id/flashNever" android:layout_width="@dimen/sw_dp_71" android:layout_height="@dimen/sw_dp_70" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="@dimen/sw_dp_11" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_never" android:textColor="@color/white" android:textSize="@dimen/sw_dp_14"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -86,15 +86,15 @@
         android:layout_height="wrap_content"
         android:text="@string/screen_auto_off"
         android:textColor="@color/white"
-        android:layout_marginBottom="8dp"
-        android:textSize="17sp"
+        android:layout_marginBottom="@dimen/sw_dp_8"
+        android:textSize="@dimen/sw_dp_17"
         app:layout_constraintStart_toStartOf="@id/container_screen"
         app:layout_constraintBottom_toTopOf="@id/container_screen" />
 
     <LinearLayout
         android:id="@+id/container_screen"
-        android:layout_width="335dp"
-        android:layout_height="110dp"        android:layout_marginTop="35dp"
+        android:layout_width="@dimen/sw_dp_335"
+        android:layout_height="@dimen/sw_dp_110"        android:layout_marginTop="@dimen/sw_dp_35"
         android:background="@drawable/bg_grey"
         android:orientation="horizontal"
         android:gravity="center_vertical"
@@ -103,17 +103,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/container_flash">
 
-        <LinearLayout android:id="@+id/screen1min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginStart="10dp" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_1" android:textColor="@color/white" android:textSize="14sp"/>
+        <LinearLayout android:id="@+id/screen1min" android:layout_width="@dimen/sw_dp_71" android:layout_height="@dimen/sw_dp_70" android:background="@drawable/bg_rounded_selector" android:layout_marginStart="@dimen/sw_dp_10" android:layout_marginEnd="@dimen/sw_dp_11" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_1" android:textColor="@color/white" android:textSize="@dimen/sw_dp_14"/>
         </LinearLayout>
-        <LinearLayout android:id="@+id/screen5min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_5" android:textColor="@color/white" android:textSize="14sp"/>
+        <LinearLayout android:id="@+id/screen5min" android:layout_width="@dimen/sw_dp_71" android:layout_height="@dimen/sw_dp_70" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="@dimen/sw_dp_11" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_5" android:textColor="@color/white" android:textSize="@dimen/sw_dp_14"/>
         </LinearLayout>
-        <LinearLayout android:id="@+id/screen10min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_10" android:textColor="@color/white" android:textSize="14sp"/>
+        <LinearLayout android:id="@+id/screen10min" android:layout_width="@dimen/sw_dp_71" android:layout_height="@dimen/sw_dp_70" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="@dimen/sw_dp_11" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_10" android:textColor="@color/white" android:textSize="@dimen/sw_dp_14"/>
         </LinearLayout>
-        <LinearLayout android:id="@+id/screenNever" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_never" android:textColor="@color/white" android:textSize="14sp"/>
+        <LinearLayout android:id="@+id/screenNever" android:layout_width="@dimen/sw_dp_71" android:layout_height="@dimen/sw_dp_70" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="@dimen/sw_dp_11" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/auto_off_never" android:textColor="@color/white" android:textSize="@dimen/sw_dp_14"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -124,15 +124,15 @@
         android:layout_height="wrap_content"
         android:text="@string/blink_auto_off"
         android:textColor="@color/white"
-        android:layout_marginBottom="8dp"
-        android:textSize="17sp"
+        android:layout_marginBottom="@dimen/sw_dp_8"
+        android:textSize="@dimen/sw_dp_17"
         app:layout_constraintStart_toStartOf="@id/container_blink"
         app:layout_constraintBottom_toTopOf="@id/container_blink" />
 
     <LinearLayout
         android:id="@+id/container_blink"
-        android:layout_width="335dp"
-        android:layout_height="110dp"        android:layout_marginTop="35dp"
+        android:layout_width="@dimen/sw_dp_335"
+        android:layout_height="@dimen/sw_dp_110"        android:layout_marginTop="@dimen/sw_dp_35"
         android:background="@drawable/bg_grey"
         android:orientation="horizontal"
         android:gravity="center_vertical"
@@ -141,17 +141,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/container_screen">
 
-        <LinearLayout android:id="@+id/blink1min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginStart="10dp" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_1" android:gravity="center" android:textColor="@color/white" android:textSize="14sp"/>
+        <LinearLayout android:id="@+id/blink1min" android:layout_width="@dimen/sw_dp_71" android:layout_height="@dimen/sw_dp_70" android:background="@drawable/bg_rounded_selector" android:layout_marginStart="@dimen/sw_dp_10" android:layout_marginEnd="@dimen/sw_dp_11" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_1" android:gravity="center" android:textColor="@color/white" android:textSize="@dimen/sw_dp_14"/>
         </LinearLayout>
-        <LinearLayout android:id="@+id/blink5min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_5" android:gravity="center" android:textColor="@color/white" android:textSize="14sp"/>
+        <LinearLayout android:id="@+id/blink5min" android:layout_width="@dimen/sw_dp_71" android:layout_height="@dimen/sw_dp_70" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="@dimen/sw_dp_11" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_5" android:gravity="center" android:textColor="@color/white" android:textSize="@dimen/sw_dp_14"/>
         </LinearLayout>
-        <LinearLayout android:id="@+id/blink10min" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_10" android:gravity="center" android:textColor="@color/white" android:textSize="14sp"/>
+        <LinearLayout android:id="@+id/blink10min" android:layout_width="@dimen/sw_dp_71" android:layout_height="@dimen/sw_dp_70" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="@dimen/sw_dp_11" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_10" android:gravity="center" android:textColor="@color/white" android:textSize="@dimen/sw_dp_14"/>
         </LinearLayout>
-        <LinearLayout android:id="@+id/blinkNever" android:layout_width="71dp" android:layout_height="70dp" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="11dp" android:gravity="center">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_never" android:gravity="center" android:textColor="@color/white" android:textSize="14sp"/>
+        <LinearLayout android:id="@+id/blinkNever" android:layout_width="@dimen/sw_dp_71" android:layout_height="@dimen/sw_dp_70" android:background="@drawable/bg_rounded_selector" android:layout_marginEnd="@dimen/sw_dp_11" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auto_off_never" android:gravity="center" android:textColor="@color/white" android:textSize="@dimen/sw_dp_14"/>
         </LinearLayout>
     </LinearLayout>
 

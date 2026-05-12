@@ -1,6 +1,6 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="20dp"
-    android:height="20dp"
+    android:width="@dimen/sw_dp_20"
+    android:height="@dimen/sw_dp_20"
     android:viewportWidth="20"
     android:viewportHeight="20">
     <!-- 沙漏主体填充：纯白色 (#FFFFFF) -->

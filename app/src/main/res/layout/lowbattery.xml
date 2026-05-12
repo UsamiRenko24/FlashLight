@@ -10,9 +10,9 @@
     <ImageView
         android:id="@+id/traceback"
         android:src="@drawable/traceback"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="16dp"
+        android:layout_width="@dimen/sw_dp_32"
+        android:layout_height="@dimen/sw_dp_32"
+        android:layout_marginStart="@dimen/sw_dp_16"
         android:contentDescription="返回"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_title"/>
@@ -21,18 +21,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/title_low_battery"
-        android:layout_marginStart="6dp"
+        android:layout_marginStart="@dimen/sw_dp_6"
         android:textColor="@color/white"
-        android:textSize="20sp"
-        android:layout_marginTop="10dp"
+        android:textSize="@dimen/sw_dp_20"
+        android:layout_marginTop="@dimen/sw_dp_10"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
     <ImageView
         android:id="@+id/iv_settings"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="@dimen/sw_dp_24"
+        android:layout_height="@dimen/sw_dp_24"
+        android:layout_marginEnd="@dimen/sw_dp_16"
         android:src="@drawable/ic_equalizer"
         android:contentDescription="设置"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,38 +41,38 @@
         android:id="@+id/card_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/sw_dp_20"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title">
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/sw_dp_24"
+            android:layout_height="@dimen/sw_dp_24"
             android:src="@drawable/ic_attention" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_low_battery"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="@dimen/sw_dp_8"
             android:textColor="#B1091C"
-            android:textSize="16sp" />
+            android:textSize="@dimen/sw_dp_16" />
     </LinearLayout>
     <View
         android:id="@+id/sos_halo"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/sw_dp_0"
+        android:layout_height="@dimen/sw_dp_0"
         android:alpha="0"
         android:background="@drawable/bg_sos_halo"
         app:layout_constraintTop_toTopOf="@id/card_container1"
         app:layout_constraintBottom_toBottomOf="@id/card_container1"
         app:layout_constraintStart_toStartOf="@id/card_container1"
         app:layout_constraintEnd_toEndOf="@id/card_container1"
-        android:layout_margin="-25dp"/>
+        android:layout_margin="@dimen/sw_dp_m_25"/>
     <LinearLayout
         android:id="@+id/card_container1"
-        android:layout_width="335dp"
-        android:layout_height="325dp"
-        android:layout_marginTop="56dp"
+        android:layout_width="@dimen/sw_dp_335"
+        android:layout_height="@dimen/sw_dp_325"
+        android:layout_marginTop="@dimen/sw_dp_56"
         android:background="@drawable/bg_lb_card_red"
         android:orientation="vertical"
         android:gravity="center_horizontal"
@@ -82,8 +82,8 @@
         <ImageView
             android:id="@+id/iv_battery_icon"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="14dp"
+            android:layout_height="@dimen/sw_dp_60"
+            android:layout_marginTop="@dimen/sw_dp_14"
             android:src="@drawable/ic_battery_0" />
 
         <TextView
@@ -92,22 +92,22 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="15%"
-            android:textSize="18sp"
+            android:textSize="@dimen/sw_dp_18"
             android:textColor="#B1091C" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="@dimen/sw_dp_3"
             android:text="@string/low_battery_reminder"
-            android:textSize="14sp"
+            android:textSize="@dimen/sw_dp_14"
             android:textColor="@color/text_secondary"/>
         <LinearLayout
-            android:layout_width="210dp"
-            android:layout_height="73dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
+            android:layout_width="@dimen/sw_dp_210"
+            android:layout_height="@dimen/sw_dp_73"
+            android:layout_marginTop="@dimen/sw_dp_20"
+            android:layout_marginStart="@dimen/sw_dp_20"
+            android:layout_marginEnd="@dimen/sw_dp_20"
             android:orientation="vertical"
             android:gravity="center"
             android:background="@drawable/bg_card_red">
@@ -116,8 +116,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:text="@string/time_remaining_estimate"
-                android:textSize="12sp"
-                android:layout_marginTop="10dp"
+                android:textSize="@dimen/sw_dp_12"
+                android:layout_marginTop="@dimen/sw_dp_10"
                 android:textColor="@color/text_secondary" />
             <TextView
                 android:id="@+id/tv_battery_status"
@@ -125,16 +125,16 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:text="@string/low_battery_alert"
-                android:textSize="18sp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="10dp"
+                android:textSize="@dimen/sw_dp_18"
+                android:layout_marginTop="@dimen/sw_dp_8"
+                android:layout_marginBottom="@dimen/sw_dp_10"
                 android:textColor="@color/red" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/sw_dp_0"
             android:layout_weight="1"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="@dimen/sw_dp_30"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -156,10 +156,10 @@
                     android:id="@+id/tv_time_to_full"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="@dimen/sw_dp_6"
                     android:text="@string/function_restricted_alert"
                     android:textColor="@color/white"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/sw_dp_14" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -170,7 +170,7 @@
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="25dp"
+                    android:layout_height="@dimen/sw_dp_25"
                     android:src="@drawable/ic_battery_charge"
                     android:text="电池健康"
                     android:textColor="@color/grey" />
@@ -179,37 +179,37 @@
                     android:id="@+id/tv_health"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
+                    android:layout_marginTop="@dimen/sw_dp_1"
                     android:text="@string/battery_status_alert"
                     android:textColor="@color/white"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/sw_dp_14" />
             </LinearLayout>
 
         </LinearLayout>
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginLeft="1dp"
-            android:layout_marginRight="1dp"
+            android:layout_height="@dimen/sw_dp_2"
+            android:layout_marginLeft="@dimen/sw_dp_1"
+            android:layout_marginRight="@dimen/sw_dp_1"
             android:background="#640505" />
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginLeft="1dp"
-            android:layout_marginRight="1dp"
+            android:layout_height="@dimen/sw_dp_2"
+            android:layout_marginLeft="@dimen/sw_dp_1"
+            android:layout_marginRight="@dimen/sw_dp_1"
             android:background="#800404" />
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginLeft="1dp"
-            android:layout_marginRight="1dp"
+            android:layout_height="@dimen/sw_dp_2"
+            android:layout_marginLeft="@dimen/sw_dp_1"
+            android:layout_marginRight="@dimen/sw_dp_1"
             android:background="#AB1111" />
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
+            android:layout_height="@dimen/sw_dp_2"
+            android:layout_marginBottom="@dimen/sw_dp_2"
+            android:layout_marginLeft="@dimen/sw_dp_2"
+            android:layout_marginRight="@dimen/sw_dp_2"
             android:background="#E33A3A" />
 
     </LinearLayout>
@@ -219,17 +219,17 @@
         android:layout_height="wrap_content"
         android:text="@string/energy_saving_tips"
         android:textColor="@color/white"
-        android:textSize="16sp"
+        android:textSize="@dimen/sw_dp_16"
         app:layout_constraintStart_toStartOf="@id/card2"
         app:layout_constraintBottom_toTopOf="@id/card2"/>
     <LinearLayout
         android:id="@+id/card2"
-        android:layout_width="335dp"
-        android:layout_height="163dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginEnd="44dp"
-        android:layout_marginTop="36dp"
-        android:padding="16dp"
+        android:layout_width="@dimen/sw_dp_335"
+        android:layout_height="@dimen/sw_dp_163"
+        android:layout_marginStart="@dimen/sw_dp_44"
+        android:layout_marginEnd="@dimen/sw_dp_44"
+        android:layout_marginTop="@dimen/sw_dp_36"
+        android:padding="@dimen/sw_dp_16"
         android:background="@drawable/bg_grey"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/card_container1"
@@ -240,8 +240,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView
-                android:layout_width="18dp"
-                android:layout_height="18dp"
+                android:layout_width="@dimen/sw_dp_18"
+                android:layout_height="@dimen/sw_dp_18"
                 android:src="@drawable/ic_check"
                 app:tint="#73A845" />
 
@@ -249,18 +249,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/brightness_automatically_reduced_to_30percent"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="@dimen/sw_dp_4"
                 android:textColor="@color/white"
-                android:textSize="12sp" />
+                android:textSize="@dimen/sw_dp_12" />
 
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp">
+            android:layout_marginTop="@dimen/sw_dp_18">
             <ImageView
-                android:layout_width="18dp"
-                android:layout_height="18dp"
+                android:layout_width="@dimen/sw_dp_18"
+                android:layout_height="@dimen/sw_dp_18"
                 android:src="@drawable/ic_check"
                 app:tint="#73A845" />
 
@@ -268,18 +268,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/low_power_protection_mode_enabled"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="@dimen/sw_dp_4"
                 android:textColor="@color/white"
-                android:textSize="12sp" />
+                android:textSize="@dimen/sw_dp_12" />
 
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp">
+            android:layout_marginTop="@dimen/sw_dp_18">
             <ImageView
-                android:layout_width="18dp"
-                android:layout_height="18dp"
+                android:layout_width="@dimen/sw_dp_18"
+                android:layout_height="@dimen/sw_dp_18"
                 android:src="@drawable/ic_close"
                 app:tint="#B1091C" />
 
@@ -288,18 +288,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/suggested_to_turn_off_unnecessary_features"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="@dimen/sw_dp_4"
                 android:textColor="@color/white"
-                android:textSize="12sp" />
+                android:textSize="@dimen/sw_dp_12" />
 
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp">
+            android:layout_marginTop="@dimen/sw_dp_18">
             <ImageView
-                android:layout_width="18dp"
-                android:layout_height="18dp"
+                android:layout_width="@dimen/sw_dp_18"
+                android:layout_height="@dimen/sw_dp_18"
                 android:src="@drawable/ic_close"
                 app:tint="#B1091C" />
 
@@ -307,9 +307,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/please_connect_the_charger_as_soon_as_possible"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="@dimen/sw_dp_4"
                 android:textColor="@color/white"
-                android:textSize="12sp" />
+                android:textSize="@dimen/sw_dp_12" />
 
         </LinearLayout>
 

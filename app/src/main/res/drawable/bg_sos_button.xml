@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">  <!-- 矩形形状 -->
     <corners
-        android:radius="12dp"/>
+        android:radius="@dimen/sw_dp_12"/>
     <gradient
         android:startColor="#B1091C"
         android:endColor="#B1091C"/>

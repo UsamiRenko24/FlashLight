@@ -1,6 +1,6 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="34dp"
-    android:height="34dp"
+    android:width="@dimen/sw_dp_34"
+    android:height="@dimen/sw_dp_34"
     android:viewportWidth="34"
     android:viewportHeight="34">
     <!-- 背景淡黄色装饰圆圈 -->

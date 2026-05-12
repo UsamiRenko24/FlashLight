@@ -4,7 +4,7 @@
 
     <!-- 圆角设置 -->
     <corners
-        android:radius="12dp"/>
+        android:radius="@dimen/sw_dp_12"/>
     <!-- 填充颜色 - 烟灰色 -->
     <solid android:color="@color/card_bg_differ"/>  <!-- 明显的灰色，不是黑色 -->
 

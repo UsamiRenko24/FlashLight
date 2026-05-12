@@ -4,7 +4,7 @@
 
     <!-- 圆角设置 -->
     <corners
-        android:radius="13dp"/>
+        android:radius="@dimen/sw_dp_13"/>
 
     <!-- 填充颜色（你可以点击左侧出现的色块来快速换色） -->
     <solid android:color="#0B0B0B"/>
