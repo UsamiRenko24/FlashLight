@@ -3,7 +3,6 @@ package com.name.flashlight
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -24,8 +23,6 @@ class OnboardingActivity : AppCompatActivity() {
         R.layout.onboarding2,
         R.layout.onboarding3
     )
-
-    private var startX = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -54,40 +51,7 @@ class OnboardingActivity : AppCompatActivity() {
 
         binding.viewPager.adapter = adapter
 
-        // 最后一页继续左滑进入主页
-        val recyclerView =
-            binding.viewPager.getChildAt(0)
-                    as RecyclerView
 
-        recyclerView.setOnTouchListener { _, event ->
-
-            when (event.action) {
-
-                MotionEvent.ACTION_DOWN -> {
-
-                    startX = event.x
-                }
-
-                MotionEvent.ACTION_UP -> {
-
-                    val endX = event.x
-
-                    val currentPage =
-                        binding.viewPager.currentItem
-
-                    // 左滑判断
-                    if (
-                        currentPage == pages.size - 1 &&
-                        startX - endX > 150
-                    ) {
-
-                        finishOnboarding()
-                    }
-                }
-            }
-
-            false
-        }
     }
 
     private fun hideSystemUI() {

@@ -3,10 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.BATTERY_STATS"
-        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -49,15 +46,15 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".FlashlightActivity" android:exported="true" />
-        <activity android:name=".BlinkActivity" android:exported="true" />
-        <activity android:name=".StatsActivity" android:exported="true" />
-        <activity android:name=".SettingsActivity" android:exported="true" />
-        <activity android:name=".ScreenLightActivity" android:exported="true" />
-        <activity android:name=".ScreenLightActiveActivity" android:exported="true" />
-        <activity android:name=".SOSActivity" android:exported="true" />
-        <activity android:name=".AutomaticActivity" android:exported="true" />
-        <activity android:name=".LowBatteryActivity" android:exported="true" />
+        <activity android:name=".FlashlightActivity" android:exported="false" />
+        <activity android:name=".BlinkActivity" android:exported="false" />
+        <activity android:name=".StatsActivity" android:exported="false" />
+        <activity android:name=".SettingsActivity" android:exported="false" />
+        <activity android:name=".ScreenLightActivity" android:exported="false" />
+        <activity android:name=".ScreenLightActiveActivity" android:exported="false" />
+        <activity android:name=".SOSActivity" android:exported="false" />
+        <activity android:name=".AutomaticActivity" android:exported="false" />
+        <activity android:name=".LowBatteryActivity" android:exported="false" />
 
     </application>
 

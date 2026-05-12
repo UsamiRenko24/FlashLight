@@ -33,8 +33,6 @@ class StatsActivity : BaseActivity<StatsBinding>() {
     }
 
     override fun initListeners() {
-        binding.traceback.setOnClickListener { handleBackPress() }
-        binding.ivSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
 
         binding.bottomNav.setOnItemSelectedListener { item ->
             handleNavigation(item.itemId)

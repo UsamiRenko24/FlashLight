@@ -9,15 +9,6 @@
     android:background="#0E0E0E">
 
     <!-- 顶部导航栏：同步 MainActivity 居中样式 -->
-    <ImageView
-        android:id="@+id/traceback"
-        android:src="@drawable/traceback"
-        android:layout_width="@dimen/sw_dp_32"
-        android:layout_height="@dimen/sw_dp_32"
-        android:layout_marginStart="@dimen/sw_dp_16"
-        android:contentDescription="返回"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_title" />
 
     <TextView
         android:id="@+id/tv_title"
@@ -32,17 +23,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageView
-        android:id="@+id/iv_settings"
-        android:layout_width="@dimen/sw_dp_24"
-        android:layout_height="@dimen/sw_dp_24"
-        android:layout_marginEnd="@dimen/sw_dp_16"
-        android:src="@drawable/ic_equalizer"
-        android:contentDescription="设置"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_title" />
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sw_dp_0"
+        android:layout_marginTop="@dimen/sw_dp_10"
+        app:layout_constraintBottom_toTopOf="@+id/divider"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title">
 
     <!-- 电池与时间卡片：同步 MainActivity 布局 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
     <LinearLayout
         android:id="@+id/card_container"
         android:layout_width="@dimen/sw_dp_335"
@@ -57,7 +50,7 @@
         android:paddingEnd="@dimen/sw_dp_20"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title">
+        app:layout_constraintTop_toTopOf="parent">
 
         <!-- 左侧电量组：完美居中 -->
         <LinearLayout
@@ -370,6 +363,8 @@
                 android:textSize="@dimen/sw_dp_12"/>
         </LinearLayout>
     </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"

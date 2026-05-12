@@ -21,8 +21,10 @@ import com.name.flashlight.utils.DataStoreManager
 import com.name.flashlight.utils.PageConstants
 import com.name.flashlight.utils.SoundManager
 import com.name.flashlight.utils.TimeRepository
+import com.name.flashlight.utils.TorchController
 import com.name.flashlight.utils.feedback
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -65,8 +67,6 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initListeners() {
-        binding.traceback.setOnClickListener { stopBlinkingSession(); handleBackPress() }
-        binding.ivSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
 
         binding.SOS.setOnTouchListener { v, event ->
             handleTouchAnimation(v, event)
@@ -180,21 +180,56 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
         return false
     }
     private fun startBlinkingSession() {
+
         if (!isScreenLightSelected && !isFlashlightSelected) {
-            Toast.makeText(this, getString(R.string.at_least_choose_one_light_source), Toast.LENGTH_SHORT).show()
+
+            Toast.makeText(
+                this,
+                getString(R.string.at_least_choose_one_light_source),
+                Toast.LENGTH_SHORT
+            ).show()
+
             return
         }
+
+        val acquired = TorchController.acquire(
+            TorchController.Owner.BLINK
+        )
+
+        if (!acquired) {
+
+            Toast.makeText(
+                this,
+                getString(R.string.flashlight_busy),
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
         isBlinking = true
+
         updateActionUI(true)
 
-        val interval = when (selectedFrequency) { 0 -> 1000L; 1 -> 500L; 2 -> 200L; else -> 500L }
-        
+        val interval = when (selectedFrequency) {
+            0 -> 1000L
+            1 -> 500L
+            2 -> 200L
+            else -> 500L
+        }
+
         blinkJob?.cancel()
+
         blinkJob = lifecycleScope.launch {
+
             var isOn = false
+
             while (isBlinking) {
+
                 isOn = !isOn
+
                 applyHardwareLightState(isOn)
+
                 delay(interval)
             }
         }
@@ -203,11 +238,20 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
     }
 
     private fun stopBlinkingSession() {
+
         isBlinking = false
-        blinkJob?.cancel(); blinkJob = null
+
+        blinkJob?.cancel()
+        blinkJob = null
+
+        TorchController.release(
+            TorchController.Owner.BLINK
+        )
+
         stopTimerJob()
 
         updateActionUI(false)
+
         applyHardwareLightState(false)
     }
 
@@ -250,17 +294,44 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
     }
 
     private fun applyHardwareLightState(on: Boolean) {
-        if (isFinishing || isDestroyed) return
-        
-        if (isScreenLightSelected) {
-            try {
-                val lp = window.attributes
-                lp.screenBrightness = if (on) 1.0f else -1.0f
-                window.attributes = lp
-            } catch (e: Exception) { e.printStackTrace() }
+
+        if (!isBlinking && on) {
+            return
         }
+
+        if ((isFinishing || isDestroyed) && on) {
+            return
+        }
+
+        if (isScreenLightSelected) {
+
+            try {
+
+                val lp = window.attributes
+
+                lp.screenBrightness =
+                    if (on) 1.0f else -1.0f
+
+                window.attributes = lp
+
+            } catch (e: Exception) {
+
+                e.printStackTrace()
+            }
+        }
+
         if (isFlashlightSelected) {
-            try { cameraId?.let { cameraManager.setTorchMode(it, on) } } catch (e: Exception) { }
+
+            try {
+
+                cameraId?.let {
+                    cameraManager.setTorchMode(it, on)
+                }
+
+            } catch (e: Exception) {
+
+                e.printStackTrace()
+            }
         }
     }
 
@@ -322,7 +393,21 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
         finish()
     }
 
-    override fun stopAllFeatures() { if (isBlinking) stopBlinkingSession() }
-    override fun onPause() { super.onPause(); if (isBlinking) stopBlinkingSession() }
+    override fun stopAllFeatures() {
+
+        stopBlinkingSession()
+    }
+    override fun onStop() {
+
+        stopBlinkingSession()
+
+        super.onStop()
+    }
     override fun onBatteryStatusChanged(info: BatteryRepository.BatteryInfo) {}
+    override fun onDestroy() {
+
+        applyHardwareLightState(false)
+
+        super.onDestroy()
+    }
 }

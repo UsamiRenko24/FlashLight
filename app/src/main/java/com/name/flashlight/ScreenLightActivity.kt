@@ -81,7 +81,6 @@ class ScreenLightActivity : BaseActivity<ScreenBinding>() {
     @SuppressLint("ClickableViewAccessibility")
     override fun initListeners() {
         binding.traceback.setOnClickListener { handleBackPress() }
-        binding.ivSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
 
         // 滑块点击触发：只需更新仓库，UI 联动由 refreshBrightnessUI 处理
         binding.cardLeft.setOnClickListener { ScreenSessionRepository.updateBrightness(0) }
@@ -104,11 +103,20 @@ class ScreenLightActivity : BaseActivity<ScreenBinding>() {
         }
 
         binding.card2.setOnTouchListener { view, event ->
-            val isInside = event.x >= 0 && event.x <= view.width && event.y >= 0 && event.y <= view.height
+            val isInside =
+                event.x >= 0 &&
+                        event.x <= view.width &&
+                        event.y >= 0 &&
+                        event.y <= view.height
+
             if (event.action == MotionEvent.ACTION_UP && isInside) {
                 view.feedback()
-                startActivity(Intent(this, ScreenLightActiveActivity::class.java))
+
+                startActivity(
+                    Intent(this, ScreenLightActiveActivity::class.java)
+                )
             }
+
             handleTouchEffect(view, event)
             true
         }

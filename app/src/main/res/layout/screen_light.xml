@@ -8,17 +8,16 @@
     android:background="@color/black"
     tools:context=".MainActivity">
 
-    <!-- 1. 顶部导航 -->
     <ImageView
         android:id="@+id/traceback"
+        android:src="@drawable/traceback"
         android:layout_width="@dimen/sw_dp_32"
         android:layout_height="@dimen/sw_dp_32"
-        android:layout_marginStart="@dimen/sw_dp_12"
-        android:layout_marginTop="@dimen/sw_dp_12"
-        android:padding="@dimen/sw_dp_4"
-        android:src="@drawable/ic_close"
+        android:layout_marginStart="@dimen/sw_dp_16"
+        android:contentDescription="返回"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/tv_title"
+        app:layout_constraintBottom_toBottomOf="@id/tv_title"/>
 
     <TextView
         android:id="@+id/tv_title"
@@ -27,22 +26,11 @@
         android:text="Screen Fill Light"
         android:textColor="@color/white"
         android:textSize="@dimen/sw_dp_18"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/traceback"
+        android:layout_marginTop="@dimen/sw_dp_10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/traceback" />
-
-    <ImageView
-        android:id="@+id/iv_settings"
-        android:layout_width="@dimen/sw_dp_32"
-        android:layout_height="@dimen/sw_dp_32"
-        android:layout_marginTop="@dimen/sw_dp_12"
-        android:layout_marginEnd="@dimen/sw_dp_12"
-        android:padding="@dimen/sw_dp_4"
-        android:src="@drawable/ic_settings"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <!-- 2. 背景预览大卡片 -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -99,11 +87,10 @@
                 app:layout_constraintWidth_percent="0.5" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- 4. 进度条式亮度滑块容器 -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_options_container"
             android:layout_width="@dimen/sw_dp_200"
-            android:layout_height="@dimen/sw_dp_44"
+            android:layout_height="@dimen/sw_dp_56"
             android:layout_marginTop="@dimen/sw_dp_16"
             android:background="@drawable/bg_rounded_corner"
             android:backgroundTint="#80777777"
@@ -112,52 +99,70 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_mode_switcher">
 
-            <!-- 轨道背景 (初始深灰色) -->
-            <View
-                android:id="@+id/view_slider_track"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/sw_dp_4"
-                android:layout_marginHorizontal="@dimen/sw_dp_16"
-                android:background="#464646"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <!-- 已经过的进度条 (蓝绿色) -->
-            <View
-                android:id="@+id/view_brightness_progress"
-                android:layout_width="@dimen/sw_dp_0"
-                android:layout_height="@dimen/sw_dp_4"
-                android:background="#2AE1F8"
-                app:layout_constraintBottom_toBottomOf="@id/view_slider_track"
-                app:layout_constraintEnd_toEndOf="@id/view_brightness_thumb"
-                app:layout_constraintStart_toStartOf="@id/view_slider_track"
-                app:layout_constraintTop_toTopOf="@id/view_slider_track" />
-
-            <!-- 滑块圆点 (金色，限制在轨道内) -->
-            <View
-                android:id="@+id/view_brightness_thumb"
-                android:layout_width="@dimen/sw_dp_12"
-                android:layout_height="@dimen/sw_dp_12"
-                android:background="@drawable/bg_rounded"
-                android:backgroundTint="#FFCE64"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="@id/view_slider_track"
-                app:layout_constraintEnd_toEndOf="@id/view_slider_track"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <!-- 隐形的交互层 (保持原 ID 以兼容代码) -->
+            <!-- 亮度 -->
             <LinearLayout
                 android:id="@+id/group_brightness_options"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="horizontal">
-                <View android:id="@+id/card_left" android:layout_width="@dimen/sw_dp_0" android:layout_height="match_parent" android:layout_weight="1" />
-                <View android:id="@+id/card_middle" android:layout_width="@dimen/sw_dp_0" android:layout_height="match_parent" android:layout_weight="1" />
-                <View android:id="@+id/card_right" android:layout_width="@dimen/sw_dp_0" android:layout_height="match_parent" android:layout_weight="1" />
+
+                <FrameLayout
+                    android:id="@+id/card_left"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <ImageView
+                        android:id="@+id/iv_brightness_low"
+                        android:layout_width="@dimen/sw_dp_16"
+                        android:layout_height="@dimen/sw_dp_16"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_brightness_gold"
+                        app:tint="#FFFFFF" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/card_middle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:id="@+id/iv_brightness_medium"
+                        android:layout_width="@dimen/sw_dp_24"
+                        android:layout_height="@dimen/sw_dp_24"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_brightness_gold"
+                        app:tint="#FFFFFF" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/card_right"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:id="@+id/iv_brightness_high"
+                        android:layout_width="@dimen/sw_dp_32"
+                        android:layout_height="@dimen/sw_dp_32"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_brightness_gold"
+                        app:tint="#FFFFFF" />
+
+                </FrameLayout>
+
             </LinearLayout>
 
+            <!-- 色温 -->
             <LinearLayout
                 android:id="@+id/group_color_options"
                 android:layout_width="match_parent"
@@ -165,9 +170,28 @@
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:visibility="gone">
-                <View android:id="@+id/card_left1" android:layout_width="@dimen/sw_dp_28" android:layout_height="@dimen/sw_dp_28" android:layout_marginHorizontal="@dimen/sw_dp_8" android:background="@drawable/bg_white" />
-                <View android:id="@+id/card_middle1" android:layout_width="@dimen/sw_dp_28" android:layout_height="@dimen/sw_dp_28" android:layout_marginHorizontal="@dimen/sw_dp_8" android:background="@drawable/bg_warm_white" />
-                <View android:id="@+id/card_right1" android:layout_width="@dimen/sw_dp_28" android:layout_height="@dimen/sw_dp_28" android:layout_marginHorizontal="@dimen/sw_dp_8" android:background="@drawable/bg_cold_white" />
+
+                <View
+                    android:id="@+id/card_left1"
+                    android:layout_width="@dimen/sw_dp_28"
+                    android:layout_height="@dimen/sw_dp_28"
+                    android:layout_marginHorizontal="@dimen/sw_dp_8"
+                    android:background="@drawable/bg_white" />
+
+                <View
+                    android:id="@+id/card_middle1"
+                    android:layout_width="@dimen/sw_dp_28"
+                    android:layout_height="@dimen/sw_dp_28"
+                    android:layout_marginHorizontal="@dimen/sw_dp_8"
+                    android:background="@drawable/bg_warm_white" />
+
+                <View
+                    android:id="@+id/card_right1"
+                    android:layout_width="@dimen/sw_dp_28"
+                    android:layout_height="@dimen/sw_dp_28"
+                    android:layout_marginHorizontal="@dimen/sw_dp_8"
+                    android:background="@drawable/bg_cold_white" />
+
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

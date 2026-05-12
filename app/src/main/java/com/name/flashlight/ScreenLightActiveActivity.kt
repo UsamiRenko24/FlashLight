@@ -61,9 +61,14 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
         binding.layoutBottomDesc.visibility = View.VISIBLE
 
         binding.root.post {
+
             updateUI()
+
+            updateBrightnessSelectionUI(currentBrightnessLevel)
+
             updateColorSelectionUI(currentColorLevel)
-            updateModeUI(0.0f) // 初始化为亮度模式样式
+
+            updateModeUI(0.0f)
         }
     }
 
@@ -73,7 +78,7 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
                 if (level != -1) {
                     currentBrightnessLevel = level
                     updateUI()
-                    if (isOptionsShown && !isColorMode) updateSliderThumb(level)
+                    if (isOptionsShown && !isColorMode) updateBrightnessSelectionUI(level)
                 }
             }
         }
@@ -117,8 +122,6 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
     }
 
     private fun setupClickListeners() {
-        binding.ivSettings.setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
-        binding.traceback.setOnClickListener { finish() }
 
         // 亮度圆点区域点击
         binding.cardLeft.setOnClickListener { it.feedback(); ScreenSessionRepository.updateBrightness(0) }
@@ -136,7 +139,7 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
             if (isColorMode) {
                 isColorMode = false
                 updateModeUI(0.0f)
-                updateSliderThumb(currentBrightnessLevel)
+                updateBrightnessSelectionUI(currentBrightnessLevel)
             }
         }
         binding.btnModeColor.setOnClickListener {
@@ -156,52 +159,115 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
     }
 
     private fun updateModeUI(bias: Float) {
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(binding.layoutModeSwitcher)
-        constraintSet.setHorizontalBias(R.id.view_mode_thumb, bias)
-        
-        TransitionManager.beginDelayedTransition(binding.layoutModeSwitcher, AutoTransition().apply {
-            duration = 200
-            interpolator = DecelerateInterpolator()
-        })
-        constraintSet.applyTo(binding.layoutModeSwitcher)
 
-        // 核心修复：根据模式显隐所有相关组件
+        // =========================
+        // 先切换内容
+        // =========================
+
         val isBrightnessMode = !isColorMode
-        val brightnessVisibility = if (isBrightnessMode) View.VISIBLE else View.GONE
-        val colorVisibility = if (isColorMode) View.VISIBLE else View.GONE
 
-        // 控制亮度滑块相关组件的显示与隐藏
-        binding.groupBrightnessOptions.visibility = brightnessVisibility
-        binding.viewSliderTrack.visibility = brightnessVisibility
-        binding.viewBrightnessProgress.visibility = brightnessVisibility
-        binding.viewBrightnessThumb.visibility = brightnessVisibility
-        
-        // 控制颜色圆点容器的显示与隐藏
-        binding.groupColorOptions.visibility = colorVisibility
-        
-        // 更新按钮透明度反馈
-        binding.btnModeBrightness.alpha = if (isColorMode) 0.5f else 1.0f
-        binding.btnModeColor.alpha = if (isColorMode) 1.0f else 0.5f
-    }
+        binding.groupBrightnessOptions.visibility =
+            if (isBrightnessMode) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
 
-    private fun updateSliderThumb(level: Int) {
-        val bias = when (level) {
-            0 -> 0.0f
-            1 -> 0.5f
-            else -> 1.0f
+        binding.groupColorOptions.visibility =
+            if (isColorMode) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
+        // =========================
+        // 再移动滑块
+        // =========================
+
+        binding.layoutModeSwitcher.post {
+
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(binding.layoutModeSwitcher)
+
+            constraintSet.setHorizontalBias(
+                R.id.view_mode_thumb,
+                bias
+            )
+
+            TransitionManager.beginDelayedTransition(
+                binding.layoutModeSwitcher,
+                AutoTransition().apply {
+
+                    duration = 220
+
+                    interpolator =
+                        DecelerateInterpolator()
+                }
+            )
+
+            constraintSet.applyTo(
+                binding.layoutModeSwitcher
+            )
         }
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(binding.layoutOptionsContainer)
-        constraintSet.setHorizontalBias(R.id.view_brightness_thumb, bias)
-        
-        TransitionManager.beginDelayedTransition(binding.layoutOptionsContainer, AutoTransition().apply {
-            duration = 250
-            interpolator = DecelerateInterpolator()
-        })
-        constraintSet.applyTo(binding.layoutOptionsContainer)
+
+        // =========================
+        // 按钮透明度
+        // =========================
+
+        binding.btnModeBrightness.alpha =
+            if (isColorMode) {
+                0.5f
+            } else {
+                1.0f
+            }
+
+        binding.btnModeColor.alpha =
+            if (isColorMode) {
+                1.0f
+            } else {
+                0.5f
+            }
     }
 
+
+    private fun updateBrightnessSelectionUI(level: Int) {
+
+        val icons = listOf(
+            binding.ivBrightnessLow,
+            binding.ivBrightnessMedium,
+            binding.ivBrightnessHigh
+        )
+
+        icons.forEachIndexed { index, imageView ->
+
+            val isSelected = index == level
+
+            // 选中高亮
+            imageView.imageTintList =
+                ColorStateList.valueOf(
+                    if (isSelected) {
+                        Color.parseColor("#2AE1F8")
+                    } else {
+                        Color.WHITE
+                    }
+                )
+
+            // 未选中透明一点
+            imageView.alpha =
+                if (isSelected) 1.0f else 0.45f
+
+            // 选中放大
+            val scale =
+                if (isSelected) 1.18f else 1.0f
+
+            imageView.animate()
+                .scaleX(scale)
+                .scaleY(scale)
+                .setDuration(180)
+                .start()
+        }
+    }
     private fun updateColorSelectionUI(level: Int) {
         val views = listOf(binding.cardLeft1, binding.cardMiddle1, binding.cardRight1)
         views.forEachIndexed { index, view ->

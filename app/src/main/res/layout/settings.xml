@@ -8,16 +8,6 @@
     android:background="@color/gray"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/traceback"
-        android:layout_width="@dimen/sw_dp_32"
-        android:layout_height="@dimen/sw_dp_32"
-        android:layout_marginStart="@dimen/sw_dp_16"
-        android:contentDescription="返回"
-        android:src="@drawable/traceback"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_title" />
-
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"

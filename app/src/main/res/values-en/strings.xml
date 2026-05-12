@@ -73,6 +73,7 @@
     <string name="remember_last_usage_short">Last used</string>
     <string name="main_page_short">Home</string>
     <string name="most_usage_short">Most used</string>
+    <string name="flashlight_busy">Flashlight is being used by another feature</string>
 
     <!-- Settings Page -->
     <string name="basic_settings">Basic Settings</string>

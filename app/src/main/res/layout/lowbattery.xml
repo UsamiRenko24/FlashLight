@@ -28,15 +28,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
-    <ImageView
-        android:id="@+id/iv_settings"
-        android:layout_width="@dimen/sw_dp_24"
-        android:layout_height="@dimen/sw_dp_24"
-        android:layout_marginEnd="@dimen/sw_dp_16"
-        android:src="@drawable/ic_equalizer"
-        android:contentDescription="设置"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_title" />
+
     <LinearLayout
         android:id="@+id/card_container"
         android:layout_width="wrap_content"

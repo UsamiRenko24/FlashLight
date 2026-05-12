@@ -21,18 +21,19 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
-import com.name.flashlight.utils.PageUsageRecorder
-import com.name.flashlight.utils.StartupModeManager
-import kotlinx.coroutines.launch
 import com.name.flashlight.utils.BatteryRepository
 import com.name.flashlight.utils.LanguageManager
 import com.name.flashlight.utils.LowBatteryManager
+import com.name.flashlight.utils.PageUsageRecorder
+import com.name.flashlight.utils.StartupModeManager
 import com.name.flashlight.utils.TimeRepository
+import kotlinx.coroutines.launch
 
 /**
- * 工业级高度模块化基类 - 已修复硬编码文字
+ * 工业级高度模块化基类
  */
-abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
+abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
+
     protected lateinit var binding: VB
 
     // --- 1. 模块化配置开关 ---
@@ -47,72 +48,124 @@ abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
 
     // --- 3. 初始化模板方法 ---
     protected abstract fun createBinding(): VB
+
     protected open fun initViews() {}
+
     protected open fun initListeners() {}
+
     protected open fun initObservers() {}
 
-    // --- 4. 权限模块化封装 ---
+    // --- 4. 权限模块 ---
     private var cameraPermissionCallback: (() -> Unit)? = null
 
-    /**
-     * 权限检查：已全面支持多语言提示
-     */
     fun ensureCameraPermission(onGranted: () -> Unit) {
-        // 已授权
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+
+        if (
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             onGranted()
             return
         }
 
         cameraPermissionCallback = onGranted
 
-        // 判断是否永久拒绝
-        val shouldShow = androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
+        val shouldShow =
+            androidx.core.app.ActivityCompat
+                .shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.CAMERA
+                )
 
-        // 第一次申请 或 普通拒绝
         if (shouldShow || !hasRequestedCameraPermission()) {
-            requestPermissions(arrayOf(Manifest.permission.CAMERA), 1001)
+
+            requestPermissions(
+                arrayOf(Manifest.permission.CAMERA),
+                1001
+            )
+
             saveCameraPermissionRequested()
+
         } else {
-            // 永久拒绝
+
             showCameraPermissionDialog()
         }
     }
 
     private fun hasRequestedCameraPermission(): Boolean {
-        return getSharedPreferences("permission", MODE_PRIVATE).getBoolean("camera_requested", false)
+
+        return getSharedPreferences(
+            "permission",
+            MODE_PRIVATE
+        ).getBoolean(
+            "camera_requested",
+            false
+        )
     }
 
     private fun saveCameraPermissionRequested() {
-        getSharedPreferences("permission", MODE_PRIVATE).edit().putBoolean("camera_requested", true).apply()
+
+        getSharedPreferences(
+            "permission",
+            MODE_PRIVATE
+        ).edit()
+            .putBoolean("camera_requested", true)
+            .apply()
     }
 
-    /**
-     * 核心修复：将硬编码的英文提示替换为多语言 String 资源
-     */
     private fun showCameraPermissionDialog() {
+
         androidx.appcompat.app.AlertDialog.Builder(this)
             .setTitle(getString(R.string.title_flashlight))
             .setMessage(getString(R.string.camera_permission_settings))
             .setPositiveButton(getString(R.string.go_to_settings)) { _, _ ->
-                val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    data = android.net.Uri.parse("package:$packageName")
-                }
+
+                val intent =
+                    Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+
+                        data = android.net.Uri.parse("package:$packageName")
+                    }
+
                 startActivity(intent)
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+
+        super.onRequestPermissionsResult(
+            requestCode,
+            permissions,
+            grantResults
+        )
+
         if (requestCode == 1001) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            if (
+                grantResults.isNotEmpty() &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED
+            ) {
+
                 cameraPermissionCallback?.invoke()
+
             } else {
-                val shouldShow = androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
-                // 永久拒绝
+
+                val shouldShow =
+                    androidx.core.app.ActivityCompat
+                        .shouldShowRequestPermissionRationale(
+                            this,
+                            Manifest.permission.CAMERA
+                        )
+
                 if (!shouldShow) {
+
                     showCameraPermissionDialog()
                 }
             }
@@ -120,120 +173,236 @@ abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
     }
 
     protected open fun onPermissionDenied() {
-        Toast.makeText(this, getString(R.string.toast_failed), Toast.LENGTH_SHORT).show()
+
+        Toast.makeText(
+            this,
+            getString(R.string.toast_failed),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     override fun attachBaseContext(newBase: Context) {
-        val languageCode = LanguageManager.getCurrentLanguage(newBase)
-        val context = LanguageManager.applyLanguage(newBase, languageCode)
+
+        val languageCode =
+            LanguageManager.getCurrentLanguage(newBase)
+
+        val context =
+            LanguageManager.applyLanguage(
+                newBase,
+                languageCode
+            )
+
         super.attachBaseContext(context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge(statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT), navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT))
+
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
+        )
 
         binding = createBinding()
+
         setContentView(binding.root)
-        
+
         pageTrackName?.let {
+
             PageUsageRecorder.recordPageVisit(this, it)
+
             StartupModeManager.recordLastPage(this, it)
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
-            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
-            view.setPadding(0, statusBarHeight, 0, 0)
+
+            val statusBarHeight =
+                insets.getInsets(
+                    WindowInsetsCompat.Type.statusBars()
+                ).top
+
+            view.setPadding(
+                0,
+                statusBarHeight,
+                0,
+                0
+            )
+
             insets
         }
 
         setupBackButton()
+
         setupBackHandler()
 
         initViews()
+
         initListeners()
+
         initObservers()
-        
-        if (isBatteryMonitorEnabled) observeBatteryStatus()
-        if (isStopFeatureEnabled) registerStopFeaturesReceiver()
+
+        if (isBatteryMonitorEnabled) {
+
+            observeBatteryStatus()
+        }
+
+        if (isStopFeatureEnabled) {
+
+            registerStopFeaturesReceiver()
+        }
     }
 
     private fun observeBatteryStatus() {
+
         lifecycleScope.launch {
+
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                batteryRepository.getBatteryFlow().collect { info ->
-                    if (isLowBatteryCheckEnabled) {
-                        LowBatteryManager.checkBatteryLevel(this@BaseActivity, info.level.toInt(), info.isCharging)
+
+                batteryRepository
+                    .getBatteryFlow()
+                    .collect { info ->
+
+                        if (isLowBatteryCheckEnabled) {
+
+                            LowBatteryManager.checkBatteryLevel(
+                                this@BaseActivity,
+                                info.level.toInt(),
+                                info.isCharging
+                            )
+                        }
+
+                        if (!isFinishing && !isDestroyed) {
+
+                            onBatteryStatusChanged(info)
+                        }
                     }
-                    if (!isFinishing && !isDestroyed) {
-                        onBatteryStatusChanged(info)
-                    }
-                }
             }
         }
     }
 
-    open fun onBatteryStatusChanged(info: BatteryRepository.BatteryInfo) {}
+    open fun onBatteryStatusChanged(
+        info: BatteryRepository.BatteryInfo
+    ) {
+    }
 
     override fun onResume() {
+
         super.onResume()
-        if (isLowBatteryCheckEnabled && LowBatteryManager.isLowBatteryModeActive(this)) {
+
+        if (
+            isLowBatteryCheckEnabled &&
+            LowBatteryManager.isLowBatteryModeActive(this)
+        ) {
+
             if (this !is LowBatteryActivity) {
-                val intent = Intent(this, LowBatteryActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                }
+
+                val intent =
+                    Intent(this, LowBatteryActivity::class.java).apply {
+
+                        flags =
+                            Intent.FLAG_ACTIVITY_NEW_TASK or
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+
                 startActivity(intent)
+
                 finish()
+
                 return
             }
+
             LowBatteryManager.applyLowBatteryBrightness(this)
         }
     }
 
     private fun setupBackButton() {
-        findViewById<View>(R.id.traceback)?.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
+
+        findViewById<View>(R.id.traceback)
+            ?.setOnClickListener {
+
+                onBackPressedDispatcher.onBackPressed()
+            }
     }
 
     private fun setupBackHandler() {
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() { handleBackPress() }
-        })
+
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+
+                override fun handleOnBackPressed() {
+
+                    handleBackPress()
+                }
+            }
+        )
     }
 
+    /**
+     * 核心修复：
+     * 不再强制跳转 MainActivity
+     * 使用 Android 原生返回栈
+     */
     open fun handleBackPress() {
-        if (this !is MainActivity) {
-            val intent = Intent(this, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            }
-            startActivity(intent)
-            finish()
-        } else {
-            finish()
-        }
+        finish()
     }
 
     private var stopFeaturesReceiver: BroadcastReceiver? = null
+
     private fun registerStopFeaturesReceiver() {
-        stopFeaturesReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                if (intent?.action == "ACTION_STOP_ALL_FEATURES") stopAllFeatures()
+
+        stopFeaturesReceiver =
+            object : BroadcastReceiver() {
+
+                override fun onReceive(
+                    context: Context?,
+                    intent: Intent?
+                ) {
+
+                    if (intent?.action == "ACTION_STOP_ALL_FEATURES") {
+
+                        stopAllFeatures()
+                    }
+                }
             }
-        }
-        val filter = IntentFilter("ACTION_STOP_ALL_FEATURES")
-        val flags = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            RECEIVER_NOT_EXPORTED
-        } else 0
-        registerReceiver(stopFeaturesReceiver, filter, flags)
+
+        val filter =
+            IntentFilter("ACTION_STOP_ALL_FEATURES")
+
+        val flags =
+            if (
+                android.os.Build.VERSION.SDK_INT >=
+                android.os.Build.VERSION_CODES.TIRAMISU
+            ) {
+                RECEIVER_NOT_EXPORTED
+            } else {
+                0
+            }
+
+        registerReceiver(
+            stopFeaturesReceiver,
+            filter,
+            flags
+        )
     }
 
     open fun stopAllFeatures() {}
 
     override fun onDestroy() {
+
         try {
-            stopFeaturesReceiver?.let { unregisterReceiver(it) }
+
+            stopFeaturesReceiver?.let {
+
+                unregisterReceiver(it)
+            }
+
         } catch (e: Exception) {
+
             e.printStackTrace()
         }
+
         super.onDestroy()
     }
 }

@@ -19,9 +19,6 @@ import com.name.flashlight.utils.feedback
 import com.name.flashlight.utils.toDetailedTime
 import com.name.flashlight.utils.toDigitalTime
 
-/**
- * 模块化重构后的主页 - 已修复导入污染
- */
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     private var flashlightAutoOffMinutes = 5
@@ -30,62 +27,108 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     override val isBatteryMonitorEnabled = true
     override val isLowBatteryCheckEnabled = true
 
-    override fun createBinding(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
+    override fun createBinding(): ActivityMainBinding =
+        ActivityMainBinding.inflate(layoutInflater)
 
     override fun initViews() {
         binding.bottomNav.selectedItemId = R.id.nav_home
     }
 
     override fun initListeners() {
+
         setupFlashlightTouchEffect()
 
+        // 手电筒
         binding.flashlight.setOnClickListener { v ->
+
             v.feedback()
-            startActivity(Intent(this, FlashlightActivity::class.java))
+
+            startActivity(
+                Intent(this, FlashlightActivity::class.java)
+            )
+
+            finish()
         }
 
+        // 屏幕灯
         binding.layoutScreenLight.setOnClickListener { v ->
+
             v.feedback()
-            startActivity(Intent(this, ScreenLightActivity::class.java))
+
+            startActivity(
+                Intent(this, ScreenLightActivity::class.java)
+            )
         }
 
+        // 闪烁灯
         binding.layoutBlink.setOnClickListener { v ->
+
             v.feedback()
-            startActivity(Intent(this, BlinkActivity::class.java))
+
+            startActivity(
+                Intent(this, BlinkActivity::class.java)
+            )
+
+            finish()
         }
 
-        binding.ivSettings.setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
-        }
-
-        // 拓宽触发区域
+        // 自动关闭
         binding.layoutAutoOff.setOnClickListener {
-            startActivity(Intent(this, AutomaticActivity::class.java))
+
+            startActivity(
+                Intent(this, AutomaticActivity::class.java)
+            )
         }
 
-        binding.bottomNav.setOnItemSelectedListener { item -> handleNavigation(item.itemId) }
+        // BottomNavigation
+        binding.bottomNav.setOnItemSelectedListener { item ->
+            handleNavigation(item.itemId)
+        }
 
-        binding.btnSwitch.setOnStateChangedListener { isEnabled: Boolean ->
-            VibrationManager.vibrate(binding.btnSwitch, forceEnabled = isEnabled)
+        // 振动开关
+        binding.btnSwitch.setOnStateChangedListener { isEnabled ->
+
+            VibrationManager.vibrate(
+                binding.btnSwitch,
+                forceEnabled = isEnabled
+            )
+
             lifecycleScope.launch {
-                DataStoreManager.setVibrationEnabled(this@MainActivity, isEnabled)
+                DataStoreManager.setVibrationEnabled(
+                    this@MainActivity,
+                    isEnabled
+                )
             }
         }
     }
 
     override fun initObservers() {
+
         lifecycleScope.launch {
+
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+
                 launch {
-                    DataStoreManager.isVibrationEnabled(this@MainActivity).collectLatest { isEnabled: Boolean ->
-                        binding.btnSwitch.setCheckedSilently(isEnabled)
-                    }
+
+                    DataStoreManager
+                        .isVibrationEnabled(this@MainActivity)
+                        .collectLatest { isEnabled ->
+
+                            binding.btnSwitch
+                                .setCheckedSilently(isEnabled)
+                        }
                 }
+
                 launch {
-                    DataStoreManager.getFlashlightAutoOffTime(this@MainActivity).collectLatest { minutes: Int ->
-                        flashlightAutoOffMinutes = minutes
-                        updateAutoOffDisplay(minutes)
-                    }
+
+                    DataStoreManager
+                        .getFlashlightAutoOffTime(this@MainActivity)
+                        .collectLatest { minutes ->
+
+                            flashlightAutoOffMinutes = minutes
+
+                            updateAutoOffDisplay(minutes)
+                        }
                 }
             }
         }
@@ -96,62 +139,136 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         updateStats()
     }
 
-    override fun onBatteryStatusChanged(info: BatteryRepository.BatteryInfo) {
+    override fun onBatteryStatusChanged(
+        info: BatteryRepository.BatteryInfo
+    ) {
+
         if (isFinishing || isDestroyed) return
+
         binding.apply {
+
             tvBatteryPercent.text = info.levelText
+
             tvBatteryStatus.text = info.status
+
             ivBatteryIcon.setImageResource(info.iconRes)
         }
     }
 
     private fun updateAutoOffDisplay(minutes: Int) {
+
         if (isFinishing || isDestroyed) return
-        binding.tvTime.text = if (minutes >= 114514) getString(R.string.auto_off_never)
-                             else minutes.toFloat().toDetailedTime(this)
+
+        binding.tvTime.text =
+            if (minutes >= 114514) {
+                getString(R.string.auto_off_never)
+            } else {
+                minutes.toFloat().toDetailedTime(this)
+            }
     }
 
     private fun updateStats() {
-        val flashlightTime = timeRepository.getTodayUsageMinutes(TimeRepository.TYPE_FLASHLIGHT)
-        binding.tvFlashlightTime.text = flashlightTime.toDigitalTime()
+
+        val flashlightTime =
+            timeRepository.getTodayUsageMinutes(
+                TimeRepository.TYPE_FLASHLIGHT
+            )
+
+        binding.tvFlashlightTime.text =
+            flashlightTime.toDigitalTime()
+
         updateAutoOffDisplay(flashlightAutoOffMinutes)
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupFlashlightTouchEffect() {
+
         binding.flashlight.setOnTouchListener { v, event ->
-            val isInside = event.x >= 0 && event.x <= v.width && event.y >= 0 && event.y <= v.height
+
+            val isInside =
+                event.x >= 0 &&
+                        event.x <= v.width &&
+                        event.y >= 0 &&
+                        event.y <= v.height
+
             when (event.action) {
-                MotionEvent.ACTION_DOWN -> v.animate().scaleX(0.92f).scaleY(0.92f).setDuration(100).start()
-                MotionEvent.ACTION_UP -> {
-                    v.animate().scaleX(1f).scaleY(1f).setDuration(200).setInterpolator(OvershootInterpolator()).start()
-                    if (isInside) v.performClick()
+
+                MotionEvent.ACTION_DOWN -> {
+
+                    v.animate()
+                        .scaleX(0.92f)
+                        .scaleY(0.92f)
+                        .setDuration(100)
+                        .start()
                 }
-                MotionEvent.ACTION_CANCEL -> v.animate().scaleX(1f).scaleY(1f).setDuration(200).start()
+
+                MotionEvent.ACTION_UP -> {
+
+                    v.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .setDuration(200)
+                        .setInterpolator(
+                            OvershootInterpolator()
+                        )
+                        .start()
+
+                    if (isInside) {
+                        v.performClick()
+                    }
+                }
+
+                MotionEvent.ACTION_CANCEL -> {
+
+                    v.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .setDuration(200)
+                        .start()
+                }
             }
+
             true
         }
     }
 
     private fun handleNavigation(itemId: Int): Boolean {
-        if (itemId == R.id.nav_home) return true
+
+        if (itemId == R.id.nav_home) {
+            return true
+        }
 
         val targetClass = when (itemId) {
-            R.id.nav_settings -> SettingsActivity::class.java
-            R.id.nav_flashlight -> FlashlightActivity::class.java
-            R.id.nav_blink -> BlinkActivity::class.java
-            R.id.nav_stats -> StatsActivity::class.java
+
+            R.id.nav_settings ->
+                SettingsActivity::class.java
+
+            R.id.nav_flashlight ->
+                FlashlightActivity::class.java
+
+            R.id.nav_blink ->
+                BlinkActivity::class.java
+
+            R.id.nav_stats ->
+                StatsActivity::class.java
+
             else -> null
         }
 
         targetClass?.let {
-            startActivity(Intent(this, it))
-            // 注意：新版 Android 建议使用 overrideActivityTransition
+
+            startActivity(
+                Intent(this, it)
+            )
+
+            finish()
+
             @Suppress("DEPRECATION")
             overridePendingTransition(
                 android.R.anim.fade_in,
                 android.R.anim.fade_out
             )
+
             return false
         }
 

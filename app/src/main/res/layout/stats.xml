@@ -8,34 +8,6 @@
     tools:context=".MainActivity"
     android:background="@color/gray">
 
-    <!-- 可滑动区域 -->
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scroll_container"
-        android:layout_width="@dimen/sw_dp_0"
-        android:layout_height="@dimen/sw_dp_0"
-        android:fillViewport="true"
-        android:overScrollMode="never"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/divider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-    <!-- 真正内容容器 -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/sw_dp_24">
-    <ImageView
-        android:id="@+id/traceback"
-        android:src="@drawable/traceback"
-        android:layout_width="@dimen/sw_dp_32"
-        android:layout_height="@dimen/sw_dp_32"
-        android:layout_marginStart="@dimen/sw_dp_16"
-        android:contentDescription="返回"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_title"/>
-
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
@@ -45,19 +17,27 @@
 
         android:textColor="@color/white"
         android:textSize="@dimen/sw_dp_20"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/iv_settings"
-        android:layout_width="@dimen/sw_dp_24"
-        android:layout_height="@dimen/sw_dp_24"
-        android:layout_marginEnd="@dimen/sw_dp_16"
-        android:src="@drawable/ic_equalizer"
-        android:contentDescription="设置"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_title" />
+        app:layout_constraintTop_toTopOf="parent"/>
+    <!-- 可滑动区域 -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_container"
+        android:layout_width="@dimen/sw_dp_0"
+        android:layout_height="@dimen/sw_dp_0"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    <!-- 真正内容容器 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/sw_dp_24">
+
     <LinearLayout
         android:id="@+id/card_container1"
         android:layout_width="@dimen/sw_dp_335"
@@ -68,7 +48,7 @@
         android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title">
+        app:layout_constraintTop_toTopOf="parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

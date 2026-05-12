@@ -40,7 +40,6 @@ class SettingsActivity : BaseActivity<SettingsBinding>() {
     }
 
     override fun initListeners() {
-        binding.traceback.setOnClickListener { handleBackPress() }
         binding.bottomNav.setOnItemSelectedListener { item -> handleNavigation(item.itemId) }
 
         // 震动与声音开关

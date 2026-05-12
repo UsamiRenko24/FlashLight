@@ -73,6 +73,7 @@
     <string name="remember_last_usage_short">上次用</string>
     <string name="main_page_short">主页面</string>
     <string name="most_usage_short">最常用</string>
+    <string name="flashlight_busy">手电筒正在被其他功能使用</string>
     <!-- 设置页面 -->
     <string name="basic_settings">基础设置</string>
     <string name="setting_auto_off">自动关闭</string>
