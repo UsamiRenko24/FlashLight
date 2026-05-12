@@ -113,6 +113,13 @@
     <string name="battery_health_fair">一般</string>
     <string name="battery_health_poor">较差</string>
     <string name="battery_health_critical">需更换</string>
+    <string name="camera_permission_message">手电筒功能需要相机权限才能正常使用，请允许访问相机</string>
+    <string name="camera_permission_denied">你已拒绝相机权限，手电筒无法使用</string>
+    <string name="camera_permission_settings">你已永久拒绝相机权限，请前往设置手动开启</string>
+    <string name="flashlight_unavailable">手电筒不可用</string>
+    <string name="permission_allow">允许</string>
+    <string name="permission_cancel">取消</string>
+    <string name="go_to_settings">前往设置</string>
 
     <!-- 标题文本 -->
     <string name="title_fill_light">LED补光灯</string>

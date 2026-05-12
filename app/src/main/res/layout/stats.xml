@@ -8,6 +8,24 @@
     tools:context=".MainActivity"
     android:background="@color/gray">
 
+    <!-- 可滑动区域 -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+    <!-- 真正内容容器 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="24dp">
     <ImageView
         android:id="@+id/traceback"
         android:src="@drawable/traceback"
@@ -360,6 +378,9 @@
                 android:gravity="end" />
         </LinearLayout>
     </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <View
         android:id="@+id/divider"

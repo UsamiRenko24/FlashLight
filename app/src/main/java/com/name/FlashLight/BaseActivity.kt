@@ -31,7 +31,7 @@ import utils.LowBatteryManager
 import utils.TimeRepository
 
 /**
- * 工业级高度模块化基类
+ * 工业级高度模块化基类 - 已修复硬编码文字
  */
 abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
     protected lateinit var binding: VB
@@ -53,20 +53,70 @@ abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
     protected open fun initObservers() {}
 
     // --- 4. 权限模块化封装 ---
-    private var onCameraGranted: (() -> Unit)? = null
-    private val cameraPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) onCameraGranted?.invoke()
-        else onPermissionDenied()
-    }
+    private var cameraPermissionCallback: (() -> Unit)? = null
 
-    protected fun ensureCameraPermission(onGranted: () -> Unit) {
-        onCameraGranted = onGranted
+    /**
+     * 权限检查：已全面支持多语言提示
+     */
+    fun ensureCameraPermission(onGranted: () -> Unit) {
+        // 已授权
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             onGranted()
+            return
+        }
+
+        cameraPermissionCallback = onGranted
+
+        // 判断是否永久拒绝
+        val shouldShow = androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
+
+        // 第一次申请 或 普通拒绝
+        if (shouldShow || !hasRequestedCameraPermission()) {
+            requestPermissions(arrayOf(Manifest.permission.CAMERA), 1001)
+            saveCameraPermissionRequested()
         } else {
-            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+            // 永久拒绝
+            showCameraPermissionDialog()
+        }
+    }
+
+    private fun hasRequestedCameraPermission(): Boolean {
+        return getSharedPreferences("permission", MODE_PRIVATE).getBoolean("camera_requested", false)
+    }
+
+    private fun saveCameraPermissionRequested() {
+        getSharedPreferences("permission", MODE_PRIVATE).edit().putBoolean("camera_requested", true).apply()
+    }
+
+    /**
+     * 核心修复：将硬编码的英文提示替换为多语言 String 资源
+     */
+    private fun showCameraPermissionDialog() {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(getString(R.string.title_flashlight))
+            .setMessage(getString(R.string.camera_permission_settings))
+            .setPositiveButton(getString(R.string.go_to_settings)) { _, _ ->
+                val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = android.net.Uri.parse("package:$packageName")
+                }
+                startActivity(intent)
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1001) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                cameraPermissionCallback?.invoke()
+            } else {
+                val shouldShow = androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)
+                // 永久拒绝
+                if (!shouldShow) {
+                    showCameraPermissionDialog()
+                }
+            }
         }
     }
 
@@ -114,9 +164,8 @@ abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 batteryRepository.getBatteryFlow().collect { info ->
                     if (isLowBatteryCheckEnabled) {
-                        LowBatteryManager.checkBatteryLevel(this@BaseActivity, info.level.toInt(), info.isCharging)
+                        utils.LowBatteryManager.checkBatteryLevel(this@BaseActivity, info.level.toInt(), info.isCharging)
                     }
-                    
                     if (!isFinishing && !isDestroyed) {
                         onBatteryStatusChanged(info)
                     }
@@ -129,7 +178,7 @@ abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (isLowBatteryCheckEnabled && LowBatteryManager.isLowBatteryModeActive(this)) {
+        if (isLowBatteryCheckEnabled && utils.LowBatteryManager.isLowBatteryModeActive(this)) {
             if (this !is LowBatteryActivity) {
                 val intent = Intent(this, LowBatteryActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -138,7 +187,7 @@ abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
                 finish()
                 return
             }
-            LowBatteryManager.applyLowBatteryBrightness(this)
+            utils.LowBatteryManager.applyLowBatteryBrightness(this)
         }
     }
 
@@ -152,9 +201,6 @@ abstract class BaseActivity<VB: ViewBinding> : AppCompatActivity() {
         })
     }
 
-    /**
-     * 核心逻辑修改：除了主页面，其他页面的返回统一指向主页面
-     */
     open fun handleBackPress() {
         if (this !is MainActivity) {
             val intent = Intent(this, MainActivity::class.java).apply {

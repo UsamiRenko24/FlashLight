@@ -243,7 +243,7 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
 
             Toast.makeText(
                 this,
-                "Flashlight unavailable",
+                getString(R.string.flashlight_unavailable),
                 Toast.LENGTH_SHORT
             ).show()
         }

@@ -109,6 +109,13 @@
     <string name="low_battery_protection">Low Battery Protection</string>
     <string name="intelligent_brightness_adjustment">Intelligent Brightness Adjustment</string>
     <string name="temperature_monitor">Temperature Monitor</string>
+    <string name="camera_permission_message">Flashlight requires camera permission to work properly. Please allow camera access.</string>
+    <string name="camera_permission_denied">Camera permission was denied. Flashlight is unavailable.</string>
+    <string name="camera_permission_settings">Camera permission was permanently denied. Please enable it in Settings.</string>
+    <string name="flashlight_unavailable">Flashlight Unavailable</string>
+    <string name="permission_allow">Allow</string>
+    <string name="permission_cancel">Cancel</string>
+    <string name="go_to_settings">Open Settings</string>
 
     <!-- Title Text -->
     <string name="battery_health_critical">crital</string>
