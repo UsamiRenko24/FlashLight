@@ -11,8 +11,9 @@ object LowBatteryManager {
     private const val PREFS_NAME = "battery_settings"
     private const val KEY_LOW_BATTERY_PROTECTION = "low_battery_protection_enabled"
     private const val KEY_IS_ACTIVE = "low_battery_mode_is_active"
-    
-    private const val LOW_BATTERY_THRESHOLD = 15
+
+    private const val ENTER_THRESHOLD = 15
+    private const val EXIT_THRESHOLD = 17
     private val handler = Handler(Looper.getMainLooper())
 
     fun isProtectionEnabled(context: Context): Boolean {
@@ -36,27 +37,52 @@ object LowBatteryManager {
         if (!isProtectionEnabled(context)) return
 
         val isActive = isLowBatteryModeActive(context)
-        
-        if ((level > LOW_BATTERY_THRESHOLD || isCharging) && isActive) {
+
+        if ((level >= EXIT_THRESHOLD || isCharging) && isActive) {
             exitLowBatteryMode(context)
-        } 
-        else if (level <= LOW_BATTERY_THRESHOLD && !isCharging && !isActive) {
+        }
+        else if (level <= ENTER_THRESHOLD && !isCharging && !isActive) {
             enterLowBatteryMode(context, level)
         }
     }
 
-    private fun enterLowBatteryMode(context: Context, level: Int) {
+    private fun enterLowBatteryMode(
+        context: Context,
+        level: Int
+    ) {
+
         setModeActive(context, true)
+
         applyLowBatteryBrightness(context)
+
         stopAllFeatures(context)
 
         handler.postDelayed({
-            // 启动 LowBatteryActivity 时清理任务栈，避免冗余的 Window 状态
-            val intent = Intent(context, LowBatteryActivity::class.java).apply {
-                putExtra("battery_level", level)
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            }
+
+            val intent =
+                Intent(
+                    context,
+                    LowBatteryActivity::class.java
+                ).apply {
+
+                    putExtra(
+                        "battery_level",
+                        level
+                    )
+
+                    addFlags(
+                        Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    )
+
+                    if (context !is Activity) {
+                        addFlags(
+                            Intent.FLAG_ACTIVITY_NEW_TASK
+                        )
+                    }
+                }
+
             context.startActivity(intent)
+
         }, 100)
     }
 
@@ -103,7 +129,12 @@ object LowBatteryManager {
     }
 
     private fun stopAllFeatures(context: Context) {
-        context.sendBroadcast(Intent("ACTION_STOP_ALL_FEATURES"))
+
+        val intent = Intent("ACTION_STOP_ALL_FEATURES").apply {
+            setPackage(context.packageName)
+        }
+
+        context.sendBroadcast(intent)
     }
 
     private fun setModeActive(context: Context, active: Boolean) {

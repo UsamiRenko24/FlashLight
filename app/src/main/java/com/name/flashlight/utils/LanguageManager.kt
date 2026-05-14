@@ -1,179 +1,132 @@
 package com.name.flashlight.utils
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Build
 import android.os.LocaleList
-import androidx.appcompat.app.AppCompatActivity
-import java.util.*
-import android.content.Context
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import java.util.Locale
 
-/**
- * 语言管理器 - 负责应用的多语言切换功能
- */
 object LanguageManager {
 
-    // SharedPreferences 配置
-    private const val PREFS_NAME = "language_settings"
-    private const val KEY_LANGUAGE = "selected_language"
-
-    // 支持的语言代码常量
-    const val LANGUAGE_CHINESE = "zh"
     const val LANGUAGE_ENGLISH = "en"
-    const val LANGUAGE_JAPANESE = "ja"
-    const val LANGUAGE_KOREAN = "ko"
+    const val LANGUAGE_CHINESE = "zh"
 
-    // 默认语言（已从 LANGUAGE_CHINESE 改为 LANGUAGE_ENGLISH）
     const val DEFAULT_LANGUAGE = LANGUAGE_ENGLISH
 
     /**
-     * 获取 SharedPreferences 实例
-     */
-    private fun getPrefs(context: Context): SharedPreferences {
-        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-    }
-
-    /**
-     * 获取当前语言代码
-     */
-    fun getCurrentLanguage(context: Context): String {
-        val prefs = getPrefs(context)
-        return prefs.getString(KEY_LANGUAGE, DEFAULT_LANGUAGE) ?: DEFAULT_LANGUAGE
-    }
-
-    /**
-     * 保存语言设置
-     */
-    fun saveLanguage(context: Context, languageCode: String) {
-        val prefs = getPrefs(context)
-        prefs.edit().putString(KEY_LANGUAGE, languageCode).apply()
-    }
-
-    /**
-     * 判断当前是否是中文
-     */
-    fun isChinese(context: Context): Boolean {
-        return getCurrentLanguage(context) == LANGUAGE_CHINESE
-    }
-
-    /**
-     * 判断当前是否是英文
-     */
-    fun isEnglish(context: Context): Boolean {
-        return getCurrentLanguage(context) == LANGUAGE_ENGLISH
-    }
-
-    /**
-     * 获取当前语言的显示名称
-     */
-    fun getCurrentLanguageDisplayName(context: Context): String {
-        val languageCode = getCurrentLanguage(context)
-        return getLanguageDisplayName(languageCode)
-    }
-
-    /**
-     * 根据语言代码获取显示名称
-     */
-    fun getLanguageDisplayName(languageCode: String): String {
-        return when (languageCode) {
-            LANGUAGE_CHINESE -> "简体中文"
-            LANGUAGE_ENGLISH -> "English"
-            else -> "English"
-        }
-    }
-
-    /**
-     * 获取支持的语言列表
-     * 返回 Pair<语言代码, 显示名称>
+     * 获取支持语言
      */
     fun getSupportedLanguages(): List<Pair<String, String>> {
         return listOf(
             LANGUAGE_ENGLISH to "English",
-            LANGUAGE_CHINESE to "简体中文",
+            LANGUAGE_CHINESE to "简体中文"
         )
     }
 
     /**
-     * 根据语言代码获取 Locale 对象
+     * 获取 Locale
      */
-    fun getLocaleFromCode(languageCode: String): Locale {
-        return when (languageCode) {
-            LANGUAGE_CHINESE -> Locale.SIMPLIFIED_CHINESE
-            LANGUAGE_ENGLISH -> Locale.ENGLISH
-            else -> Locale.ENGLISH
+    private fun getLocale(language: String): Locale {
+        return when (language) {
+
+            LANGUAGE_CHINESE ->
+                Locale.SIMPLIFIED_CHINESE
+
+            else ->
+                Locale.ENGLISH
         }
     }
 
     /**
-     * 应用语言设置到当前 Context
+     * 应用语言
      */
-    fun applyLanguage(context: Context): Context {
-        val languageCode = getCurrentLanguage(context)
-        return applyLanguage(context, languageCode)
-    }
+    fun applyLanguage(
+        context: Context,
+        language: String
+    ): Context {
 
-    /**
-     * 应用指定的语言到 Context
-     */
-    fun applyLanguage(context: Context, languageCode: String): Context {
-        val locale = getLocaleFromCode(languageCode)
+        val locale = getLocale(language)
 
-        // 保存设置
-        saveLanguage(context, languageCode)
+        Locale.setDefault(locale)
 
-        // 应用语言到资源
-        return updateResources(context, locale)
-    }
+        val config =
+            Configuration(
+                context.resources.configuration
+            )
 
-    /**
-     * 更新资源配置
-     */
-    private fun updateResources(context: Context, locale: Locale): Context {
-        val config = Configuration(context.resources.configuration)
+        return if (
+            Build.VERSION.SDK_INT >=
+            Build.VERSION_CODES.N
+        ) {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            // Android 7.0+
             config.setLocale(locale)
-            config.setLayoutDirection(locale)
-            return context.createConfigurationContext(config)
+
+            config.setLocales(
+                LocaleList(locale)
+            )
+
+            context.createConfigurationContext(
+                config
+            )
+
         } else {
-            // Android 6.0 及以下
+
             @Suppress("DEPRECATION")
             config.locale = locale
+
             @Suppress("DEPRECATION")
-            context.resources.updateConfiguration(config, context.resources.configuration.orientation.let { context.resources.displayMetrics })
-            return context
+            context.resources.updateConfiguration(
+                config,
+                context.resources.displayMetrics
+            )
+
+            context
         }
     }
 
     /**
-     * 重启应用以应用语言变化
+     * 应用已保存语言
      */
-    fun restartApp(activity: AppCompatActivity) {
-        val intent = activity.packageManager.getLaunchIntentForPackage(activity.packageName)
-        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+    fun applySavedLanguage(
+        context: Context
+    ): Context {
+
+        val language =
+            runBlocking {
+
+                DataStoreManager
+                    .getLanguage(context)
+                    .first()
+            }
+
+        return applyLanguage(
+            context,
+            language
+        )
+    }
+
+    /**
+     * 重启 App
+     */
+    fun restartApp(activity: Activity) {
+
+        val intent =
+            activity.packageManager
+                .getLaunchIntentForPackage(
+                    activity.packageName
+                )
+
+        intent?.addFlags(
+            Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK
+        )
+
         activity.startActivity(intent)
+
         activity.finishAffinity()
-    }
-
-    /**
-     * 获取系统当前语言
-     */
-    fun getSystemLanguage(): String {
-        val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            LocaleList.getDefault()[0]
-        } else {
-            @Suppress("DEPRECATION")
-            Locale.getDefault()
-        }
-        return locale.language
-    }
-
-    /**
-     * 检查是否支持该语言
-     */
-    fun isLanguageSupported(languageCode: String): Boolean {
-        return getSupportedLanguages().any { it.first == languageCode }
     }
 }

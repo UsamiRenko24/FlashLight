@@ -3,14 +3,17 @@ package com.name.flashlight
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Rect
 import android.os.Bundle
 import android.transition.AutoTransition
 import android.transition.TransitionManager
 import android.view.MotionEvent
+import android.view.TouchDelegate
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.lifecycleScope
 import com.name.flashlight.databinding.ScreenLightBinding
 import kotlinx.coroutines.Job
@@ -123,6 +126,9 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
 
     private fun setupClickListeners() {
 
+        binding.traceback.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
         // 亮度圆点区域点击
         binding.cardLeft.setOnClickListener { it.feedback(); ScreenSessionRepository.updateBrightness(0) }
         binding.cardMiddle.setOnClickListener { it.feedback(); ScreenSessionRepository.updateBrightness(1) }
@@ -286,7 +292,7 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
                 val elapsedMinutes = (System.currentTimeMillis() - startTime)/ 60000f
                 if (elapsedMinutes < 114514 && elapsedMinutes >= totalTimeMinutes){
                     stopTimer()
-                    navigateToMain()
+                    finish()
                     break
                 }
                 delay(1000)
@@ -299,10 +305,6 @@ class ScreenLightActiveActivity : BaseActivity<ScreenLightBinding>() {
         timerJob = null
     }
 
-    private fun navigateToMain() {
-        startActivity(Intent(this, MainActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK })
-        finish()
-    }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_DOWN) {

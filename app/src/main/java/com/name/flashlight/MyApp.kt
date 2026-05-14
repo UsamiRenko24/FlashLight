@@ -2,11 +2,13 @@ package com.name.flashlight
 
 import android.app.Application
 import android.content.Context
+import com.name.flashlight.utils.DataStoreManager
 import com.name.flashlight.utils.FeedbackManager
 import com.name.flashlight.utils.LanguageManager
 import com.name.flashlight.utils.ResetScheduler
 import com.name.flashlight.utils.SoundManager
 import com.name.flashlight.utils.TemperatureManager
+import kotlinx.coroutines.flow.first
 
 class MyApp : Application() {
 
@@ -19,16 +21,36 @@ class MyApp : Application() {
         TemperatureManager.init(this)
         // 可选：启动时检查是否需要重置（防止应用长时间未启动）
         checkAndResetIfNeeded()
-        TemperatureManager.init(this)
         SoundManager.initSoundPool(this)
     }
     override fun attachBaseContext(base: Context) {
-        println("attachBaseContext 开始")
-        val languageCode = LanguageManager.getCurrentLanguage(base)
-        println("读取到的语言: $languageCode")
-        val newContext = LanguageManager.applyLanguage(base, languageCode)
-        super.attachBaseContext(newContext)
-        println("attachBaseContext 结束")
+
+        val lang = runCatching {
+            kotlinx.coroutines.runBlocking {
+                DataStoreManager.getLanguage(base).first()
+            }
+        }.getOrDefault("en")
+
+        val locale = when (lang) {
+            "zh" -> java.util.Locale.SIMPLIFIED_CHINESE
+            else -> java.util.Locale.ENGLISH
+        }
+
+        val config = base.resources.configuration
+        config.setLocale(locale)
+
+        val context = if (android.os.Build.VERSION.SDK_INT >= 24) {
+            base.createConfigurationContext(config)
+        } else {
+            @Suppress("DEPRECATION")
+            base.resources.updateConfiguration(
+                config,
+                base.resources.displayMetrics
+            )
+            base
+        }
+
+        super.attachBaseContext(context)
     }
     private fun checkAndResetIfNeeded() {
         val prefs = getSharedPreferences("usage_stats", MODE_PRIVATE)

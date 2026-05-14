@@ -72,8 +72,9 @@ class AutomaticActivity : BaseActivity<AutomaticBinding>() {
 
     override fun initListeners() {
 
-        // 不再需要：
-        // binding.traceback.setOnClickListener
+        binding.traceback.setOnClickListener {
+            finish()
+        }
 
         // BaseActivity 已自动处理返回逻辑
 

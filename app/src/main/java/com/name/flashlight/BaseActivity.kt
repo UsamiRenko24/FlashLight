@@ -6,15 +6,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
+import android.os.LocaleList
+import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
@@ -22,116 +23,108 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import com.name.flashlight.utils.BatteryRepository
-import com.name.flashlight.utils.LanguageManager
+import com.name.flashlight.utils.DataStoreManager
 import com.name.flashlight.utils.LowBatteryManager
 import com.name.flashlight.utils.PageUsageRecorder
 import com.name.flashlight.utils.StartupModeManager
 import com.name.flashlight.utils.TimeRepository
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.util.Locale
 
-/**
- * 工业级高度模块化基类
- */
 abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
     protected lateinit var binding: VB
 
-    // --- 1. 模块化配置开关 ---
+    // ------------------------
+    // config
+    // ------------------------
     protected open val pageTrackName: String? = null
     protected open val isBatteryMonitorEnabled = true
     protected open val isLowBatteryCheckEnabled = true
     protected open val isStopFeatureEnabled = true
 
-    // --- 2. 共享资源 ---
-    protected val batteryRepository by lazy { BatteryRepository(this) }
-    protected val timeRepository by lazy { TimeRepository(this) }
+    // ------------------------
+    // language
+    // ------------------------
+    override fun attachBaseContext(newBase: Context) {
 
-    // --- 3. 初始化模板方法 ---
-    protected abstract fun createBinding(): VB
+        val lang = runCatching {
 
-    protected open fun initViews() {}
+            runBlocking {
 
-    protected open fun initListeners() {}
+                DataStoreManager
+                    .getLanguage(newBase)
+                    .first()
+            }
 
-    protected open fun initObservers() {}
+        }.getOrDefault("en")
 
-    // --- 4. 权限模块 ---
-    private var cameraPermissionCallback: (() -> Unit)? = null
+        val locale = when (lang) {
 
-    fun ensureCameraPermission(onGranted: () -> Unit) {
+            "zh" ->
+                Locale.SIMPLIFIED_CHINESE
 
-        if (
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.CAMERA
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            onGranted()
-            return
+            else ->
+                Locale.ENGLISH
         }
 
-        cameraPermissionCallback = onGranted
+        Locale.setDefault(locale)
 
-        val shouldShow =
-            androidx.core.app.ActivityCompat
-                .shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.CAMERA
-                )
+        val config = Configuration(
+            newBase.resources.configuration
+        )
 
-        if (shouldShow || !hasRequestedCameraPermission()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
-            requestPermissions(
-                arrayOf(Manifest.permission.CAMERA),
-                1001
+            config.setLocale(locale)
+
+            config.setLocales(
+                LocaleList(locale)
             )
-
-            saveCameraPermissionRequested()
 
         } else {
 
-            showCameraPermissionDialog()
+            @Suppress("DEPRECATION")
+            config.locale = locale
         }
+
+        val context =
+            newBase.createConfigurationContext(
+                config
+            )
+
+        super.attachBaseContext(context)
     }
 
-    private fun hasRequestedCameraPermission(): Boolean {
+    // ------------------------
+    // repositories
+    // ------------------------
+    protected val batteryRepository by lazy {
+        BatteryRepository(this)
+    }
 
-        return getSharedPreferences(
-            "permission",
-            MODE_PRIVATE
-        ).getBoolean(
-            "camera_requested",
-            false
+    protected val timeRepository by lazy {
+        TimeRepository(this)
+    }
+
+    // ------------------------
+    // permission
+    // ------------------------
+    private var pendingCameraAction: (() -> Unit)? = null
+
+    protected fun ensureCameraPermission(
+        onGranted: () -> Unit
+    ) {
+
+        pendingCameraAction = onGranted
+
+        requestPermissions(
+            arrayOf(Manifest.permission.CAMERA),
+            1001
         )
-    }
-
-    private fun saveCameraPermissionRequested() {
-
-        getSharedPreferences(
-            "permission",
-            MODE_PRIVATE
-        ).edit()
-            .putBoolean("camera_requested", true)
-            .apply()
-    }
-
-    private fun showCameraPermissionDialog() {
-
-        androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle(getString(R.string.title_flashlight))
-            .setMessage(getString(R.string.camera_permission_settings))
-            .setPositiveButton(getString(R.string.go_to_settings)) { _, _ ->
-
-                val intent =
-                    Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-
-                        data = android.net.Uri.parse("package:$packageName")
-                    }
-
-                startActivity(intent)
-            }
-            .setNegativeButton(android.R.string.cancel, null)
-            .show()
     }
 
     override fun onRequestPermissionsResult(
@@ -146,76 +139,181 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
             grantResults
         )
 
-        if (requestCode == 1001) {
+        if (requestCode != 1001) return
 
-            if (
-                grantResults.isNotEmpty() &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED
+        val granted =
+            grantResults.isNotEmpty() &&
+                    grantResults[0] ==
+                    PackageManager.PERMISSION_GRANTED
+
+        if (granted) {
+            pendingCameraAction?.invoke()
+        }
+    }
+
+    // ------------------------
+    // brightness
+    // ------------------------
+    private fun observeBrightness() {
+
+        lifecycleScope.launch {
+
+            repeatOnLifecycle(
+                Lifecycle.State.STARTED
             ) {
 
-                cameraPermissionCallback?.invoke()
+                DataStoreManager
+                    .getUseSystemAutoBrightness(
+                        this@BaseActivity
+                    )
+                    .collectLatest { useSystem ->
 
-            } else {
+                        val brightness =
+                            DataStoreManager
+                                .getDefaultBrightness(
+                                    this@BaseActivity
+                                )
+                                .first()
 
-                val shouldShow =
-                    androidx.core.app.ActivityCompat
-                        .shouldShowRequestPermissionRationale(
-                            this,
-                            Manifest.permission.CAMERA
+                        applyAppBrightness(
+                            brightness,
+                            useSystem
                         )
+                    }
+            }
+        }
 
-                if (!shouldShow) {
+        lifecycleScope.launch {
 
-                    showCameraPermissionDialog()
-                }
+            repeatOnLifecycle(
+                Lifecycle.State.STARTED
+            ) {
+
+                DataStoreManager
+                    .getDefaultBrightness(
+                        this@BaseActivity
+                    )
+                    .collectLatest { brightness ->
+
+                        val useSystem =
+                            DataStoreManager
+                                .getUseSystemAutoBrightness(
+                                    this@BaseActivity
+                                )
+                                .first()
+
+                        applyAppBrightness(
+                            brightness,
+                            useSystem
+                        )
+                    }
             }
         }
     }
 
-    protected open fun onPermissionDenied() {
+    protected fun applyAppBrightness(
+        brightnessLevel: Int,
+        useSystemBrightness: Boolean
+    ) {
 
-        Toast.makeText(
-            this,
-            getString(R.string.toast_failed),
-            Toast.LENGTH_SHORT
-        ).show()
+        val lp = window.attributes
+
+        if (useSystemBrightness) {
+
+            lp.screenBrightness =
+                WindowManager.LayoutParams
+                    .BRIGHTNESS_OVERRIDE_NONE
+
+        } else {
+
+            lp.screenBrightness = when (brightnessLevel) {
+
+                0 -> 0.15f
+
+                1 -> 0.5f
+
+                2 -> 1.0f
+
+                else -> 0.5f
+            }
+        }
+
+        window.attributes = lp
     }
 
-    override fun attachBaseContext(newBase: Context) {
+    private fun applyBrightnessImmediately() {
 
-        val languageCode =
-            LanguageManager.getCurrentLanguage(newBase)
+        lifecycleScope.launch {
 
-        val context =
-            LanguageManager.applyLanguage(
-                newBase,
-                languageCode
+            val useSystem =
+                DataStoreManager
+                    .getUseSystemAutoBrightness(
+                        this@BaseActivity
+                    )
+                    .first()
+
+            val brightness =
+                DataStoreManager
+                    .getDefaultBrightness(
+                        this@BaseActivity
+                    )
+                    .first()
+
+            applyAppBrightness(
+                brightness,
+                useSystem
             )
-
-        super.attachBaseContext(context)
+        }
     }
+
+    // ------------------------
+    // lifecycle
+    // ------------------------
+    protected abstract fun createBinding(): VB
+
+    protected open fun initViews() {}
+
+    protected open fun initListeners() {}
+
+    protected open fun initObservers() {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
-            navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
+            statusBarStyle =
+                SystemBarStyle.dark(
+                    Color.TRANSPARENT
+                ),
+            navigationBarStyle =
+                SystemBarStyle.dark(
+                    Color.TRANSPARENT
+                )
         )
 
         binding = createBinding()
+
+        applyBrightnessImmediately()
 
         setContentView(binding.root)
 
         pageTrackName?.let {
 
-            PageUsageRecorder.recordPageVisit(this, it)
+            PageUsageRecorder.recordPageVisit(
+                this,
+                it
+            )
 
-            StartupModeManager.recordLastPage(this, it)
+            StartupModeManager.recordLastPage(
+                this,
+                it
+            )
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(
+            binding.root
+        ) { view, insets ->
 
             val statusBarHeight =
                 insets.getInsets(
@@ -232,8 +330,6 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
             insets
         }
 
-        setupBackButton()
-
         setupBackHandler()
 
         initViews()
@@ -243,88 +339,54 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
         initObservers()
 
         if (isBatteryMonitorEnabled) {
-
             observeBatteryStatus()
         }
 
-        if (isStopFeatureEnabled) {
+        observeBrightness()
 
+        if (isStopFeatureEnabled) {
             registerStopFeaturesReceiver()
         }
     }
 
+    // ------------------------
+    // battery
+    // ------------------------
     private fun observeBatteryStatus() {
 
         lifecycleScope.launch {
 
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            batteryRepository
+                .getBatteryFlow()
+                .collect { info ->
 
-                batteryRepository
-                    .getBatteryFlow()
-                    .collect { info ->
+                    if (isLowBatteryCheckEnabled) {
 
-                        if (isLowBatteryCheckEnabled) {
-
-                            LowBatteryManager.checkBatteryLevel(
-                                this@BaseActivity,
-                                info.level.toInt(),
-                                info.isCharging
-                            )
-                        }
-
-                        if (!isFinishing && !isDestroyed) {
-
-                            onBatteryStatusChanged(info)
-                        }
+                        LowBatteryManager.checkBatteryLevel(
+                            this@BaseActivity,
+                            info.level.toInt(),
+                            info.isCharging
+                        )
                     }
-            }
+
+                    if (
+                        !isFinishing &&
+                        !isDestroyed
+                    ) {
+
+                        onBatteryStatusChanged(info)
+                    }
+                }
         }
     }
 
     open fun onBatteryStatusChanged(
         info: BatteryRepository.BatteryInfo
-    ) {
-    }
+    ) {}
 
-    override fun onResume() {
-
-        super.onResume()
-
-        if (
-            isLowBatteryCheckEnabled &&
-            LowBatteryManager.isLowBatteryModeActive(this)
-        ) {
-
-            if (this !is LowBatteryActivity) {
-
-                val intent =
-                    Intent(this, LowBatteryActivity::class.java).apply {
-
-                        flags =
-                            Intent.FLAG_ACTIVITY_NEW_TASK or
-                                    Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    }
-
-                startActivity(intent)
-
-                finish()
-
-                return
-            }
-
-            LowBatteryManager.applyLowBatteryBrightness(this)
-        }
-    }
-
-    private fun setupBackButton() {
-
-        findViewById<View>(R.id.traceback)
-            ?.setOnClickListener {
-
-                onBackPressedDispatcher.onBackPressed()
-            }
-    }
-
+    // ------------------------
+    // back
+    // ------------------------
     private fun setupBackHandler() {
 
         onBackPressedDispatcher.addCallback(
@@ -333,22 +395,17 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
 
                 override fun handleOnBackPressed() {
 
-                    handleBackPress()
+                    finish()
                 }
             }
         )
     }
 
-    /**
-     * 核心修复：
-     * 不再强制跳转 MainActivity
-     * 使用 Android 原生返回栈
-     */
-    open fun handleBackPress() {
-        finish()
-    }
-
-    private var stopFeaturesReceiver: BroadcastReceiver? = null
+    // ------------------------
+    // stop receiver
+    // ------------------------
+    private var stopFeaturesReceiver:
+            BroadcastReceiver? = null
 
     private fun registerStopFeaturesReceiver() {
 
@@ -360,7 +417,10 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
                     intent: Intent?
                 ) {
 
-                    if (intent?.action == "ACTION_STOP_ALL_FEATURES") {
+                    if (
+                        intent?.action ==
+                        "ACTION_STOP_ALL_FEATURES"
+                    ) {
 
                         stopAllFeatures()
                     }
@@ -368,15 +428,20 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
             }
 
         val filter =
-            IntentFilter("ACTION_STOP_ALL_FEATURES")
+            IntentFilter(
+                "ACTION_STOP_ALL_FEATURES"
+            )
 
         val flags =
             if (
-                android.os.Build.VERSION.SDK_INT >=
-                android.os.Build.VERSION_CODES.TIRAMISU
+                Build.VERSION.SDK_INT >=
+                Build.VERSION_CODES.TIRAMISU
             ) {
+
                 RECEIVER_NOT_EXPORTED
+
             } else {
+
                 0
             }
 
@@ -398,9 +463,7 @@ abstract class BaseActivity<VB : ViewBinding> : AppCompatActivity() {
                 unregisterReceiver(it)
             }
 
-        } catch (e: Exception) {
-
-            e.printStackTrace()
+        } catch (_: Exception) {
         }
 
         super.onDestroy()

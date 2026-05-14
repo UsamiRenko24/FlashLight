@@ -14,6 +14,7 @@ import com.name.flashlight.databinding.LowbatteryBinding
 import com.name.flashlight.utils.PageConstants
 import com.name.flashlight.utils.PageUsageRecorder
 import com.name.flashlight.utils.StartupModeManager
+import com.name.flashlight.utils.toDetailedTime
 
 class LowBatteryActivity : BaseActivity<LowbatteryBinding>() {
     private var haloAnimator: AnimatorSet? = null
@@ -35,6 +36,10 @@ class LowBatteryActivity : BaseActivity<LowbatteryBinding>() {
         setLowBrightness()
 
         super.onCreate(savedInstanceState)
+
+        binding.traceback.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         PageUsageRecorder.recordPageVisit(this, PageConstants.PAGE_LOW_BATTERY)
         StartupModeManager.recordLastPage(this, PageConstants.PAGE_LOW_BATTERY)
@@ -68,8 +73,33 @@ class LowBatteryActivity : BaseActivity<LowbatteryBinding>() {
         startHaloAnimation()
         
         // 显示当前电量
-        val batteryLevel = intent.getIntExtra("battery_level", 15)
-        binding.tvBatteryPercent.text = "$batteryLevel%"
+        val batteryLevel =
+            intent.getIntExtra(
+                "battery_level",
+                15
+            )
+
+        binding.tvBatteryPercent.text =
+            "$batteryLevel%"
+
+        val batteryInfo =
+            batteryRepository
+                .getCurrentBatteryInfo(this)
+
+        binding.tvBatteryStatus.text =
+            if (batteryInfo.estimateMinutes > 0) {
+
+                batteryInfo
+                    .estimateMinutes
+                    .toFloat()
+                    .toDetailedTime(this)
+
+            } else {
+
+                getString(
+                    R.string.charge_time_unavailable
+                )
+            }
     }
 
 

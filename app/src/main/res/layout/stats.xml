@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/sw_dp_10"
-        android:text="@string/title_battery_monitor"
+        android:text="@string/usage_stats"
 
         android:textColor="@color/white"
         android:textSize="@dimen/sw_dp_20"

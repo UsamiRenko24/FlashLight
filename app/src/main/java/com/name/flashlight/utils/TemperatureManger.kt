@@ -49,9 +49,18 @@ object TemperatureManager {
         notifyStateChange()
     }
 
-    // 移除监听器
+    fun addListener(listener: TemperatureListener) {
+        if (!listeners.contains(listener)) {
+            listeners.add(listener)
+        }
+    }
+
     fun removeListener(listener: TemperatureListener) {
         listeners.remove(listener)
+    }
+    fun forceUpdateOnce() {
+        checkInitialized()
+        updateTemperature()
     }
 
     // 通知所有监听器

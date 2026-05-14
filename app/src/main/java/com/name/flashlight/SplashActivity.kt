@@ -4,6 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import com.name.flashlight.databinding.ActivitySplashBinding
 import com.name.flashlight.utils.PageNavigator
@@ -23,6 +26,7 @@ class SplashActivity : AppCompatActivity() {
         // 1. 调用系统 SplashScreen API (必须在 super.onCreate 之前)
         // 这会衔接系统启动动画，并应用我们在 themes.xml 中设置的“透明图标”样式
         installSplashScreen()
+        hideSystemUI()
 
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
@@ -44,7 +48,27 @@ class SplashActivity : AppCompatActivity() {
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         }
     }
+    private fun hideSystemUI() {
 
+        WindowCompat.setDecorFitsSystemWindows(
+            window,
+            false
+        )
+
+        val controller =
+            WindowInsetsControllerCompat(
+                window,
+                window.decorView
+            )
+
+        controller.hide(
+            WindowInsetsCompat.Type.systemBars()
+        )
+
+        controller.systemBarsBehavior =
+            WindowInsetsControllerCompat
+                .BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    }
     private fun startSplashAnimation() {
         binding.ivSplash.alpha = 0f
         binding.ivSplash.animate()

@@ -17,7 +17,6 @@
         android:text="@string/title_fill_light"
         android:textColor="@color/white"
         android:textSize="@dimen/sw_dp_19"
-        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

@@ -7,13 +7,14 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     tools:context=".MainActivity">
-
     <ImageView
         android:id="@+id/traceback"
         android:src="@drawable/traceback"
         android:layout_width="@dimen/sw_dp_32"
         android:layout_height="@dimen/sw_dp_32"
         android:layout_marginStart="@dimen/sw_dp_16"
+        android:clickable="true"
+        android:focusable="true"
         android:contentDescription="返回"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_title"
@@ -111,7 +112,7 @@
                     android:id="@+id/card_left"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:clickable="true"
                     android:focusable="true">
                     <ImageView
@@ -146,7 +147,7 @@
                     android:id="@+id/card_right"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:clickable="true"
                     android:focusable="true">
 
@@ -171,26 +172,53 @@
                 android:orientation="horizontal"
                 android:visibility="gone">
 
-                <View
+                <FrameLayout
                     android:id="@+id/card_left1"
-                    android:layout_width="@dimen/sw_dp_28"
-                    android:layout_height="@dimen/sw_dp_28"
-                    android:layout_marginHorizontal="@dimen/sw_dp_8"
-                    android:background="@drawable/bg_white" />
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:clickable="true"
+                    android:focusable="true">
 
-                <View
+                    <View
+                        android:id="@+id/iv_color_white"
+                        android:layout_width="@dimen/sw_dp_28"
+                        android:layout_height="@dimen/sw_dp_28"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_white"/>
+                </FrameLayout>
+
+                <FrameLayout
                     android:id="@+id/card_middle1"
-                    android:layout_width="@dimen/sw_dp_28"
-                    android:layout_height="@dimen/sw_dp_28"
-                    android:layout_marginHorizontal="@dimen/sw_dp_8"
-                    android:background="@drawable/bg_warm_white" />
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true">
 
-                <View
+                    <View
+                        android:id="@+id/iv_color_warm"
+                        android:layout_width="@dimen/sw_dp_28"
+                        android:layout_height="@dimen/sw_dp_28"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_warm_white"/>
+                </FrameLayout>
+
+                <FrameLayout
                     android:id="@+id/card_right1"
-                    android:layout_width="@dimen/sw_dp_28"
-                    android:layout_height="@dimen/sw_dp_28"
-                    android:layout_marginHorizontal="@dimen/sw_dp_8"
-                    android:background="@drawable/bg_cold_white" />
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <View
+                        android:id="@+id/iv_color_cold"
+                        android:layout_width="@dimen/sw_dp_28"
+                        android:layout_height="@dimen/sw_dp_28"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_cold_white"/>
+                </FrameLayout>
 
             </LinearLayout>
 

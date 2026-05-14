@@ -41,7 +41,10 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
     override val isBatteryMonitorEnabled = true
     override val isLowBatteryCheckEnabled = true
 
-    private var isFlashlightOn = false
+    private var torchStateFromSystem = false
+
+    private val isFlashlightOn: Boolean
+        get() = torchStateFromSystem
     private var currentBrightnessLevel = 1
     private var currentAutoOffMinutes = 5
     private var startTime = 0L
@@ -56,30 +59,27 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
     private var haloAnimator: AnimatorSet? = null
     private val selectedBlueColor = Color.parseColor("#2AE1F8")
 
-    private var torchStateFromSystem = false
+    private var hasReceivedTemp = false
+
 
     // 监听系统手电筒状态，确保同步
-    private val torchCallback =
-        object : CameraManager.TorchCallback() {
-            override fun onTorchModeChanged(id: String, enabled: Boolean) {
+    private val torchCallback = object : CameraManager.TorchCallback() {
+        override fun onTorchModeChanged(id: String, enabled: Boolean) {
+            if (id != cameraId) return
 
-                if (id == cameraId) {
+            runOnUiThread {
+                torchStateFromSystem = enabled
 
-                    runOnUiThread {
+                updateButtonState()
 
-                        torchStateFromSystem = enabled
-
-                        isFlashlightOn = enabled
-
-                        updateButtonState()
-
-                        if (!enabled) {
-                            stopTimer()
-                        }
-                    }
+                if (!enabled) {
+                    stopTimer()
+                } else {
+                    startTimer()
                 }
             }
         }
+    }
 
     override fun createBinding(): FlashlightBinding = FlashlightBinding.inflate(layoutInflater)
 
@@ -92,12 +92,15 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
     override fun initViews() {
         SoundManager.initSoundPool(this)
         updateButtonState()
+        TemperatureManager.addListener(this)
+        TemperatureManager.forceUpdateOnce()
         syncTemperatureUI()
         refreshTotalUsageUI()
         binding.bottomNav.selectedItemId = R.id.nav_flashlight
     }
 
     override fun initListeners() {
+
         binding.cardLeft.setOnClickListener { changeBrightness(0) }
         binding.cardMiddle.setOnClickListener { changeBrightness(1) }
         binding.cardRight.setOnClickListener { changeBrightness(2) }
@@ -118,7 +121,7 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
                     v.animate().scaleX(1f).scaleY(1f).setDuration(200).setInterpolator(DecelerateInterpolator()).start()
                     if (isInside) {
                         v.feedback()
-                        ensureCameraPermission { toggleFlashlight() }
+                        toggleFlashlight()
                     }
                 }
                 MotionEvent.ACTION_CANCEL -> v.animate().scaleX(1f).scaleY(1f).setDuration(200).start()
@@ -215,26 +218,20 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
 
     private fun toggleFlashlight() {
 
-        if (cameraId == null) {
-            return
-        }
+        if (cameraId == null) return
 
         val nextState = !torchStateFromSystem
 
         if (nextState) {
 
-            val acquired = TorchController.acquire(
-                TorchController.Owner.FLASHLIGHT
-            )
+            val acquired = TorchController.acquire(TorchController.Owner.FLASHLIGHT)
 
             if (!acquired) {
-
                 Toast.makeText(
                     this,
                     getString(R.string.flashlight_busy),
                     Toast.LENGTH_SHORT
                 ).show()
-
                 return
             }
 
@@ -242,23 +239,17 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
 
         } else {
 
-            TorchController.release(
-                TorchController.Owner.FLASHLIGHT
-            )
-
+            TorchController.release(TorchController.Owner.FLASHLIGHT)
             stopTorch()
         }
     }
 
-//    private fun performToggle() {
-//        val nextState = !isFlashlightOn
-//        if (nextState) startTorch() else stopTorch()
-//    }
 
     private fun startTorch() {
 
         try {
 
+            // 直接尝试打开闪光灯
             applyHardwareTorch(true)
 
             timeRepository.startRecording(
@@ -266,6 +257,33 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
             )
 
             startTimer()
+
+        } catch (e: SecurityException) {
+
+            // 某些 ROM 仍然要求 CAMERA 权限
+            ensureCameraPermission {
+
+                try {
+
+                    applyHardwareTorch(true)
+
+                    timeRepository.startRecording(
+                        TimeRepository.TYPE_FLASHLIGHT
+                    )
+
+                    startTimer()
+
+                } catch (ex: Exception) {
+
+                    ex.printStackTrace()
+
+                    Toast.makeText(
+                        this,
+                        getString(R.string.flashlight_unavailable),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
 
         } catch (e: Exception) {
 
@@ -280,19 +298,13 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
     }
 
     private fun stopTorch() {
-
         try {
-
             applyHardwareTorch(false)
-
         } catch (e: Exception) {
-
             e.printStackTrace()
         }
 
-        timeRepository.stopRecording(
-            TimeRepository.TYPE_FLASHLIGHT
-        )
+        timeRepository.stopRecording(TimeRepository.TYPE_FLASHLIGHT)
 
         stopTimer()
     }
@@ -311,11 +323,28 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
         }
     }
     private fun updateButtonState() {
-        binding.btnFlashlight.setBackgroundResource(if (isFlashlightOn) R.drawable.btn_flashlight_on else R.drawable.btn_flashlight_off)
+
+        binding.btnFlashlight.setBackgroundResource(
+            if (isFlashlightOn)
+                R.drawable.btn_flashlight_on
+            else
+                R.drawable.btn_flashlight_off
+        )
+
         binding.tvBtnStatus.apply {
-            text = if (isFlashlightOn) getString(R.string.btn_on) else getString(R.string.btn_off)
-            setTextColor(if (isFlashlightOn) Color.parseColor("#5B3E00") else Color.parseColor("#D7D7D7"))
+            text = if (isFlashlightOn)
+                getString(R.string.btn_on)
+            else
+                getString(R.string.btn_off)
+
+            setTextColor(
+                if (isFlashlightOn)
+                    Color.parseColor("#5B3E00")
+                else
+                    Color.parseColor("#D7D7D7")
+            )
         }
+
         if (isFlashlightOn) startHalo() else stopHalo()
     }
 
@@ -385,20 +414,17 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
 
         startTime = System.currentTimeMillis()
 
-        initialTodayMinutes =
-            timeRepository.getTodayUsageMinutes(
-                TimeRepository.TYPE_FLASHLIGHT
-            )
+        initialTodayMinutes = timeRepository.getTodayUsageMinutes(
+            TimeRepository.TYPE_FLASHLIGHT
+        )
 
         timerJob = lifecycleScope.launch {
 
-            while (isFlashlightOn) {
+            while (torchStateFromSystem) {
 
                 renderTimer()
 
-                if (checkAutoOff()) {
-                    break
-                }
+                if (checkAutoOff()) break
 
                 delay(1000)
             }
@@ -408,8 +434,11 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
     private fun stopTimer() {
         timerJob?.cancel()
         timerJob = null
+
         binding.lastTime.text = "00:00"
         binding.progressFlashlight.progress = 0
+
+        TorchController.release(TorchController.Owner.FLASHLIGHT)
         refreshTotalUsageUI()
     }
 
@@ -472,12 +501,26 @@ class FlashlightActivity : BaseActivity<FlashlightBinding>(), TemperatureManager
     private fun syncTemperatureUI() {
         if (TemperatureManager.isEnabled()) {
             binding.temperatureContainer.visibility = View.VISIBLE
-            updateTemperatureDisplay(TemperatureManager.getCurrentTemperature(), TemperatureManager.isOverheating())
-        } else binding.temperatureContainer.visibility = View.GONE
+
+            val temp = TemperatureManager.getCurrentTemperature()
+            val overheat = TemperatureManager.isOverheating()
+
+            if (temp <= 0f && !hasReceivedTemp) {
+                binding.tvTemperature.text = "--°C"
+            } else {
+                updateTemperatureDisplay(temp, overheat)
+            }
+
+        } else {
+            binding.temperatureContainer.visibility = View.GONE
+        }
     }
 
     override fun onTemperatureUpdate(temperature: Float, isOverheating: Boolean) {
-        runOnUiThread { updateTemperatureDisplay(temperature, isOverheating) }
+        runOnUiThread {
+            hasReceivedTemp = true
+            updateTemperatureDisplay(temperature, isOverheating)
+        }
     }
 
     override fun onMonitorStateChanged(isEnabled: Boolean) {

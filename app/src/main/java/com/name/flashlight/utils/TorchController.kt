@@ -33,11 +33,4 @@ object TorchController {
         }
     }
 
-    fun isOwner(owner: Owner): Boolean {
-        return currentOwner == owner
-    }
-
-//    fun currentOwner(): Owner {
-//        return currentOwner
-//    }
 }

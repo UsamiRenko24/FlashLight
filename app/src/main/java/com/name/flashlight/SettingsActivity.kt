@@ -5,13 +5,13 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.name.flashlight.databinding.SettingsBinding
-import com.name.flashlight.utils.AutoBrightnessManager
 import com.name.flashlight.utils.DataStoreManager
 import com.name.flashlight.utils.LanguageManager
 import com.name.flashlight.utils.PageConstants
 import com.name.flashlight.utils.SoundManager
 import com.name.flashlight.utils.StartupModeManager
 import com.name.flashlight.utils.VibrationManager
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -35,7 +35,16 @@ class SettingsActivity : BaseActivity<SettingsBinding>() {
 
     override fun initViews() {
         SoundManager.initSoundPool(this)
-        binding.slidingAutoBrightness.setCheckedSilently(AutoBrightnessManager.getAutoBrightnessState(this))
+        lifecycleScope.launch {
+
+            val enabled =
+                DataStoreManager
+                    .getUseSystemAutoBrightness(this@SettingsActivity)
+                    .first()
+
+            binding.slidingAutoBrightness
+                .setCheckedSilently(enabled)
+        }
         binding.bottomNav.selectedItemId = R.id.nav_settings
     }
 
@@ -75,8 +84,11 @@ class SettingsActivity : BaseActivity<SettingsBinding>() {
                     val current = DataStoreManager.getLanguage(this@SettingsActivity).first()
                     if (selectedLang != current) {
                         DataStoreManager.setLanguage(this@SettingsActivity, selectedLang)
-                        LanguageManager.saveLanguage(this@SettingsActivity, selectedLang)
-                        LanguageManager.restartApp(this@SettingsActivity)
+                        lifecycleScope.launch {
+                            DataStoreManager.setLanguage(this@SettingsActivity, selectedLang)
+                            delay(200) // 等 DataStore 落地
+                            LanguageManager.restartApp(this@SettingsActivity)
+                        }
                     }
                 }
             }
@@ -84,33 +96,24 @@ class SettingsActivity : BaseActivity<SettingsBinding>() {
 
         binding.slidingAutoBrightness.setOnStateChangedListener { isChecked ->
 
-            AutoBrightnessManager.toggleAutoBrightness(
-                activity = this,
-                targetState = isChecked,
+            lifecycleScope.launch {
 
-                onSuccess = { enabled ->
-
-                    binding.slidingAutoBrightness
-                        .setCheckedSilently(enabled)
-                },
-
-                onFailure = {
-
-                    binding.slidingAutoBrightness
-                        .setCheckedSilently(
-                            AutoBrightnessManager
-                                .getAutoBrightnessState(this)
-                        )
-                }
-            )
+                DataStoreManager.setUseSystemAutoBrightness(
+                    this@SettingsActivity,
+                    isChecked
+                )
+            }
         }
 
         // 拓宽触发区域：点击整栏进入
         binding.layoutAutoOff.setOnClickListener {
             startActivity(Intent(this, AutomaticActivity::class.java))
         }
-        binding.cardContainer10.setOnClickListener {
-            startActivity(Intent(this, StatsActivity::class.java))
+        binding.privacyPolicy.setOnClickListener {
+
+            startActivity(
+                Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://www.baidu.com"))
+            )
         }
     }
 
@@ -139,8 +142,8 @@ class SettingsActivity : BaseActivity<SettingsBinding>() {
     override fun initObservers() {
         lifecycleScope.launch {
 
-            AutoBrightnessManager
-                .getAutoBrightnessFlow(this@SettingsActivity)
+            DataStoreManager
+                .getUseSystemAutoBrightness(this@SettingsActivity)
                 .collectLatest { enabled ->
 
                     binding.slidingAutoBrightness
@@ -176,14 +179,6 @@ class SettingsActivity : BaseActivity<SettingsBinding>() {
                 binding.tvLanguage.text = langName
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        binding.slidingAutoBrightness.setCheckedSilently(
-            AutoBrightnessManager.getAutoBrightnessState(this)
-        )
     }
 
     private fun handleNavigation(itemId: Int): Boolean {
