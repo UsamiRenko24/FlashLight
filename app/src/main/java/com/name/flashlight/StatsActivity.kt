@@ -4,7 +4,6 @@ import android.content.Intent
 import android.widget.ProgressBar
 import androidx.lifecycle.lifecycleScope
 import com.name.flashlight.databinding.StatsBinding
-import com.name.flashlight.utils.AutoBrightnessManager
 import com.name.flashlight.utils.BatteryRepository
 import com.name.flashlight.utils.DataStoreManager
 import com.name.flashlight.utils.LowBatteryManager
@@ -12,7 +11,9 @@ import com.name.flashlight.utils.PageConstants
 import com.name.flashlight.utils.TemperatureManager
 import com.name.flashlight.utils.TimeRepository
 import com.name.flashlight.utils.toDetailedTime
+import com.name.flashlight.utils.toDetailedTimeFromSeconds
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 /**
@@ -28,7 +29,16 @@ class StatsActivity : BaseActivity<StatsBinding>() {
 
     override fun initViews() {
         binding.bottomNav.selectedItemId = R.id.nav_stats
-        binding.btnBrightness.setCheckedSilently(AutoBrightnessManager.getAutoBrightnessState(this))
+        lifecycleScope.launch {
+
+            val enabled =
+                DataStoreManager
+                    .getUseSystemAutoBrightness(this@StatsActivity)
+                    .first()
+
+            binding.btnBrightness
+                .setCheckedSilently(enabled)
+        }
         binding.btnTemperatureSwitch.setCheckedSilently(TemperatureManager.isEnabled())
     }
 
@@ -49,25 +59,27 @@ class StatsActivity : BaseActivity<StatsBinding>() {
 
         binding.btnBrightness.setOnStateChangedListener { isEnabled ->
 
-            AutoBrightnessManager.toggleAutoBrightness(
-                this,
-                isEnabled,
-                {
-                    binding.btnBrightness
-                        .setCheckedSilently(it)
-                },
-                {
-                    binding.btnBrightness
-                        .setCheckedSilently(
-                            AutoBrightnessManager
-                                .getAutoBrightnessState(this)
-                        )
-                }
-            )
+            lifecycleScope.launch {
+
+                DataStoreManager.setUseSystemAutoBrightness(
+                    this@StatsActivity,
+                    isEnabled
+                )
+            }
         }
     }
 
     override fun initObservers() {
+        lifecycleScope.launch {
+
+            DataStoreManager
+                .getUseSystemAutoBrightness(this@StatsActivity)
+                .collectLatest { enabled ->
+
+                    binding.btnBrightness
+                        .setCheckedSilently(enabled)
+                }
+        }
         lifecycleScope.launch {
             DataStoreManager.isLowBatteryEnabled(this@StatsActivity).collectLatest { isEnabled ->
                 binding.btnLowBattery.setCheckedSilently(isEnabled)
@@ -150,19 +162,28 @@ class StatsActivity : BaseActivity<StatsBinding>() {
         val fTime = timeRepository.getTodayUsageMinutes(TimeRepository.TYPE_FLASHLIGHT)
         val sTime = timeRepository.getTodayUsageMinutes(TimeRepository.TYPE_SCREEN_LIGHT)
         val bTime = timeRepository.getTodayUsageMinutes(TimeRepository.TYPE_BLINK)
-        val total = timeRepository.getTodayTotalUsageMinutes()
+        val totalMinutes = fTime + sTime + bTime
+
+        val fSec = (fTime * 60f).toInt().coerceAtLeast(0)
+        val sSec = (sTime * 60f).toInt().coerceAtLeast(0)
+        val bSec = (bTime * 60f).toInt().coerceAtLeast(0)
+        val totalDisplaySec = fSec + sSec + bSec
 
         binding.apply {
-            tvTotalTime.text = total.toDetailedTime(this@StatsActivity)
+            tvTotalTime.text =
+                totalDisplaySec.toDetailedTimeFromSeconds(this@StatsActivity)
             tvHealth.text = batteryRepository.getBatteryHealthDescription(this@StatsActivity)
 
-            renderProgressBar(progressFlashlight, fTime, total)
-            renderProgressBar(progressScreenLight, sTime, total)
-            renderProgressBar(progressBlink, bTime, total)
+            renderProgressBar(progressFlashlight, fTime, totalMinutes)
+            renderProgressBar(progressScreenLight, sTime, totalMinutes)
+            renderProgressBar(progressBlink, bTime, totalMinutes)
 
-            tvFlashlightTime.text = fTime.toDetailedTime(this@StatsActivity)
-            tvScreenLightTime.text = sTime.toDetailedTime(this@StatsActivity)
-            tvBlinkTime.text = bTime.toDetailedTime(this@StatsActivity)
+            tvFlashlightTime.text =
+                fSec.toDetailedTimeFromSeconds(this@StatsActivity)
+            tvScreenLightTime.text =
+                sSec.toDetailedTimeFromSeconds(this@StatsActivity)
+            tvBlinkTime.text =
+                bSec.toDetailedTimeFromSeconds(this@StatsActivity)
         }
     }
 
@@ -191,14 +212,17 @@ class StatsActivity : BaseActivity<StatsBinding>() {
             binding.tvState.text = getString(R.string.time_to_full)
 
             binding.tvTimeToFull.text = when {
-                // 1. 电量已达 100% 或状态为充满
-                info.level >= 100f -> getString(R.string.battery_status_full)
+                info.level >= 100f ->
+                    getString(R.string.battery_status_full)
 
-                // 2. 能够算出剩余时间（分钟数 > 0）
-                info.estimateMinutes > 0 -> info.estimateMinutes.toFloat().toDetailedTime(this)
+                info.estimateMinutes > 0 ->
+                    info.estimateMinutes.toFloat().toDetailedTime(this)
 
-                // 3. 分钟数为 -1 或刚开始充电
-                else -> getString(R.string.calculating)
+                info.estimateMinutes == 0 && info.level < 100f ->
+                    getString(R.string.charge_time_under_one_minute)
+
+                else ->
+                    getString(R.string.charge_time_unavailable)
             }
         } else {
             // 未充电逻辑

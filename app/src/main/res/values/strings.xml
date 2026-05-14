@@ -47,7 +47,8 @@
     <!-- 带格式化的文本 -->
     <string name="time_to_full">预计充满时间</string>
     <string name="time_remaining">预计剩余时间</string>
-    <string name="calculating">正在计算</string>
+    <string name="charge_time_under_one_minute">少于 1 分钟</string>
+    <string name="charge_time_unavailable">暂无法估算充满时间</string>
 
     <!-- 各种动态文本 -->
     <string name="battery_status_full">已充满</string>
@@ -99,6 +100,8 @@
     <string name="check_usage_situation">查看各功能使用情况</string>
     <string name="about_application">关于应用</string>
     <string name="version_info">版本信息</string>
+    <string name="privacy_policy">隐私政策</string>
+    <string name="FAQ">常问问题</string>
 
     <!-- 统计信息 -->
     <string name="battery_health">电池健康</string>

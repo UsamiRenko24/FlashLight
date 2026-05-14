@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.onStart
 import java.util.Locale
 import kotlin.math.abs
+import kotlin.math.ceil
+import kotlin.math.floor
 
 /**
  * 工业级电池仓库 - 彻底修复多语言残留问题
@@ -20,6 +22,7 @@ class BatteryRepository(private val context: Context) {
 
     private val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
     private val prefs = context.getSharedPreferences("battery_health", Context.MODE_PRIVATE)
+    private var smoothedCurrentUa = 0f
 
     companion object {
         private const val KEY_INITIAL_CAPACITY = "initial_capacity"
@@ -43,6 +46,22 @@ class BatteryRepository(private val context: Context) {
         // 初始推送：确保使用最新的 context (由于是在 Activity 里实例化的，它也是正确的)
         emit(getCurrentBatteryInfo(context))
     }
+    private fun smoothCurrent(currentUa: Long): Float {
+
+        val absCurrent = abs(currentUa).toFloat()
+
+        if (smoothedCurrentUa == 0f) {
+            smoothedCurrentUa = absCurrent
+        } else {
+
+            // 0.15 越小越稳定
+            smoothedCurrentUa =
+                smoothedCurrentUa * 0.85f +
+                        absCurrent * 0.15f
+        }
+
+        return smoothedCurrentUa
+    }
 
     fun getCurrentBatteryInfo(ctx: Context): BatteryInfo {
         val intent = ctx.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
@@ -60,7 +79,7 @@ class BatteryRepository(private val context: Context) {
         // 获取电流数据
         var currentMicroAmps = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
         if (currentMicroAmps == 0L) currentMicroAmps = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE)
-        val currentMa = (currentMicroAmps / 1000).toInt()
+        val currentMa = abs(currentMicroAmps / 1000).toInt()
 
         return BatteryInfo(
             level = batteryPct,
@@ -102,16 +121,157 @@ class BatteryRepository(private val context: Context) {
             else -> ctx.getString(R.string.battery_charging)
         }
     }
+    private fun getBatteryCapacityUa(
+        pct: Float
+    ): Float {
 
-    private fun calculateEstimate(pct: Float, isCharging: Boolean, uA: Long): Int {
-        if (abs(uA) < 1000) return -1
-        return if (isCharging) {
-            ((100 - pct) / 100f * 3000000L / abs(uA) * 60).toInt()
+        val currentCapacity =
+            batteryManager.getLongProperty(
+                BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER
+            )
+
+        return if (
+            currentCapacity > 0 &&
+            pct > 1f
+        ) {
+
+            currentCapacity / (pct / 100f)
+
         } else {
-            (batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER).toFloat() / abs(uA) * 60).toInt()
-        }.coerceAtMost(1440)
+
+            4000000f
+        }
     }
 
+    private fun calculateEstimate(
+        pct: Float,
+        isCharging: Boolean,
+        uA: Long
+    ): Int {
+
+        val absCurrent =
+            abs(uA)
+
+        // 电流异常
+        val invalidCurrent =
+            absCurrent < 10000L ||
+                    absCurrent > 15000000L
+
+        if (invalidCurrent) {
+
+            return estimateByPercent(
+                pct,
+                isCharging
+            )
+        }
+
+        val currentUa =
+            smoothCurrent(absCurrent)
+
+        val totalCapacityUa =
+            getBatteryCapacityUa(pct)
+
+        return try {
+
+            if (isCharging) {
+
+                val remainPercent =
+                    (100f - pct)
+                        .coerceIn(0f, 100f)
+
+                val remainCapacityUa =
+                    totalCapacityUa *
+                            remainPercent / 100f
+
+                val hours =
+                    remainCapacityUa / currentUa
+
+                var minutes =
+                    ceil(hours * 60f)
+                        .toInt()
+
+                // 高电量涓流修正
+                if (pct >= 80f) {
+                    minutes =
+                        (minutes * 1.15f).toInt()
+                }
+
+                minutes.coerceIn(1, 1440)
+
+            } else {
+
+                val currentCapacityUa =
+                    batteryManager.getLongProperty(
+                        BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER
+                    ).toFloat()
+
+                val hours =
+                    currentCapacityUa / currentUa
+
+                val minutes =
+                    floor(hours * 60f)
+                        .toInt()
+
+                minutes.coerceIn(1, 1440)
+            }
+
+        } catch (_: Exception) {
+
+            estimateByPercent(
+                pct,
+                isCharging
+            )
+        }
+    }
+
+    private fun estimateByPercent(
+        pct: Float,
+        isCharging: Boolean
+    ): Int {
+
+        return if (isCharging) {
+
+            when {
+
+                pct >= 95f -> 10
+
+                pct >= 90f -> 20
+
+                pct >= 80f -> 35
+
+                pct >= 70f -> 50
+
+                pct >= 60f -> 70
+
+                pct >= 50f -> 90
+
+                pct >= 40f -> 110
+
+                pct >= 30f -> 130
+
+                pct >= 20f -> 150
+
+                else -> 180
+            }
+
+        } else {
+
+            when {
+
+                pct >= 95f -> 480
+
+                pct >= 80f -> 360
+
+                pct >= 60f -> 240
+
+                pct >= 40f -> 150
+
+                pct >= 20f -> 90
+
+                else -> 45
+            }
+        }
+    }
     private fun getIcon(pct: Float, isCharging: Boolean): Int {
         if (isCharging) return R.drawable.ic_battery_charging
         return when {

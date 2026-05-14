@@ -47,7 +47,8 @@
     <!-- Formatted Text -->
     <string name="time_to_full">Estimated time\nto full</string>
     <string name="time_remaining">Estimated remaining\ntime</string>
-    <string name="calculating">Calculating</string>
+    <string name="charge_time_under_one_minute">Less than 1 minute</string>
+    <string name="charge_time_unavailable">Full charge time unavailable</string>
 
     <!-- Dynamic Text -->
     <string name="battery_status_full">Fully charged</string>
@@ -100,6 +101,8 @@
     <string name="check_usage_situation">View usage statistics of each feature</string>
     <string name="about_application">About</string>
     <string name="version_info">Version Info</string>
+    <string name="privacy_policy">privacy policy</string>
+    <string name="FAQ">FAQ</string>
 
     <!-- Statistics Information -->
     <string name="battery_health">Battery Health</string>

@@ -88,12 +88,18 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
             handleNavigation(item.itemId)
         }
         binding.btnStartBlink.setOnTouchListener { v, event ->
+
             handleTouchAnimation(v, event)
+
             if (event.action == MotionEvent.ACTION_UP) {
-                ensureCameraPermission { 
-                    if (isBlinking) stopBlinkingSession() else startBlinkingSession() 
+
+                if (isBlinking) {
+                    stopBlinkingSession()
+                } else {
+                    startBlinkingSession()
                 }
             }
+
             true
         }
     }
@@ -239,6 +245,8 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
 
     private fun stopBlinkingSession() {
 
+        if (!isBlinking) return
+
         isBlinking = false
 
         blinkJob?.cancel()
@@ -257,8 +265,9 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
 
     private fun startTimerJob() {
         timerJob?.cancel()
-        startTime = System.currentTimeMillis()
-        timeRepository.startRecording(TimeRepository.TYPE_BLINK)
+        val sessionAnchor = System.currentTimeMillis()
+        startTime = sessionAnchor
+        timeRepository.startRecording(TimeRepository.TYPE_BLINK, sessionAnchor)
         timerJob = lifecycleScope.launch {
             while (true) {
                 if (checkAutoOffReached()) break
@@ -270,6 +279,7 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
     private fun stopTimerJob() {
         timerJob?.cancel(); timerJob = null
         timeRepository.stopRecording(TimeRepository.TYPE_BLINK)
+        TorchController.release(TorchController.Owner.BLINK)
     }
 
     private fun checkAutoOffReached(): Boolean {
@@ -277,7 +287,6 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
         return if (currentAutoOffMinutes < 114514 && elapsed >= currentAutoOffMinutes) {
             stopBlinkingSession()
             Toast.makeText(this, getString(R.string.blink_auto_off), Toast.LENGTH_SHORT).show()
-            navigateToMain()
             true
         } else false
     }
@@ -327,6 +336,8 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
                 cameraId?.let {
                     cameraManager.setTorchMode(it, on)
                 }
+
+            } catch (e: SecurityException) {
 
             } catch (e: Exception) {
 
@@ -410,4 +421,5 @@ class BlinkActivity : BaseActivity<BlinkBinding>() {
 
         super.onDestroy()
     }
+
 }

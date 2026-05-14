@@ -29,14 +29,12 @@ fun Float.toCountdownDisplay(autoOffMinutes: Int, context: Context): String {
     }
 }
 /**
- * 将分钟数 (Float) 转换为带单位的统计格式 (例如: 0.5 -> "30秒")
+ * 将整秒数格式化为统计用「X时Y分Z秒」文案（供统计页「总计」与分项一致使用）
  */
-fun Float.toDetailedTime(
-    context: Context
-): String {
+fun Int.toDetailedTimeFromSeconds(context: Context): String {
 
     val totalSeconds =
-        (this * 60).toInt()
+        coerceAtLeast(0)
 
     val hours =
         totalSeconds / 3600
@@ -80,4 +78,18 @@ fun Float.toDetailedTime(
             "${seconds}${context.getString(R.string.second)}"
         }
     }
+}
+
+/**
+ * 将分钟数 (Float) 转换为带单位的统计格式 (例如: 0.5 -> "30秒")
+ * 秒数仍用 (分钟 * 60).toInt() 与历史行为一致，避免 double/floor 与 Float 截断不一致导致「多一秒」
+ */
+fun Float.toDetailedTime(
+    context: Context
+): String {
+
+    return (this * 60)
+        .toInt()
+        .coerceAtLeast(0)
+        .toDetailedTimeFromSeconds(context)
 }

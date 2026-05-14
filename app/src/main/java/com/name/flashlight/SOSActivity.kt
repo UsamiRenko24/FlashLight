@@ -17,8 +17,9 @@ import kotlinx.coroutines.launch
 import com.name.flashlight.utils.BatteryRepository
 import com.name.flashlight.utils.DataStoreManager
 import com.name.flashlight.utils.TimeRepository
-import com.name.flashlight.utils.toCountdownDisplay
 import com.name.flashlight.utils.toDigitalTime
+import java.util.Locale
+import kotlin.math.ceil
 
 class SOSActivity : BaseActivity<SosBinding>() {
 
@@ -102,8 +103,9 @@ class SOSActivity : BaseActivity<SosBinding>() {
 
     override fun initListeners() {
 
-        // 不需要写 traceback
-        // BaseActivity 已自动处理
+        binding.traceback.setOnClickListener {
+            finish()
+        }
     }
 
     override fun initObservers() {
@@ -120,19 +122,23 @@ class SOSActivity : BaseActivity<SosBinding>() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
 
-        timeRepository.startRecording(
-            TimeRepository.TYPE_BLINK
-        )
+        initFlashlight()
+        startHaloAnimation()
+    }
 
-        startTime = System.currentTimeMillis()
+    override fun onStart() {
+        super.onStart()
+
+        val sessionAnchor = System.currentTimeMillis()
+        startTime = sessionAnchor
+        timeRepository.startRecording(TimeRepository.TYPE_BLINK, sessionAnchor)
 
         isTimerRunning = true
+        isSosActive = true
 
         startSOS()
-
         startTimer()
     }
 
@@ -209,40 +215,68 @@ class SOSActivity : BaseActivity<SosBinding>() {
 
     private fun updateDuration() {
 
+        val elapsedMs =
+            System.currentTimeMillis() - startTime
+
         val elapsedMinutes =
-            (System.currentTimeMillis() - startTime) / 60000f
+            elapsedMs / 60000f
 
         binding.lastTime.text =
             elapsedMinutes.toDigitalTime()
 
-        val remainingMinutes =
-            (currentAutoOffMinutes - elapsedMinutes)
-                .coerceAtLeast(0f)
+        if (currentAutoOffMinutes >= 114514) {
+
+            binding.remainTime.text =
+                getString(R.string.auto_off_never)
+
+            return
+        }
+
+        val totalMs =
+            currentAutoOffMinutes * 60_000L
+
+        val remainingMs =
+            (totalMs - elapsedMs).coerceAtLeast(0L)
+
+        // 用毫秒 + 显示秒数向上取整，避免「剩余分钟 ×60 再 toInt()」因浮点误差一进来就少 1 秒
+        val displayRemainSeconds =
+            ceil(remainingMs / 1000.0)
+                .toInt()
+                .coerceAtLeast(0)
 
         binding.remainTime.text =
-            remainingMinutes.toCountdownDisplay(
-                currentAutoOffMinutes,
-                this
-            )
+            formatRemainMmSs(displayRemainSeconds)
 
-        if (currentAutoOffMinutes < 114514) {
+        val progress =
+            ((elapsedMs * 100f) / totalMs)
+                .toInt()
+                .coerceIn(0, 100)
 
-            val progress =
-                (
-                        elapsedMinutes *
-                                100 /
-                                currentAutoOffMinutes
-                        )
-                    .toInt()
-                    .coerceIn(0, 100)
+        binding.progressBlink.progress = progress
 
-            binding.progressBlink.progress = progress
+        if (remainingMs <= 0L) {
 
-            if (remainingMinutes <= 0) {
-
-                finish()
-            }
+            finish()
         }
+    }
+
+    private fun formatRemainMmSs(totalSeconds: Int): String {
+
+        val s =
+            totalSeconds.coerceAtLeast(0)
+
+        val m =
+            s / 60
+
+        val sec =
+            s % 60
+
+        return String.format(
+            Locale.getDefault(),
+            "%02d:%02d",
+            m,
+            sec
+        )
     }
 
     private fun startSOS() {
@@ -419,32 +453,22 @@ class SOSActivity : BaseActivity<SosBinding>() {
     }
 
     override fun onStop() {
-
         super.onStop()
 
-        isSosActive = false
+        timeRepository.stopRecording(TimeRepository.TYPE_BLINK)
 
+        isSosActive = false
         isTimerRunning = false
 
         sosHandler.removeCallbacksAndMessages(null)
-
         timerHandler.removeCallbacksAndMessages(null)
 
         try {
-
             cameraId?.let {
-
                 cameraManager.setTorchMode(it, false)
             }
-
-        } catch (_: Exception) {
-        }
-
-        timeRepository.stopRecording(
-            TimeRepository.TYPE_BLINK
-        )
+        } catch (_: Exception) {}
     }
-
     override fun onDestroy() {
 
         haloAnimator?.cancel()

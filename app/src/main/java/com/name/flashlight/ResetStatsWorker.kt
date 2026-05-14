@@ -17,9 +17,12 @@ class ResetStatsWorker(context: Context, params: WorkerParameters) : Worker(cont
             val allKeys = prefs.all.keys
             var deleteCount = 0
 
-            // 健壮逻辑：删除所有包含日期格式但不是今天的 Key
+            // 删除非今天的「按日统计」：旧版 type_yyyy-MM-dd（分钟 Float）与新版 type_yyyy-MM-dd_sec_total（整秒）
             allKeys.forEach { key ->
-                if (key.matches(Regex(".*\\d{4}-\\d{2}-\\d{2}$")) && !key.contains(today)) {
+                val isDayAggregate = key.matches(
+                    Regex("(flashlight|screen_light|blink)_\\d{4}-\\d{2}-\\d{2}(_sec_total)?")
+                )
+                if (isDayAggregate && !key.contains(today)) {
                     editor.remove(key)
                     deleteCount++
                 }

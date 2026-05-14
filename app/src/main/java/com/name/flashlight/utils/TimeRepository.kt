@@ -5,92 +5,118 @@ import android.content.SharedPreferences
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.floor
 
 /**
- * 工业级 TimeRepository
- * 职责：负责所有功能的计时逻辑、统计持久化
- * 解决 Float/Int 混合管理混乱的问题，统一使用分钟数 (Float) 进行内部计算
+ * 使用时长统计：按「整秒」累加持久化，避免 Float 分钟与毫秒转分钟带来的 1～2 秒漂移。
+ * 仍对外以 Float「分钟」返回，便于现有 UI（toDetailedTime 等）不变。
  */
 class TimeRepository(private val context: Context) {
 
-    private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    private val prefs: SharedPreferences =
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     companion object {
         private const val PREFS_NAME = "usage_stats"
-        
-        // 功能类型常量
+
         const val TYPE_FLASHLIGHT = "flashlight"
         const val TYPE_SCREEN_LIGHT = "screen_light"
         const val TYPE_BLINK = "blink"
+
+        /** 新版：某日累计整秒数 */
+        private const val SEC_TOTAL_SUFFIX = "_sec_total"
     }
 
     /**
-     * 开始计时
+     * @param startedAtEpochMs 会话起点（毫秒）。与界面计时共用同一时刻时传入，避免 SOS 等页面「统计起点早于 UI」多计。
      */
-    fun startRecording(featureType: String) {
-        val currentTime = System.currentTimeMillis()
+    fun startRecording(
+        featureType: String,
+        startedAtEpochMs: Long = System.currentTimeMillis()
+    ) {
         prefs.edit().apply {
-            putLong("${featureType}_start", currentTime)
-            putBoolean("${featureType}_active", true)
+            putLong(sessionStartKey(featureType), startedAtEpochMs)
+            putBoolean(sessionActiveKey(featureType), true)
             apply()
         }
     }
 
-    /**
-     * 停止计时并保存
-     */
     fun stopRecording(featureType: String) {
-        val startTime = prefs.getLong("${featureType}_start", 0)
-        val isActive = prefs.getBoolean("${featureType}_active", false)
+        val startTime = prefs.getLong(sessionStartKey(featureType), 0L)
+        val isActive = prefs.getBoolean(sessionActiveKey(featureType), false)
 
-        if (startTime > 0 && isActive) {
+        val editor = prefs.edit()
+
+        if (startTime > 0L && isActive) {
             val durationMs = System.currentTimeMillis() - startTime
-            // 过滤掉小于 1 秒的误操作
-            if (durationMs > 1000) {
-                val durationMinutes = durationMs / (1000f * 60f)
-                val todayKey = getTodayKey(featureType)
-                val currentTotal = prefs.getFloat(todayKey, 0f)
-                prefs.edit().putFloat(todayKey, currentTotal + durationMinutes).apply()
+            if (durationMs > 1000L) {
+                val sessionWholeSeconds = durationMs / 1000L
+                val base = readTotalSecondsToday(featureType)
+                editor.putLong(dayTotalSecondsKey(featureType), base + sessionWholeSeconds)
             }
         }
 
-        // 清理当前会话状态
-        prefs.edit().apply {
-            remove("${featureType}_start")
-            putBoolean("${featureType}_active", false)
-            apply()
-        }
+        editor
+            .remove(sessionStartKey(featureType))
+            .putBoolean(sessionActiveKey(featureType), false)
+            .apply()
     }
 
     /**
-     * 获取今天某项功能的累计使用时长（实时计算，包含当前正在进行的会话）
-     * 统一返回 Float (分钟)
+     * 今日累计（分钟，Float）；含进行中会话时，会话时长也按「整秒」折算为分钟再加总。
      */
     fun getTodayUsageMinutes(featureType: String): Float {
-        val savedTime = prefs.getFloat(getTodayKey(featureType), 0f)
-        val isActive = prefs.getBoolean("${featureType}_active", false)
-        val startTime = prefs.getLong("${featureType}_start", 0)
-
-        return if (isActive && startTime > 0) {
-            val currentSessionMinutes = (System.currentTimeMillis() - startTime) / (1000f * 60f)
-            savedTime + currentSessionMinutes
-        } else {
-            savedTime
-        }
+        val baseSeconds = readTotalSecondsToday(featureType)
+        val isActive = prefs.getBoolean(sessionActiveKey(featureType), false)
+        val startTime = prefs.getLong(sessionStartKey(featureType), 0L)
+        val activeWholeSeconds =
+            if (isActive && startTime > 0L) {
+                (System.currentTimeMillis() - startTime) / 1000L
+            } else {
+                0L
+            }
+        return (baseSeconds + activeWholeSeconds) / 60f
     }
 
-    /**
-     * 获取今天的总使用时长（所有功能汇总）
-     */
     fun getTodayTotalUsageMinutes(): Float {
         return getTodayUsageMinutes(TYPE_FLASHLIGHT) +
-               getTodayUsageMinutes(TYPE_SCREEN_LIGHT) +
-               getTodayUsageMinutes(TYPE_BLINK)
+            getTodayUsageMinutes(TYPE_SCREEN_LIGHT) +
+            getTodayUsageMinutes(TYPE_BLINK)
     }
 
-    private fun getTodayKey(featureType: String): String = "${featureType}_${getTodayDate()}"
+    private fun dayDateString(): String =
+        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-    private fun getTodayDate(): String {
-        return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+    private fun legacyDayMinutesKey(featureType: String): String =
+        "${featureType}_${dayDateString()}"
+
+    private fun dayTotalSecondsKey(featureType: String): String =
+        "${featureType}_${dayDateString()}$SEC_TOTAL_SUFFIX"
+
+    private fun sessionStartKey(featureType: String): String =
+        "${featureType}_start"
+
+    private fun sessionActiveKey(featureType: String): String =
+        "${featureType}_active"
+
+    /**
+     * 读取今日已累计整秒；若仅有旧版 Float「分钟」则迁移为整秒后删除旧 key。
+     */
+    private fun readTotalSecondsToday(featureType: String): Long {
+        val secKey = dayTotalSecondsKey(featureType)
+        if (prefs.contains(secKey)) {
+            return prefs.getLong(secKey, 0L)
+        }
+        val legacyKey = legacyDayMinutesKey(featureType)
+        val legacyMinutes = prefs.getFloat(legacyKey, 0f)
+        if (legacyMinutes <= 0f) {
+            return 0L
+        }
+        val seconds = floor(legacyMinutes.toDouble() * 60.0).toLong()
+        prefs.edit()
+            .putLong(secKey, seconds)
+            .remove(legacyKey)
+            .apply()
+        return seconds
     }
 }

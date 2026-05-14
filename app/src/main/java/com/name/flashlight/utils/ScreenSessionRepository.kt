@@ -23,9 +23,4 @@ object ScreenSessionRepository {
     fun updateColor(level: Int) {
         _colorLevel.value = level
     }
-
-    /**
-     * 判断是否需要从 DataStore 恢复默认值
-     */
-    fun isUninitialized() = _brightnessLevel.value == -1
 }
