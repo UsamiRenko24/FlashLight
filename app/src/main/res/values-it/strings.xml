@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language">Lingua</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_flashlight">Torcia</string>
+    <string name="nav_blink">Lampeggio</string>
+    <string name="nav_stats">Statistiche</string>
+    <string name="nav_settings">Impostazioni</string>
+
+    <!-- Button Text -->
+    <string name="btn_on">Accendi</string>
+    <string name="btn_off">Spegni</string>
+    <string name="btn_screen">Avvia luce</string>
+    <string name="btn_sos">Avvia SOS</string>
+    <string name="btn_blink">Avvia lampeggio</string>
+
+    <!-- Status Toast -->
+    <string name="toast_on">Torcia accesa</string>
+    <string name="toast_off">Torcia spenta</string>
+    <string name="toast_to_modify">Modifica le impostazioni</string>
+    <string name="toast_failed">Operazione non riuscita, riprova</string>
+
+    <!-- Brightness Levels -->
+    <string name="brightness_low">Basso</string>
+    <string name="brightness_medium">Medio</string>
+    <string name="brightness_high">Alto</string>
+
+    <!-- Card Text -->
+    <string name="brightness_card_low">Basso\n40%</string>
+    <string name="brightness_card_medium">Medio\n70%</string>
+    <string name="brightness_card_high">Alto\n100%</string>
+    <string name="frequency_low">Lento</string>
+    <string name="frequency_medium">Medio</string>
+    <string name="frequency_high">Veloce</string>
+
+    <!-- Color Temperature Options -->
+    <string name="color_pure">Bianco puro</string>
+    <string name="color_warm">Bianco caldo</string>
+    <string name="color_cold">Bianco freddo</string>
+
+    <!-- Formatted Text -->
+    <string name="time_to_full">Tempo stimato\nalla carica completa</string>
+    <string name="time_remaining">Tempo residuo\nstimato</string>
+    <string name="charge_time_under_one_minute">Meno di 1 minuto</string>
+    <string name="charge_time_unavailable">Tempo di ricarica completo non disponibile</string>
+
+    <!-- Dynamic Text -->
+    <string name="battery_status_full">Completamente carico</string>
+    <string name="battery_plugged_usb">In carica tramite USB</string>
+    <string name="battery_plugged_ac">In carica tramite AC</string>
+    <string name="battery_plugged_wireless">Ricarica wireless</string>
+    <string name="battery_charging">In carica</string>
+    <string name="battery_not_charging">Non in carica</string>
+    <string name="please_stop_blink">Interrompi prima il lampeggio</string>
+    <string name="screen_light_started">Luce schermo avviata</string>
+    <string name="screen_light_ended">Luce schermo arrestata</string>
+    <string name="at_least_choose_one_light_source">Seleziona almeno una sorgente luminosa</string>
+    <string name="overheat_reminder">La temperatura è troppo alta, sospendi l'utilizzo</string>
+    <string name="normal_temperature">La temperatura del dispositivo è normale</string>
+    <string name="hour">ora</string>
+    <string name="minute">minuto</string>
+    <string name="second">secondo</string>
+    <string name="times">volte</string>
+    <string name="brightness">Luminosità</string>
+    <string name="remember_last_usage">Ricorda ultimo utilizzo</string>
+    <string name="main_page">Avvia sempre la home</string>
+    <string name="most_usage">Avvia la funzione più usata</string>
+    <string name="remember_last_usage_short">Ultimo utilizzo</string>
+    <string name="main_page_short">Home</string>
+    <string name="most_usage_short">Più usato</string>
+    <string name="flashlight_busy">La torcia è utilizzata da un'altra funzione</string>
+
+    <!-- Settings Page -->
+    <string name="basic_settings">Impostazioni di base</string>
+    <string name="setting_auto_off">Spegnimento automatico</string>
+    <string name="allow_for_ventilation">Consentire una ventilazione adeguata durante l'uso prolungato</string>
+    <string name="set_auto_off_time">Imposta il tempo di spegnimento automatico per ogni funzione</string>
+    <string name="setting_startup_mode">Modalità di avvio</string>
+    <string name="set_startup_behaviour">Comportamento predefinito all'avvio dell'app</string>
+    <string name="setting_brightness">Luminosità predefinita</string>
+    <string name="set_brightness">Impostazioni di luminosità predefinite per ogni funzione</string>
+    <string name="page_settings">Impostazioni interfaccia</string>
+    <string name="language_settings">Impostazioni lingua</string>
+    <string name="choose_display_language">Seleziona la lingua dell'app</string>
+    <string name="function_setting">Impostazioni funzione</string>
+    <string name="setting_vibration">Feedback vibrazione</string>
+    <string name="vibration_feedback">Fornisce vibrazione durante le operazioni</string>
+    <string name="setting_sound">Feedback sonoro</string>
+    <string name="sound_feedback">Riproduce effetti sonori durante le operazioni</string>
+    <string name="eye_protection_mode">Modalità protezione occhi</string>
+    <string name="notification_info">È richiesta l'autorizzazione per modificare le impostazioni di sistema.\n\nConsentila per abilitare la luminosità automatica.</string>
+    <string name="auto_brightness_adjustment">Regolazione automatica della luminosità per proteggere la vista</string>
+    <string name="data_management">Gestione dati</string>
+    <string name="usage_stats">Statistiche utilizzo</string>
+    <string name="check_usage_situation">Visualizza le statistiche di utilizzo di ogni funzione</string>
+    <string name="about_application">Informazioni sull'app</string>
+    <string name="version_info">Informazioni versione</string>
+    <string name="privacy_policy">informativa sulla privacy</string>
+    <string name="FAQ">FAQ</string>
+
+    <!-- Statistics Information -->
+    <string name="battery_health">Stato batteria</string>
+    <string name="usage_time">Tempo di utilizzo</string>
+    <string name="today_usage">Statistiche di utilizzo di oggi</string>
+    <string name="total_usage">Tempo totale di utilizzo</string>
+    <string name="battery_management">Gestione batteria</string>
+    <string name="low_battery_protection">Protezione batteria scarica</string>
+    <string name="intelligent_brightness_adjustment">Regolazione intelligente della luminosità</string>
+    <string name="temperature_monitor">Monitor temperatura</string>
+    <string name="camera_permission_message">La torcia richiede l'autorizzazione della fotocamera per funzionare correttamente. Consenti l'accesso alla fotocamera.</string>
+    <string name="camera_permission_denied">Autorizzazione fotocamera negata. La torcia non è disponibile.</string>
+    <string name="camera_permission_settings">L'autorizzazione fotocamera è stata negata permanentemente. Abilitala nelle Impostazioni.</string>
+    <string name="flashlight_unavailable">Torcia non disponibile</string>
+    <string name="permission_allow">Consenti</string>
+    <string name="permission_cancel">Annulla</string>
+    <string name="go_to_settings">Apri impostazioni</string>
+
+    <!-- Title Text -->
+    <string name="battery_health_critical">critico</string>
+    <string name="title_fill_light">Luce LED</string>
+    <string name="title_flashlight">Torcia</string>
+    <string name="title_screen_light">Luce schermo</string>
+    <string name="title_preview">Anteprima</string>
+    <string name="title_color">Selezione colore</string>
+    <string name="title_blink">Effetto lampeggio</string>
+    <string name="title_sos">Segnale SOS in corso</string>
+    <string name="sos_signal">Segnale SOS di emergenza</string>
+    <string name="title_sos_signal">Segnale di soccorso SOS</string>
+    <string name="title_morse_code">Codice Morse</string>
+    <string name="morse_code">Codice Morse standard</string>
+    <string name="short_signal">. . .\nSegnale corto</string>
+    <string name="long_signal">_ _ _\nSegnale lungo</string>
+    <string name="last_time">Durata</string>
+    <string name="signal_loop">Cicli segnale</string>
+    <string name="battery_status">Stato batteria</string>
+    <string name="auto_stop_countdown">Conto alla rovescia arresto automatico</string>
+    <string name="common_blink">Lampeggio normale</string>
+    <string name="blink_frequency">Frequenza lampeggio</string>
+    <string name="light_source_selection">Selezione sorgente luminosa</string>
+    <string name="screen">Schermo</string>
+    <string name="title_stats">Statistiche</string>
+    <string name="title_battery_monitor">Monitor batteria</string>
+    <string name="title_low_battery">Avviso batteria scarica</string>
+    <string name="title_settings">Impostazioni</string>
+
+    <!-- Other -->
+    <string name="auto_off_time">tempo di spegnimento automatico</string>
+    <string name="quick_settings">Impostazioni rapide</string>
+    <string name="soft_fill_light">Luce soffusa</string>
+    <string name="signal_alert">Avviso segnale</string>
+    <string name="brightness_level">Livello luminosità</string>
+    <string name="low_battery_reminder">Avviso batteria scarica</string>
+    <string name="time_remaining_estimate">Tempo residuo stimato</string>
+    <string name="low_battery_alert">Spegnimento imminente</string>
+    <string name="function_restricted_alert">Funzioni limitate</string>
+    <string name="battery_status_alert">Necessita ricarica</string>
+    <string name="energy_saving_tips">Suggerimenti risparmio energetico</string>
+    <string name="brightness_automatically_reduced_to_30percent">Luminosità ridotta automaticamente al 30%</string>
+    <string name="low_power_protection_mode_enabled">Modalità protezione risparmio energetico abilitata</string>
+    <string name="suggested_to_turn_off_unnecessary_features">Si consiglia di disattivare le funzioni non necessarie</string>
+    <string name="please_connect_the_charger_as_soon_as_possible">Collega il caricatore il prima possibile</string>
+    <string name="flashlight_auto_off">Spegnimento automatico torcia</string>
+    <string name="screen_auto_off">Spegnimento automatico luce schermo</string>
+    <string name="blink_auto_off">Spegnimento automatico lampeggio</string>
+    <string name="auto_off_1">1\nminuto</string>
+    <string name="auto_off_5">5\nminuti</string>
+    <string name="auto_off_10">10\nminuti</string>
+    <string name="auto_off_never">Mai\nspegnere</string>
+    <string name="battery_health_excellent">eccellente</string>
+    <string name="battery_health_good">buono</string>
+    <string name="battery_health_fair">discreto</string>
+    <string name="battery_health_poor">scarso</string>
+</resources>

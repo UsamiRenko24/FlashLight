@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language">Språk</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Hem</string>
+    <string name="nav_flashlight">Ficklampa</string>
+    <string name="nav_blink">Blinka</string>
+    <string name="nav_stats">Statistik</string>
+    <string name="nav_settings">Inställningar</string>
+
+    <!-- Button Text -->
+    <string name="btn_on">På</string>
+    <string name="btn_off">Av</string>
+    <string name="btn_screen">Starta ljus</string>
+    <string name="btn_sos">Starta SOS</string>
+    <string name="btn_blink">Starta blinkning</string>
+
+    <!-- Status Toast -->
+    <string name="toast_on">Ficklampan är påslagen</string>
+    <string name="toast_off">Ficklampan är avstängd</string>
+    <string name="toast_to_modify">Vänligen ändra inställningarna</string>
+    <string name="toast_failed">Åtgärden misslyckades, försök igen</string>
+
+    <!-- Brightness Levels -->
+    <string name="brightness_low">Låg</string>
+    <string name="brightness_medium">Medium</string>
+    <string name="brightness_high">Hög</string>
+
+    <!-- Card Text -->
+    <string name="brightness_card_low">Låg\n40%</string>
+    <string name="brightness_card_medium">Medium\n70%</string>
+    <string name="brightness_card_high">Hög\n100%</string>
+    <string name="frequency_low">Långsam</string>
+    <string name="frequency_medium">Medium</string>
+    <string name="frequency_high">Snabb</string>
+
+    <!-- Color Temperature Options -->
+    <string name="color_pure">Rent vitt</string>
+    <string name="color_warm">Varmvitt</string>
+    <string name="color_cold">Kallvitt</string>
+
+    <!-- Formatted Text -->
+    <string name="time_to_full">Beräknad tid\ntill full laddning</string>
+    <string name="time_remaining">Beräknad\nåterstående tid</string>
+    <string name="charge_time_under_one_minute">Mindre än 1 minut</string>
+    <string name="charge_time_unavailable">Tid till full laddning är inte tillgänglig</string>
+
+    <!-- Dynamic Text -->
+    <string name="battery_status_full">Fulladdad</string>
+    <string name="battery_plugged_usb">Laddar via USB</string>
+    <string name="battery_plugged_ac">Laddar via AC</string>
+    <string name="battery_plugged_wireless">Trådlös laddning</string>
+    <string name="battery_charging">Laddar</string>
+    <string name="battery_not_charging">Laddar inte</string>
+    <string name="please_stop_blink">Stoppa blinkningen först</string>
+    <string name="screen_light_started">Skärmljus startat</string>
+    <string name="screen_light_ended">Skärmljus stoppat</string>
+    <string name="at_least_choose_one_light_source">Välj minst en ljuskälla</string>
+    <string name="overheat_reminder">Temperaturen är för hög, pausa användningen</string>
+    <string name="normal_temperature">Enhetens temperatur är normal</string>
+    <string name="hour">timme</string>
+    <string name="minute">minut</string>
+    <string name="second">sekund</string>
+    <string name="times">gånger</string>
+    <string name="brightness">Ljusstyrka</string>
+    <string name="remember_last_usage">Kom ihåg senaste användning</string>
+    <string name="main_page">Starta alltid på hemsidan</string>
+    <string name="most_usage">Starta mest använda funktion</string>
+    <string name="remember_last_usage_short">Senaste användning</string>
+    <string name="main_page_short">Hem</string>
+    <string name="most_usage_short">Mest använd</string>
+    <string name="flashlight_busy">Ficklampan används av en annan funktion</string>
+
+    <!-- Settings Page -->
+    <string name="basic_settings">Grundinställningar</string>
+    <string name="setting_auto_off">Automatisk avstängning</string>
+    <string name="allow_for_ventilation">Säkerställ god ventilation vid långvarig användning</string>
+    <string name="set_auto_off_time">Ställ in automatisk avstängningstid för varje funktion</string>
+    <string name="setting_startup_mode">Startläge</string>
+    <string name="set_startup_behaviour">Standardbeteende när appen startar</string>
+    <string name="setting_brightness">Standardljusstyrka</string>
+    <string name="set_brightness">Standardinställningar för ljusstyrka för varje funktion</string>
+    <string name="page_settings">Gränssnittsinställningar</string>
+    <string name="language_settings">Språkinställningar</string>
+    <string name="choose_display_language">Välj appens språk</string>
+    <string name="function_setting">Funktionsinställningar</string>
+    <string name="setting_vibration">Vibrationsfeedback</string>
+    <string name="vibration_feedback">Ger vibrationsfeedback vid användning</string>
+    <string name="setting_sound">Ljudfeedback</string>
+    <string name="sound_feedback">Spelar upp ljudeffekter vid användning</string>
+    <string name="eye_protection_mode">Ögonskyddsläge</string>
+    <string name="notification_info">Tillstånd för att ändra systeminställningar krävs.\n\nTillåt detta för att aktivera automatisk ljusstyrka.</string>
+    <string name="auto_brightness_adjustment">Automatisk justering av ljusstyrka för att skydda ögonen</string>
+    <string name="data_management">Datahantering</string>
+    <string name="usage_stats">Användningsstatistik</string>
+    <string name="check_usage_situation">Visa användningsstatistik för varje funktion</string>
+    <string name="about_application">Om appen</string>
+    <string name="version_info">Versionsinformation</string>
+    <string name="privacy_policy">integritetspolicy</string>
+    <string name="FAQ">FAQ</string>
+
+    <!-- Statistics Information -->
+    <string name="battery_health">Batterihälsa</string>
+    <string name="usage_time">Användningstid</string>
+    <string name="today_usage">Dagens användningsstatistik</string>
+    <string name="total_usage">Total användningstid</string>
+    <string name="battery_management">Batterihantering</string>
+    <string name="low_battery_protection">Skydd vid låg batterinivå</string>
+    <string name="intelligent_brightness_adjustment">Intelligent ljusstyrkejustering</string>
+    <string name="temperature_monitor">Temperaturövervakning</string>
+    <string name="camera_permission_message">Ficklampan kräver kameratillstånd för att fungera korrekt. Tillåt kameråtkomst.</string>
+    <string name="camera_permission_denied">Kameratillstånd nekades. Ficklampan är inte tillgänglig.</string>
+    <string name="camera_permission_settings">Kameratillstånd nekades permanent. Aktivera det i Inställningar.</string>
+    <string name="flashlight_unavailable">Ficklampa inte tillgänglig</string>
+    <string name="permission_allow">Tillåt</string>
+    <string name="permission_cancel">Avbryt</string>
+    <string name="go_to_settings">Öppna inställningar</string>
+
+    <!-- Title Text -->
+    <string name="battery_health_critical">kritisk</string>
+    <string name="title_fill_light">LED-fyllnadsljus</string>
+    <string name="title_flashlight">Ficklampa</string>
+    <string name="title_screen_light">Skärmljus</string>
+    <string name="title_preview">Förhandsvisning</string>
+    <string name="title_color">Färgval</string>
+    <string name="title_blink">Blinkeffekt</string>
+    <string name="title_sos">SOS-signal pågår</string>
+    <string name="sos_signal">Nöd-SOS-signal</string>
+    <string name="title_sos_signal">SOS nödsignal</string>
+    <string name="title_morse_code">Morsekod</string>
+    <string name="morse_code">Standard morsekod</string>
+    <string name="short_signal">. . .\nKort signal</string>
+    <string name="long_signal">_ _ _\nLång signal</string>
+    <string name="last_time">Varaktighet</string>
+    <string name="signal_loop">Signalcykler</string>
+    <string name="battery_status">Batteristatus</string>
+    <string name="auto_stop_countdown">Nedräkning för automatisk stopp</string>
+    <string name="common_blink">Normal blinkning</string>
+    <string name="blink_frequency">Blinkfrekvens</string>
+    <string name="light_source_selection">Val av ljuskälla</string>
+    <string name="screen">Skärm</string>
+    <string name="title_stats">Statistik</string>
+    <string name="title_battery_monitor">Batteriövervakning</string>
+    <string name="title_low_battery">Varning för låg batterinivå</string>
+    <string name="title_settings">Inställningar</string>
+
+    <!-- Other -->
+    <string name="auto_off_time">automatisk avstängningstid</string>
+    <string name="quick_settings">Snabbinställningar</string>
+    <string name="soft_fill_light">Mjukt fyllnadsljus</string>
+    <string name="signal_alert">Signalvarning</string>
+    <string name="brightness_level">Ljusstyrkenivå</string>
+    <string name="low_battery_reminder">Varning för låg batterinivå</string>
+    <string name="time_remaining_estimate">Beräknad återstående tid</string>
+    <string name="low_battery_alert">Stängs snart av</string>
+    <string name="function_restricted_alert">Funktioner begränsade</string>
+    <string name="battery_status_alert">Behöver laddas</string>
+    <string name="energy_saving_tips">Energispartips</string>
+    <string name="brightness_automatically_reduced_to_30percent">Ljusstyrkan reducerades automatiskt till 30%</string>
+    <string name="low_power_protection_mode_enabled">Energisparläge aktiverat</string>
+    <string name="suggested_to_turn_off_unnecessary_features">Det rekommenderas att stänga av onödiga funktioner</string>
+    <string name="please_connect_the_charger_as_soon_as_possible">Anslut laddaren så snart som möjligt</string>
+    <string name="flashlight_auto_off">Automatisk avstängning av ficklampan</string>
+    <string name="screen_auto_off">Automatisk avstängning av skärmljus</string>
+    <string name="blink_auto_off">Automatisk avstängning av blinkning</string>
+    <string name="auto_off_1">1\nminut</string>
+    <string name="auto_off_5">5\nminuter</string>
+    <string name="auto_off_10">10\nminuter</string>
+    <string name="auto_off_never">Stäng\naldrig av</string>
+    <string name="battery_health_excellent">utmärkt</string>
+    <string name="battery_health_good">bra</string>
+    <string name="battery_health_fair">normal</string>
+    <string name="battery_health_poor">dålig</string>
+</resources>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language">Nyelv</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Kezdőlap</string>
+    <string name="nav_flashlight">Zseblámpa</string>
+    <string name="nav_blink">Villogás</string>
+    <string name="nav_stats">Statisztikák</string>
+    <string name="nav_settings">Beállítások</string>
+
+    <!-- Button Text -->
+    <string name="btn_on">Bekapcsolás</string>
+    <string name="btn_off">Kikapcsolás</string>
+    <string name="btn_screen">Fény indítása</string>
+    <string name="btn_sos">SOS indítása</string>
+    <string name="btn_blink">Villogás indítása</string>
+
+    <!-- Status Toast -->
+    <string name="toast_on">A zseblámpa bekapcsolva</string>
+    <string name="toast_off">A zseblámpa kikapcsolva</string>
+    <string name="toast_to_modify">Kérjük, módosítsa a beállításokat</string>
+    <string name="toast_failed">A művelet sikertelen, próbálja újra</string>
+
+    <!-- Brightness Levels -->
+    <string name="brightness_low">Alacsony</string>
+    <string name="brightness_medium">Közepes</string>
+    <string name="brightness_high">Magas</string>
+
+    <!-- Card Text -->
+    <string name="brightness_card_low">Alacsony\n40%</string>
+    <string name="brightness_card_medium">Közepes\n70%</string>
+    <string name="brightness_card_high">Magas\n100%</string>
+    <string name="frequency_low">Lassú</string>
+    <string name="frequency_medium">Közepes</string>
+    <string name="frequency_high">Gyors</string>
+
+    <!-- Color Temperature Options -->
+    <string name="color_pure">Tiszta fehér</string>
+    <string name="color_warm">Meleg fehér</string>
+    <string name="color_cold">Hideg fehér</string>
+
+    <!-- Formatted Text -->
+    <string name="time_to_full">Becsült idő\na teljes töltésig</string>
+    <string name="time_remaining">Becsült\nhátralévő idő</string>
+    <string name="charge_time_under_one_minute">Kevesebb mint 1 perc</string>
+    <string name="charge_time_unavailable">A teljes töltési idő nem érhető el</string>
+
+    <!-- Dynamic Text -->
+    <string name="battery_status_full">Teljesen feltöltve</string>
+    <string name="battery_plugged_usb">Töltés USB-n keresztül</string>
+    <string name="battery_plugged_ac">Töltés hálózatról</string>
+    <string name="battery_plugged_wireless">Vezeték nélküli töltés</string>
+    <string name="battery_charging">Töltés folyamatban</string>
+    <string name="battery_not_charging">Nincs töltés</string>
+    <string name="please_stop_blink">Kérjük, először állítsa le a villogást</string>
+    <string name="screen_light_started">A képernyőfény elindult</string>
+    <string name="screen_light_ended">A képernyőfény leállt</string>
+    <string name="at_least_choose_one_light_source">Kérjük, válasszon legalább egy fényforrást</string>
+    <string name="overheat_reminder">A hőmérséklet túl magas, kérjük, szüneteltesse a használatot</string>
+    <string name="normal_temperature">Az eszköz hőmérséklete normális</string>
+    <string name="hour">óra</string>
+    <string name="minute">perc</string>
+    <string name="second">másodperc</string>
+    <string name="times">alkalom</string>
+    <string name="brightness">Fényerő</string>
+    <string name="remember_last_usage">Utolsó használat megjegyzése</string>
+    <string name="main_page">Mindig a kezdőlap induljon</string>
+    <string name="most_usage">A leggyakrabban használt funkció induljon</string>
+    <string name="remember_last_usage_short">Utolsó használat</string>
+    <string name="main_page_short">Kezdőlap</string>
+    <string name="most_usage_short">Leggyakoribb</string>
+    <string name="flashlight_busy">A zseblámpát egy másik funkció használja</string>
+
+    <!-- Settings Page -->
+    <string name="basic_settings">Alapbeállítások</string>
+    <string name="setting_auto_off">Automatikus kikapcsolás</string>
+    <string name="allow_for_ventilation">Hosszabb használat során biztosítsa a megfelelő szellőzést</string>
+    <string name="set_auto_off_time">Állítsa be az automatikus kikapcsolási időt minden funkcióhoz</string>
+    <string name="setting_startup_mode">Indítási mód</string>
+    <string name="set_startup_behaviour">Alapértelmezett viselkedés az alkalmazás indításakor</string>
+    <string name="setting_brightness">Alapértelmezett fényerő</string>
+    <string name="set_brightness">Alapértelmezett fényerő-beállítások minden funkcióhoz</string>
+    <string name="page_settings">Felület beállításai</string>
+    <string name="language_settings">Nyelvi beállítások</string>
+    <string name="choose_display_language">Válassza ki az alkalmazás nyelvét</string>
+    <string name="function_setting">Funkcióbeállítások</string>
+    <string name="setting_vibration">Rezgés visszajelzés</string>
+    <string name="vibration_feedback">Rezgéses visszajelzést biztosít működés közben</string>
+    <string name="setting_sound">Hang visszajelzés</string>
+    <string name="sound_feedback">Hanghatásokat játszik le működés közben</string>
+    <string name="eye_protection_mode">Szemvédő mód</string>
+    <string name="notification_info">A rendszerbeállítások módosításához engedély szükséges.\n\nEngedélyezze az automatikus fényerő funkció használatához.</string>
+    <string name="auto_brightness_adjustment">Automatikus fényerő-szabályozás a szem védelméhez</string>
+    <string name="data_management">Adatkezelés</string>
+    <string name="usage_stats">Használati statisztikák</string>
+    <string name="check_usage_situation">Az egyes funkciók használati statisztikáinak megtekintése</string>
+    <string name="about_application">Az alkalmazásról</string>
+    <string name="version_info">Verzióinformáció</string>
+    <string name="privacy_policy">adatvédelmi szabályzat</string>
+    <string name="FAQ">GYIK</string>
+
+    <!-- Statistics Information -->
+    <string name="battery_health">Akkumulátor állapota</string>
+    <string name="usage_time">Használati idő</string>
+    <string name="today_usage">Mai használati statisztikák</string>
+    <string name="total_usage">Teljes használati idő</string>
+    <string name="battery_management">Akkumulátor-kezelés</string>
+    <string name="low_battery_protection">Alacsony akkumulátor védelem</string>
+    <string name="intelligent_brightness_adjustment">Intelligens fényerő-szabályozás</string>
+    <string name="temperature_monitor">Hőmérséklet-figyelő</string>
+    <string name="camera_permission_message">A zseblámpa megfelelő működéséhez kamerahozzáférés szükséges. Kérjük, engedélyezze a kamera használatát.</string>
+    <string name="camera_permission_denied">A kameraengedély elutasítva. A zseblámpa nem érhető el.</string>
+    <string name="camera_permission_settings">A kameraengedély véglegesen elutasítva. Kérjük, engedélyezze a Beállításokban.</string>
+    <string name="flashlight_unavailable">A zseblámpa nem érhető el</string>
+    <string name="permission_allow">Engedélyezés</string>
+    <string name="permission_cancel">Mégse</string>
+    <string name="go_to_settings">Beállítások megnyitása</string>
+
+    <!-- Title Text -->
+    <string name="battery_health_critical">kritikus</string>
+    <string name="title_fill_light">LED kitöltőfény</string>
+    <string name="title_flashlight">Zseblámpa</string>
+    <string name="title_screen_light">Képernyőfény</string>
+    <string name="title_preview">Előnézet</string>
+    <string name="title_color">Színválasztás</string>
+    <string name="title_blink">Villogási effektus</string>
+    <string name="title_sos">SOS jelzés folyamatban</string>
+    <string name="sos_signal">Vészhelyzeti SOS jelzés</string>
+    <string name="title_sos_signal">SOS segélyjelzés</string>
+    <string name="title_morse_code">Morse-kód</string>
+    <string name="morse_code">Szabványos Morse-kód</string>
+    <string name="short_signal">. . .\nRövid jelzés</string>
+    <string name="long_signal">_ _ _\nHosszú jelzés</string>
+    <string name="last_time">Időtartam</string>
+    <string name="signal_loop">Jelzési ciklusok</string>
+    <string name="battery_status">Akkumulátor állapota</string>
+    <string name="auto_stop_countdown">Automatikus leállítás visszaszámlálása</string>
+    <string name="common_blink">Normál villogás</string>
+    <string name="blink_frequency">Villogási frekvencia</string>
+    <string name="light_source_selection">Fényforrás kiválasztása</string>
+    <string name="screen">Képernyő</string>
+    <string name="title_stats">Statisztikák</string>
+    <string name="title_battery_monitor">Akkumulátorfigyelő</string>
+    <string name="title_low_battery">Alacsony akkumulátor figyelmeztetés</string>
+    <string name="title_settings">Beállítások</string>
+
+    <!-- Other -->
+    <string name="auto_off_time">automatikus kikapcsolási idő</string>
+    <string name="quick_settings">Gyorsbeállítások</string>
+    <string name="soft_fill_light">Lágy kitöltőfény</string>
+    <string name="signal_alert">Jelzés figyelmeztetés</string>
+    <string name="brightness_level">Fényerő szint</string>
+    <string name="low_battery_reminder">Alacsony akkumulátor figyelmeztetés</string>
+    <string name="time_remaining_estimate">Becsült hátralévő idő</string>
+    <string name="low_battery_alert">Hamarosan kikapcsol</string>
+    <string name="function_restricted_alert">Korlátozott funkciók</string>
+    <string name="battery_status_alert">Töltés szükséges</string>
+    <string name="energy_saving_tips">Energiatakarékossági tippek</string>
+    <string name="brightness_automatically_reduced_to_30percent">A fényerő automatikusan 30%-ra csökkent</string>
+    <string name="low_power_protection_mode_enabled">Az energiatakarékos védelmi mód engedélyezve</string>
+    <string name="suggested_to_turn_off_unnecessary_features">Javasolt a szükségtelen funkciók kikapcsolása</string>
+    <string name="please_connect_the_charger_as_soon_as_possible">Kérjük, mielőbb csatlakoztassa a töltőt</string>
+    <string name="flashlight_auto_off">Zseblámpa automatikus kikapcsolása</string>
+    <string name="screen_auto_off">Képernyőfény automatikus kikapcsolása</string>
+    <string name="blink_auto_off">Villogás automatikus kikapcsolása</string>
+    <string name="auto_off_1">1\nperc</string>
+    <string name="auto_off_5">5\nperc</string>
+    <string name="auto_off_10">10\nperc</string>
+    <string name="auto_off_never">Soha\nne kapcsolja ki</string>
+    <string name="battery_health_excellent">kiváló</string>
+    <string name="battery_health_good">jó</string>
+    <string name="battery_health_fair">megfelelő</string>
+    <string name="battery_health_poor">rossz</string>
+</resources>

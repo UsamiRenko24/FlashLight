@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language">言語</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">ホーム</string>
+    <string name="nav_flashlight">懐中電灯</string>
+    <string name="nav_blink">点滅</string>
+    <string name="nav_stats">統計</string>
+    <string name="nav_settings">設定</string>
+
+    <!-- Button Text -->
+    <string name="btn_on">オン</string>
+    <string name="btn_off">オフ</string>
+    <string name="btn_screen">ライト開始</string>
+    <string name="btn_sos">SOS開始</string>
+    <string name="btn_blink">点滅開始</string>
+
+    <!-- Status Toast -->
+    <string name="toast_on">懐中電灯をオンにしました</string>
+    <string name="toast_off">懐中電灯をオフにしました</string>
+    <string name="toast_to_modify">設定を変更してください</string>
+    <string name="toast_failed">操作に失敗しました。再試行してください</string>
+
+    <!-- Brightness Levels -->
+    <string name="brightness_low">低</string>
+    <string name="brightness_medium">中</string>
+    <string name="brightness_high">高</string>
+
+    <!-- Card Text -->
+    <string name="brightness_card_low">低\n40%</string>
+    <string name="brightness_card_medium">中\n70%</string>
+    <string name="brightness_card_high">高\n100%</string>
+    <string name="frequency_low">低速</string>
+    <string name="frequency_medium">中速</string>
+    <string name="frequency_high">高速</string>
+
+    <!-- Color Temperature Options -->
+    <string name="color_pure">純白</string>
+    <string name="color_warm">暖色白</string>
+    <string name="color_cold">寒色白</string>
+
+    <!-- Formatted Text -->
+    <string name="time_to_full">満充電までの\n推定時間</string>
+    <string name="time_remaining">推定\n残り時間</string>
+    <string name="charge_time_under_one_minute">1分未満</string>
+    <string name="charge_time_unavailable">満充電時間を取得できません</string>
+
+    <!-- Dynamic Text -->
+    <string name="battery_status_full">フル充電済み</string>
+    <string name="battery_plugged_usb">USB充電中</string>
+    <string name="battery_plugged_ac">AC充電中</string>
+    <string name="battery_plugged_wireless">ワイヤレス充電中</string>
+    <string name="battery_charging">充電中</string>
+    <string name="battery_not_charging">未充電</string>
+    <string name="please_stop_blink">先に点滅を停止してください</string>
+    <string name="screen_light_started">画面ライトを開始しました</string>
+    <string name="screen_light_ended">画面ライトを停止しました</string>
+    <string name="at_least_choose_one_light_source">少なくとも1つの光源を選択してください</string>
+    <string name="overheat_reminder">温度が高すぎます。使用を一時停止してください</string>
+    <string name="normal_temperature">デバイス温度は正常です</string>
+    <string name="hour">時間</string>
+    <string name="minute">分</string>
+    <string name="second">秒</string>
+    <string name="times">回</string>
+    <string name="brightness">明るさ</string>
+    <string name="remember_last_usage">前回の使用を記憶</string>
+    <string name="main_page">常にホームから開始</string>
+    <string name="most_usage">最も使用した機能から開始</string>
+    <string name="remember_last_usage_short">前回使用</string>
+    <string name="main_page_short">ホーム</string>
+    <string name="most_usage_short">よく使う機能</string>
+    <string name="flashlight_busy">懐中電灯は他の機能で使用中です</string>
+
+    <!-- Settings Page -->
+    <string name="basic_settings">基本設定</string>
+    <string name="setting_auto_off">自動オフ</string>
+    <string name="allow_for_ventilation">長時間使用時は十分な換気を行ってください</string>
+    <string name="set_auto_off_time">各機能の自動オフ時間を設定</string>
+    <string name="setting_startup_mode">起動モード</string>
+    <string name="set_startup_behaviour">アプリ起動時のデフォルト動作</string>
+    <string name="setting_brightness">デフォルトの明るさ</string>
+    <string name="set_brightness">各機能のデフォルト明るさ設定</string>
+    <string name="page_settings">インターフェース設定</string>
+    <string name="language_settings">言語設定</string>
+    <string name="choose_display_language">アプリ表示言語を選択</string>
+    <string name="function_setting">機能設定</string>
+    <string name="setting_vibration">バイブレーションフィードバック</string>
+    <string name="vibration_feedback">操作時に振動フィードバックを提供します</string>
+    <string name="setting_sound">サウンドフィードバック</string>
+    <string name="sound_feedback">操作時に効果音を再生します</string>
+    <string name="eye_protection_mode">目の保護モード</string>
+    <string name="notification_info">システム設定を変更する権限が必要です。\n\n自動明るさ機能を有効にするには許可してください。</string>
+    <string name="auto_brightness_adjustment">視力保護のための自動明るさ調整</string>
+    <string name="data_management">データ管理</string>
+    <string name="usage_stats">使用統計</string>
+    <string name="check_usage_situation">各機能の使用統計を表示</string>
+    <string name="about_application">アプリについて</string>
+    <string name="version_info">バージョン情報</string>
+    <string name="privacy_policy">プライバシーポリシー</string>
+    <string name="FAQ">FAQ</string>
+
+    <!-- Statistics Information -->
+    <string name="battery_health">バッテリー状態</string>
+    <string name="usage_time">使用時間</string>
+    <string name="today_usage">本日の使用統計</string>
+    <string name="total_usage">合計使用時間</string>
+    <string name="battery_management">バッテリー管理</string>
+    <string name="low_battery_protection">低バッテリー保護</string>
+    <string name="intelligent_brightness_adjustment">インテリジェント明るさ調整</string>
+    <string name="temperature_monitor">温度モニター</string>
+    <string name="camera_permission_message">懐中電灯を正常に動作させるにはカメラ権限が必要です。カメラへのアクセスを許可してください。</string>
+    <string name="camera_permission_denied">カメラ権限が拒否されました。懐中電灯は利用できません。</string>
+    <string name="camera_permission_settings">カメラ権限が永久に拒否されました。設定で有効にしてください。</string>
+    <string name="flashlight_unavailable">懐中電灯は利用できません</string>
+    <string name="permission_allow">許可</string>
+    <string name="permission_cancel">キャンセル</string>
+    <string name="go_to_settings">設定を開く</string>
+
+    <!-- Title Text -->
+    <string name="battery_health_critical">危険</string>
+    <string name="title_fill_light">LED補助ライト</string>
+    <string name="title_flashlight">懐中電灯</string>
+    <string name="title_screen_light">画面ライト</string>
+    <string name="title_preview">プレビュー</string>
+    <string name="title_color">カラー選択</string>
+    <string name="title_blink">点滅効果</string>
+    <string name="title_sos">SOS信号送信中</string>
+    <string name="sos_signal">緊急SOS信号</string>
+    <string name="title_sos_signal">SOS救難信号</string>
+    <string name="title_morse_code">モールス信号</string>
+    <string name="morse_code">標準モールス信号</string>
+    <string name="short_signal">. . .\n短信号</string>
+    <string name="long_signal">_ _ _\n長信号</string>
+    <string name="last_time">継続時間</string>
+    <string name="signal_loop">信号サイクル</string>
+    <string name="battery_status">バッテリー状態</string>
+    <string name="auto_stop_countdown">自動停止カウントダウン</string>
+    <string name="common_blink">通常点滅</string>
+    <string name="blink_frequency">点滅頻度</string>
+    <string name="light_source_selection">光源選択</string>
+    <string name="screen">画面</string>
+    <string name="title_stats">統計</string>
+    <string name="title_battery_monitor">バッテリーモニター</string>
+    <string name="title_low_battery">低バッテリー警告</string>
+    <string name="title_settings">設定</string>
+
+    <!-- Other -->
+    <string name="auto_off_time">自動オフ時間</string>
+    <string name="quick_settings">クイック設定</string>
+    <string name="soft_fill_light">ソフト補助ライト</string>
+    <string name="signal_alert">信号アラート</string>
+    <string name="brightness_level">明るさレベル</string>
+    <string name="low_battery_reminder">低バッテリー通知</string>
+    <string name="time_remaining_estimate">推定残り時間</string>
+    <string name="low_battery_alert">まもなくシャットダウン</string>
+    <string name="function_restricted_alert">機能制限中</string>
+    <string name="battery_status_alert">充電が必要です</string>
+    <string name="energy_saving_tips">省エネのヒント</string>
+    <string name="brightness_automatically_reduced_to_30percent">明るさが自動的に30%に低下しました</string>
+    <string name="low_power_protection_mode_enabled">低電力保護モードが有効です</string>
+    <string name="suggested_to_turn_off_unnecessary_features">不要な機能をオフにすることを推奨します</string>
+    <string name="please_connect_the_charger_as_soon_as_possible">できるだけ早く充電器を接続してください</string>
+    <string name="flashlight_auto_off">懐中電灯自動オフ</string>
+    <string name="screen_auto_off">画面ライト自動オフ</string>
+    <string name="blink_auto_off">点滅自動オフ</string>
+    <string name="auto_off_1">1\n分</string>
+    <string name="auto_off_5">5\n分</string>
+    <string name="auto_off_10">10\n分</string>
+    <string name="auto_off_never">オフに\nしない</string>
+    <string name="battery_health_excellent">非常に良い</string>
+    <string name="battery_health_good">良好</string>
+    <string name="battery_health_fair">普通</string>
+    <string name="battery_health_poor">不良</string>
+</resources>

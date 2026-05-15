@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language">Idioma</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_flashlight">Linterna</string>
+    <string name="nav_blink">Parpadeo</string>
+    <string name="nav_stats">Estadísticas</string>
+    <string name="nav_settings">Configuración</string>
+
+    <!-- Button Text -->
+    <string name="btn_on">Encender</string>
+    <string name="btn_off">Apagar</string>
+    <string name="btn_screen">Iniciar luz</string>
+    <string name="btn_sos">Iniciar SOS</string>
+    <string name="btn_blink">Iniciar parpadeo</string>
+
+    <!-- Status Toast -->
+    <string name="toast_on">Linterna encendida</string>
+    <string name="toast_off">Linterna apagada</string>
+    <string name="toast_to_modify">Por favor modifica la configuración</string>
+    <string name="toast_failed">La operación falló, inténtalo de nuevo</string>
+
+    <!-- Brightness Levels -->
+    <string name="brightness_low">Bajo</string>
+    <string name="brightness_medium">Medio</string>
+    <string name="brightness_high">Alto</string>
+
+    <!-- Card Text -->
+    <string name="brightness_card_low">Bajo\n40%</string>
+    <string name="brightness_card_medium">Medio\n70%</string>
+    <string name="brightness_card_high">Alto\n100%</string>
+    <string name="frequency_low">Lento</string>
+    <string name="frequency_medium">Medio</string>
+    <string name="frequency_high">Rápido</string>
+
+    <!-- Color Temperature Options -->
+    <string name="color_pure">Blanco puro</string>
+    <string name="color_warm">Blanco cálido</string>
+    <string name="color_cold">Blanco frío</string>
+
+    <!-- Formatted Text -->
+    <string name="time_to_full">Tiempo estimado\nhasta carga completa</string>
+    <string name="time_remaining">Tiempo restante\nestimado</string>
+    <string name="charge_time_under_one_minute">Menos de 1 minuto</string>
+    <string name="charge_time_unavailable">Tiempo de carga completa no disponible</string>
+
+    <!-- Dynamic Text -->
+    <string name="battery_status_full">Completamente cargado</string>
+    <string name="battery_plugged_usb">Cargando vía USB</string>
+    <string name="battery_plugged_ac">Cargando vía corriente AC</string>
+    <string name="battery_plugged_wireless">Carga inalámbrica</string>
+    <string name="battery_charging">Cargando</string>
+    <string name="battery_not_charging">No cargando</string>
+    <string name="please_stop_blink">Por favor detén primero el parpadeo</string>
+    <string name="screen_light_started">Luz de pantalla iniciada</string>
+    <string name="screen_light_ended">Luz de pantalla detenida</string>
+    <string name="at_least_choose_one_light_source">Por favor selecciona al menos una fuente de luz</string>
+    <string name="overheat_reminder">La temperatura es demasiado alta, por favor pausa el uso</string>
+    <string name="normal_temperature">La temperatura del dispositivo es normal</string>
+    <string name="hour">hora</string>
+    <string name="minute">minuto</string>
+    <string name="second">segundo</string>
+    <string name="times">veces</string>
+    <string name="brightness">Brillo</string>
+    <string name="remember_last_usage">Recordar último uso</string>
+    <string name="main_page">Siempre iniciar en inicio</string>
+    <string name="most_usage">Iniciar en la función más usada</string>
+    <string name="remember_last_usage_short">Último uso</string>
+    <string name="main_page_short">Inicio</string>
+    <string name="most_usage_short">Más usado</string>
+    <string name="flashlight_busy">La linterna está siendo utilizada por otra función</string>
+
+    <!-- Settings Page -->
+    <string name="basic_settings">Configuración básica</string>
+    <string name="setting_auto_off">Apagado automático</string>
+    <string name="allow_for_ventilation">Permitir ventilación adecuada durante uso prolongado</string>
+    <string name="set_auto_off_time">Configurar tiempo de apagado automático para cada función</string>
+    <string name="setting_startup_mode">Modo de inicio</string>
+    <string name="set_startup_behaviour">Comportamiento predeterminado al iniciar la aplicación</string>
+    <string name="setting_brightness">Brillo predeterminado</string>
+    <string name="set_brightness">Configuración de brillo predeterminada para cada función</string>
+    <string name="page_settings">Configuración de interfaz</string>
+    <string name="language_settings">Configuración de idioma</string>
+    <string name="choose_display_language">Selecciona el idioma de visualización de la aplicación</string>
+    <string name="function_setting">Configuración de funciones</string>
+    <string name="setting_vibration">Retroalimentación por vibración</string>
+    <string name="vibration_feedback">Proporciona vibración durante la operación</string>
+    <string name="setting_sound">Retroalimentación sonora</string>
+    <string name="sound_feedback">Reproduce efectos de sonido durante la operación</string>
+    <string name="eye_protection_mode">Modo de protección ocular</string>
+    <string name="notification_info">Se requiere permiso para modificar la configuración del sistema.\n\nPermítelo para habilitar el brillo automático.</string>
+    <string name="auto_brightness_adjustment">Ajuste automático de brillo para proteger la vista</string>
+    <string name="data_management">Gestión de datos</string>
+    <string name="usage_stats">Estadísticas de uso</string>
+    <string name="check_usage_situation">Ver estadísticas de uso de cada función</string>
+    <string name="about_application">Acerca de la aplicación</string>
+    <string name="version_info">Información de versión</string>
+    <string name="privacy_policy">política de privacidad</string>
+    <string name="FAQ">Preguntas frecuentes</string>
+
+    <!-- Statistics Information -->
+    <string name="battery_health">Salud de la batería</string>
+    <string name="usage_time">Tiempo de uso</string>
+    <string name="today_usage">Estadísticas de uso de hoy</string>
+    <string name="total_usage">Tiempo total de uso</string>
+    <string name="battery_management">Gestión de batería</string>
+    <string name="low_battery_protection">Protección de batería baja</string>
+    <string name="intelligent_brightness_adjustment">Ajuste inteligente de brillo</string>
+    <string name="temperature_monitor">Monitor de temperatura</string>
+    <string name="camera_permission_message">La linterna requiere permiso de cámara para funcionar correctamente. Por favor permite el acceso a la cámara.</string>
+    <string name="camera_permission_denied">El permiso de cámara fue denegado. La linterna no está disponible.</string>
+    <string name="camera_permission_settings">El permiso de cámara fue denegado permanentemente. Por favor habilítalo en Configuración.</string>
+    <string name="flashlight_unavailable">Linterna no disponible</string>
+    <string name="permission_allow">Permitir</string>
+    <string name="permission_cancel">Cancelar</string>
+    <string name="go_to_settings">Abrir configuración</string>
+
+    <!-- Title Text -->
+    <string name="battery_health_critical">crítica</string>
+    <string name="title_fill_light">Luz LED de relleno</string>
+    <string name="title_flashlight">Linterna</string>
+    <string name="title_screen_light">Luz de pantalla</string>
+    <string name="title_preview">Vista previa</string>
+    <string name="title_color">Selección de color</string>
+    <string name="title_blink">Efecto de parpadeo</string>
+    <string name="title_sos">Señal SOS en progreso</string>
+    <string name="sos_signal">Señal SOS de emergencia</string>
+    <string name="title_sos_signal">Señal de socorro SOS</string>
+    <string name="title_morse_code">Código Morse</string>
+    <string name="morse_code">Código Morse estándar</string>
+    <string name="short_signal">. . .\nSeñal corta</string>
+    <string name="long_signal">_ _ _\nSeñal larga</string>
+    <string name="last_time">Duración</string>
+    <string name="signal_loop">Ciclos de señal</string>
+    <string name="battery_status">Estado de batería</string>
+    <string name="auto_stop_countdown">Cuenta regresiva de apagado automático</string>
+    <string name="common_blink">Parpadeo normal</string>
+    <string name="blink_frequency">Frecuencia de parpadeo</string>
+    <string name="light_source_selection">Selección de fuente de luz</string>
+    <string name="screen">Pantalla</string>
+    <string name="title_stats">Estadísticas</string>
+    <string name="title_battery_monitor">Monitor de batería</string>
+    <string name="title_low_battery">Advertencia de batería baja</string>
+    <string name="title_settings">Configuración</string>
+
+    <!-- Other -->
+    <string name="auto_off_time">tiempo de apagado automático</string>
+    <string name="quick_settings">Configuración rápida</string>
+    <string name="soft_fill_light">Luz suave de relleno</string>
+    <string name="signal_alert">Alerta de señal</string>
+    <string name="brightness_level">Nivel de brillo</string>
+    <string name="low_battery_reminder">Alerta de batería baja</string>
+    <string name="time_remaining_estimate">Tiempo restante estimado</string>
+    <string name="low_battery_alert">Apagándose pronto</string>
+    <string name="function_restricted_alert">Funciones restringidas</string>
+    <string name="battery_status_alert">Necesita cargarse</string>
+    <string name="energy_saving_tips">Consejos de ahorro de energía</string>
+    <string name="brightness_automatically_reduced_to_30percent">El brillo se redujo automáticamente al 30%</string>
+    <string name="low_power_protection_mode_enabled">Modo de protección de bajo consumo habilitado</string>
+    <string name="suggested_to_turn_off_unnecessary_features">Se recomienda apagar funciones innecesarias</string>
+    <string name="please_connect_the_charger_as_soon_as_possible">Por favor conecta el cargador lo antes posible</string>
+    <string name="flashlight_auto_off">Apagado automático de la linterna</string>
+    <string name="screen_auto_off">Apagado automático de la luz de pantalla</string>
+    <string name="blink_auto_off">Apagado automático del parpadeo</string>
+    <string name="auto_off_1">1\nminuto</string>
+    <string name="auto_off_5">5\nminutos</string>
+    <string name="auto_off_10">10\nminutos</string>
+    <string name="auto_off_never">Nunca\napagar</string>
+    <string name="battery_health_excellent">excelente</string>
+    <string name="battery_health_good">buena</string>
+    <string name="battery_health_fair">regular</string>
+    <string name="battery_health_poor">mala</string>
+</resources>

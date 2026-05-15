@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 与按钮一致的黑底金边风格 -->
-    <solid android:color="#0B0B0B" />
-    <stroke
-        android:width="@dimen/sw_dp_1"
-        android:color="#FFCE64" />
-    <corners android:radius="@dimen/sw_dp_12" />
-</shape>

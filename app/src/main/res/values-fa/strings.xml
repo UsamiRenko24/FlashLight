@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language">زبان</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">خانه</string>
+    <string name="nav_flashlight">چراغ قوه</string>
+    <string name="nav_blink">چشمک</string>
+    <string name="nav_stats">آمار</string>
+    <string name="nav_settings">تنظیمات</string>
+
+    <!-- Button Text -->
+    <string name="btn_on">روشن</string>
+    <string name="btn_off">خاموش</string>
+    <string name="btn_screen">شروع نور</string>
+    <string name="btn_sos">شروع SOS</string>
+    <string name="btn_blink">شروع چشمک</string>
+
+    <!-- Status Toast -->
+    <string name="toast_on">چراغ قوه روشن شد</string>
+    <string name="toast_off">چراغ قوه خاموش شد</string>
+    <string name="toast_to_modify">لطفاً تنظیمات را تغییر دهید</string>
+    <string name="toast_failed">عملیات ناموفق بود، دوباره تلاش کنید</string>
+
+    <!-- Brightness Levels -->
+    <string name="brightness_low">کم</string>
+    <string name="brightness_medium">متوسط</string>
+    <string name="brightness_high">زیاد</string>
+
+    <!-- Card Text -->
+    <string name="brightness_card_low">کم\n40%</string>
+    <string name="brightness_card_medium">متوسط\n70%</string>
+    <string name="brightness_card_high">زیاد\n100%</string>
+    <string name="frequency_low">آهسته</string>
+    <string name="frequency_medium">متوسط</string>
+    <string name="frequency_high">سریع</string>
+
+    <!-- Color Temperature Options -->
+    <string name="color_pure">سفید خالص</string>
+    <string name="color_warm">سفید گرم</string>
+    <string name="color_cold">سفید سرد</string>
+
+    <!-- Formatted Text -->
+    <string name="time_to_full">زمان تقریبی\nتا شارژ کامل</string>
+    <string name="time_remaining">زمان باقی‌مانده\nتقریبی</string>
+    <string name="charge_time_under_one_minute">کمتر از ۱ دقیقه</string>
+    <string name="charge_time_unavailable">زمان شارژ در دسترس نیست</string>
+
+    <!-- Dynamic Text -->
+    <string name="battery_status_full">کاملاً شارژ شده</string>
+    <string name="battery_plugged_usb">در حال شارژ با USB</string>
+    <string name="battery_plugged_ac">در حال شارژ با برق</string>
+    <string name="battery_plugged_wireless">شارژ بی‌سیم</string>
+    <string name="battery_charging">در حال شارژ</string>
+    <string name="battery_not_charging">در حال شارژ نیست</string>
+    <string name="please_stop_blink">لطفاً ابتدا چشمک را متوقف کنید</string>
+    <string name="screen_light_started">نور صفحه روشن شد</string>
+    <string name="screen_light_ended">نور صفحه خاموش شد</string>
+    <string name="at_least_choose_one_light_source">حداقل یک منبع نور انتخاب کنید</string>
+    <string name="overheat_reminder">دما بیش از حد بالا است، لطفاً استفاده را متوقف کنید</string>
+    <string name="normal_temperature">دمای دستگاه طبیعی است</string>
+    <string name="hour">ساعت</string>
+    <string name="minute">دقیقه</string>
+    <string name="second">ثانیه</string>
+    <string name="times">بار</string>
+    <string name="brightness">روشنایی</string>
+    <string name="remember_last_usage">به خاطر سپردن آخرین استفاده</string>
+    <string name="main_page">همیشه از صفحه اصلی شروع شود</string>
+    <string name="most_usage">شروع از پرکاربردترین</string>
+    <string name="remember_last_usage_short">آخرین استفاده</string>
+    <string name="main_page_short">خانه</string>
+    <string name="most_usage_short">پرکاربرد</string>
+    <string name="flashlight_busy">چراغ قوه توسط یک قابلیت دیگر در حال استفاده است</string>
+
+    <!-- Settings Page -->
+    <string name="basic_settings">تنظیمات پایه</string>
+    <string name="setting_auto_off">خاموشی خودکار</string>
+    <string name="allow_for_ventilation">در استفاده طولانی تهویه مناسب را فراهم کنید</string>
+    <string name="set_auto_off_time">تنظیم زمان خاموشی برای هر قابلیت</string>
+    <string name="setting_startup_mode">حالت شروع</string>
+    <string name="set_startup_behaviour">رفتار پیش‌فرض هنگام اجرای برنامه</string>
+    <string name="setting_brightness">روشنایی پیش‌فرض</string>
+    <string name="set_brightness">تنظیم روشنایی پیش‌فرض برای هر قابلیت</string>
+    <string name="page_settings">تنظیمات رابط</string>
+    <string name="language_settings">تنظیمات زبان</string>
+    <string name="choose_display_language">انتخاب زبان نمایش برنامه</string>
+    <string name="function_setting">تنظیمات عملکرد</string>
+    <string name="setting_vibration">بازخورد لرزشی</string>
+    <string name="vibration_feedback">ارائه بازخورد لرزشی هنگام عملیات</string>
+    <string name="setting_sound">بازخورد صوتی</string>
+    <string name="sound_feedback">پخش صدای عملکردها</string>
+    <string name="eye_protection_mode">حالت محافظت از چشم</string>
+    <string name="notification_info">برای تغییر تنظیمات سیستم نیاز به مجوز است.\n\nبرای فعال‌سازی روشنایی خودکار اجازه دهید.</string>
+    <string name="auto_brightness_adjustment">تنظیم خودکار روشنایی برای محافظت از چشم</string>
+    <string name="data_management">مدیریت داده</string>
+    <string name="usage_stats">آمار استفاده</string>
+    <string name="check_usage_situation">مشاهده آمار استفاده از هر قابلیت</string>
+    <string name="about_application">درباره برنامه</string>
+    <string name="version_info">اطلاعات نسخه</string>
+    <string name="privacy_policy">سیاست حریم خصوصی</string>
+    <string name="FAQ">سوالات متداول</string>
+
+    <!-- Statistics Information -->
+    <string name="battery_health">سلامت باتری</string>
+    <string name="usage_time">زمان استفاده</string>
+    <string name="today_usage">آمار استفاده امروز</string>
+    <string name="total_usage">کل زمان استفاده</string>
+    <string name="battery_management">مدیریت باتری</string>
+    <string name="low_battery_protection">محافظت در برابر باتری کم</string>
+    <string name="intelligent_brightness_adjustment">تنظیم هوشمند روشنایی</string>
+    <string name="temperature_monitor">مانیتور دما</string>
+    <string name="camera_permission_message">چراغ قوه برای عملکرد صحیح به دسترسی دوربین نیاز دارد. لطفاً اجازه دهید.</string>
+    <string name="camera_permission_denied">دسترسی دوربین رد شد. چراغ قوه در دسترس نیست.</string>
+    <string name="camera_permission_settings">دسترسی دوربین به‌طور دائمی رد شده است. لطفاً در تنظیمات فعال کنید.</string>
+    <string name="flashlight_unavailable">چراغ قوه در دسترس نیست</string>
+    <string name="permission_allow">اجازه دادن</string>
+    <string name="permission_cancel">لغو</string>
+    <string name="go_to_settings">باز کردن تنظیمات</string>
+
+    <!-- Title Text -->
+    <string name="battery_health_critical">بحرانی</string>
+    <string name="title_fill_light">نور LED مکمل</string>
+    <string name="title_flashlight">چراغ قوه</string>
+    <string name="title_screen_light">نور صفحه</string>
+    <string name="title_preview">پیش‌نمایش</string>
+    <string name="title_color">انتخاب رنگ</string>
+    <string name="title_blink">افکت چشمک</string>
+    <string name="title_sos">سیگنال SOS در حال اجرا</string>
+    <string name="sos_signal">سیگنال اضطراری SOS</string>
+    <string name="title_sos_signal">سیگنال کمک SOS</string>
+    <string name="title_morse_code">کد مورس</string>
+    <string name="morse_code">کد مورس استاندارد</string>
+    <string name="short_signal">. . .\nسیگنال کوتاه</string>
+    <string name="long_signal">_ _ _\nسیگنال بلند</string>
+    <string name="last_time">مدت زمان</string>
+    <string name="signal_loop">چرخه سیگنال</string>
+    <string name="battery_status">وضعیت باتری</string>
+    <string name="auto_stop_countdown">شمارش معکوس توقف خودکار</string>
+    <string name="common_blink">چشمک معمولی</string>
+    <string name="blink_frequency">فرکانس چشمک</string>
+    <string name="light_source_selection">انتخاب منبع نور</string>
+    <string name="screen">صفحه</string>
+    <string name="title_stats">آمار</string>
+    <string name="title_battery_monitor">مانیتور باتری</string>
+    <string name="title_low_battery">هشدار باتری کم</string>
+    <string name="title_settings">تنظیمات</string>
+
+    <!-- Other -->
+    <string name="auto_off_time">زمان خاموشی خودکار</string>
+    <string name="quick_settings">تنظیمات سریع</string>
+    <string name="soft_fill_light">نور نرم مکمل</string>
+    <string name="signal_alert">هشدار سیگنال</string>
+    <string name="brightness_level">سطح روشنایی</string>
+    <string name="low_battery_reminder">یادآوری باتری کم</string>
+    <string name="time_remaining_estimate">زمان باقی‌مانده تخمینی</string>
+    <string name="low_battery_alert">در حال خاموش شدن</string>
+    <string name="function_restricted_alert">قابلیت‌ها محدود شده‌اند</string>
+    <string name="battery_status_alert">نیاز به شارژ</string>
+    <string name="energy_saving_tips">نکات صرفه‌جویی انرژی</string>
+    <string name="brightness_automatically_reduced_to_30percent">روشنایی به‌طور خودکار به ۳۰٪ کاهش یافت</string>
+    <string name="low_power_protection_mode_enabled">حالت صرفه‌جویی باتری فعال شد</string>
+    <string name="suggested_to_turn_off_unnecessary_features">توصیه می‌شود قابلیت‌های غیرضروری خاموش شوند</string>
+    <string name="please_connect_the_charger_as_soon_as_possible">لطفاً در اسرع وقت شارژر را وصل کنید</string>
+    <string name="flashlight_auto_off">خاموشی خودکار چراغ قوه</string>
+    <string name="screen_auto_off">خاموشی خودکار نور صفحه</string>
+    <string name="blink_auto_off">خاموشی خودکار چشمک</string>
+    <string name="auto_off_1">۱\nدقیقه</string>
+    <string name="auto_off_5">۵\nدقیقه</string>
+    <string name="auto_off_10">۱۰\nدقیقه</string>
+    <string name="auto_off_never">هرگز\nخاموش نشود</string>
+    <string name="battery_health_excellent">عالی</string>
+    <string name="battery_health_good">خوب</string>
+    <string name="battery_health_fair">متوسط</string>
+    <string name="battery_health_poor">ضعیف</string>
+</resources>

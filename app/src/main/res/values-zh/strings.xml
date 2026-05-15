@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language">語言</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">首頁</string>
+    <string name="nav_flashlight">手電筒</string>
+    <string name="nav_blink">閃爍</string>
+    <string name="nav_stats">統計</string>
+    <string name="nav_settings">設定</string>
+
+    <!-- Button Text -->
+    <string name="btn_on">開啟</string>
+    <string name="btn_off">關閉</string>
+    <string name="btn_screen">啟動燈光</string>
+    <string name="btn_sos">啟動 SOS</string>
+    <string name="btn_blink">啟動閃爍</string>
+
+    <!-- Status Toast -->
+    <string name="toast_on">手電筒已開啟</string>
+    <string name="toast_off">手電筒已關閉</string>
+    <string name="toast_to_modify">請修改設定</string>
+    <string name="toast_failed">操作失敗，請再試一次</string>
+
+    <!-- Brightness Levels -->
+    <string name="brightness_low">低</string>
+    <string name="brightness_medium">中</string>
+    <string name="brightness_high">高</string>
+
+    <!-- Card Text -->
+    <string name="brightness_card_low">低\n40%</string>
+    <string name="brightness_card_medium">中\n70%</string>
+    <string name="brightness_card_high">高\n100%</string>
+    <string name="frequency_low">慢</string>
+    <string name="frequency_medium">中</string>
+    <string name="frequency_high">快</string>
+
+    <!-- Color Temperature Options -->
+    <string name="color_pure">純白</string>
+    <string name="color_warm">暖白</string>
+    <string name="color_cold">冷白</string>
+
+    <!-- Formatted Text -->
+    <string name="time_to_full">預估充滿\n所需時間</string>
+    <string name="time_remaining">預估剩餘\n使用時間</string>
+    <string name="charge_time_under_one_minute">少於 1 分鐘</string>
+    <string name="charge_time_unavailable">無法取得充滿時間</string>
+
+    <!-- Dynamic Text -->
+    <string name="battery_status_full">已充滿電</string>
+    <string name="battery_plugged_usb">透過 USB 充電</string>
+    <string name="battery_plugged_ac">透過 AC 充電</string>
+    <string name="battery_plugged_wireless">無線充電中</string>
+    <string name="battery_charging">充電中</string>
+    <string name="battery_not_charging">未充電</string>
+    <string name="please_stop_blink">請先停止閃爍</string>
+    <string name="screen_light_started">螢幕燈光已啟動</string>
+    <string name="screen_light_ended">螢幕燈光已停止</string>
+    <string name="at_least_choose_one_light_source">請至少選擇一個光源</string>
+    <string name="overheat_reminder">溫度過高，請暫停使用</string>
+    <string name="normal_temperature">裝置溫度正常</string>
+    <string name="hour">小時</string>
+    <string name="minute">分鐘</string>
+    <string name="second">秒</string>
+    <string name="times">次</string>
+    <string name="brightness">亮度</string>
+    <string name="remember_last_usage">記住上次使用</string>
+    <string name="main_page">始終啟動至首頁</string>
+    <string name="most_usage">啟動至最常使用</string>
+    <string name="remember_last_usage_short">上次使用</string>
+    <string name="main_page_short">首頁</string>
+    <string name="most_usage_short">最常使用</string>
+    <string name="flashlight_busy">手電筒正被其他功能使用中</string>
+
+    <!-- Settings Page -->
+    <string name="basic_settings">基本設定</string>
+    <string name="setting_auto_off">自動關閉</string>
+    <string name="allow_for_ventilation">長時間使用時請保持良好通風</string>
+    <string name="set_auto_off_time">設定各功能的自動關閉時間</string>
+    <string name="setting_startup_mode">啟動模式</string>
+    <string name="set_startup_behaviour">應用程式啟動時的預設行為</string>
+    <string name="setting_brightness">預設亮度</string>
+    <string name="set_brightness">設定各功能的預設亮度</string>
+    <string name="page_settings">介面設定</string>
+    <string name="language_settings">語言設定</string>
+    <string name="choose_display_language">選擇應用顯示語言</string>
+    <string name="function_setting">功能設定</string>
+    <string name="setting_vibration">震動回饋</string>
+    <string name="vibration_feedback">操作時提供震動回饋</string>
+    <string name="setting_sound">音效回饋</string>
+    <string name="sound_feedback">操作時播放音效</string>
+    <string name="eye_protection_mode">護眼模式</string>
+    <string name="notification_info">需要修改系統設定的權限。\n\n允許後可啟用自動亮度功能。</string>
+    <string name="auto_brightness_adjustment">自動調整亮度以保護視力</string>
+    <string name="data_management">資料管理</string>
+    <string name="usage_stats">使用統計</string>
+    <string name="check_usage_situation">查看各功能的使用統計</string>
+    <string name="about_application">關於應用程式</string>
+    <string name="version_info">版本資訊</string>
+    <string name="privacy_policy">隱私權政策</string>
+    <string name="FAQ">常見問題</string>
+
+    <!-- Statistics Information -->
+    <string name="battery_health">電池健康</string>
+    <string name="usage_time">使用時間</string>
+    <string name="today_usage">今日使用統計</string>
+    <string name="total_usage">總使用時間</string>
+    <string name="battery_management">電池管理</string>
+    <string name="low_battery_protection">低電量保護</string>
+    <string name="intelligent_brightness_adjustment">智慧亮度調整</string>
+    <string name="temperature_monitor">溫度監控</string>
+    <string name="camera_permission_message">手電筒需要相機權限才能正常運作。請允許相機存取權限。</string>
+    <string name="camera_permission_denied">相機權限被拒絕，無法使用手電筒。</string>
+    <string name="camera_permission_settings">相機權限已被永久拒絕，請至設定中啟用。</string>
+    <string name="flashlight_unavailable">手電筒無法使用</string>
+    <string name="permission_allow">允許</string>
+    <string name="permission_cancel">取消</string>
+    <string name="go_to_settings">開啟設定</string>
+
+    <!-- Title Text -->
+    <string name="battery_health_critical">嚴重</string>
+    <string name="title_fill_light">LED 補光燈</string>
+    <string name="title_flashlight">手電筒</string>
+    <string name="title_screen_light">螢幕燈光</string>
+    <string name="title_preview">預覽</string>
+    <string name="title_color">顏色選擇</string>
+    <string name="title_blink">閃爍效果</string>
+    <string name="title_sos">SOS 訊號進行中</string>
+    <string name="sos_signal">緊急 SOS 訊號</string>
+    <string name="title_sos_signal">SOS 求救訊號</string>
+    <string name="title_morse_code">摩斯密碼</string>
+    <string name="morse_code">標準摩斯密碼</string>
+    <string name="short_signal">. . .\n短訊號</string>
+    <string name="long_signal">_ _ _\n長訊號</string>
+    <string name="last_time">持續時間</string>
+    <string name="signal_loop">訊號循環次數</string>
+    <string name="battery_status">電池狀態</string>
+    <string name="auto_stop_countdown">自動停止倒數</string>
+    <string name="common_blink">一般閃爍</string>
+    <string name="blink_frequency">閃爍頻率</string>
+    <string name="light_source_selection">光源選擇</string>
+    <string name="screen">螢幕</string>
+    <string name="title_stats">統計</string>
+    <string name="title_battery_monitor">電池監控</string>
+    <string name="title_low_battery">低電量警告</string>
+    <string name="title_settings">設定</string>
+
+    <!-- Other -->
+    <string name="auto_off_time">自動關閉時間</string>
+    <string name="quick_settings">快速設定</string>
+    <string name="soft_fill_light">柔和補光</string>
+    <string name="signal_alert">訊號警示</string>
+    <string name="brightness_level">亮度等級</string>
+    <string name="low_battery_reminder">低電量提醒</string>
+    <string name="time_remaining_estimate">預估剩餘時間</string>
+    <string name="low_battery_alert">即將關機</string>
+    <string name="function_restricted_alert">功能受限</string>
+    <string name="battery_status_alert">需要充電</string>
+    <string name="energy_saving_tips">省電建議</string>
+    <string name="brightness_automatically_reduced_to_30percent">亮度已自動降低至 30%</string>
+    <string name="low_power_protection_mode_enabled">已啟用低電量保護模式</string>
+    <string name="suggested_to_turn_off_unnecessary_features">建議關閉不必要的功能</string>
+    <string name="please_connect_the_charger_as_soon_as_possible">請盡快連接充電器</string>
+    <string name="flashlight_auto_off">手電筒自動關閉</string>
+    <string name="screen_auto_off">螢幕燈光自動關閉</string>
+    <string name="blink_auto_off">閃爍效果自動關閉</string>
+    <string name="auto_off_1">1\n分鐘</string>
+    <string name="auto_off_5">5\n分鐘</string>
+    <string name="auto_off_10">10\n分鐘</string>
+    <string name="auto_off_never">永不\n關閉</string>
+    <string name="battery_health_excellent">極佳</string>
+    <string name="battery_health_good">良好</string>
+    <string name="battery_health_fair">普通</string>
+    <string name="battery_health_poor">差</string>
+</resources>

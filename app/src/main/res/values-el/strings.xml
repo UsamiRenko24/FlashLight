@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language">Γλώσσα</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Αρχική</string>
+    <string name="nav_flashlight">Φακός</string>
+    <string name="nav_blink">Αναβόσβημα</string>
+    <string name="nav_stats">Στατιστικά</string>
+    <string name="nav_settings">Ρυθμίσεις</string>
+
+    <!-- Button Text -->
+    <string name="btn_on">Ενεργό</string>
+    <string name="btn_off">Ανενεργό</string>
+    <string name="btn_screen">Έναρξη φωτός</string>
+    <string name="btn_sos">Έναρξη SOS</string>
+    <string name="btn_blink">Έναρξη αναβοσβήματος</string>
+
+    <!-- Status Toast -->
+    <string name="toast_on">Ο φακός ενεργοποιήθηκε</string>
+    <string name="toast_off">Ο φακός απενεργοποιήθηκε</string>
+    <string name="toast_to_modify">Παρακαλώ τροποποιήστε τις ρυθμίσεις</string>
+    <string name="toast_failed">Η λειτουργία απέτυχε, δοκιμάστε ξανά</string>
+
+    <!-- Brightness Levels -->
+    <string name="brightness_low">Χαμηλή</string>
+    <string name="brightness_medium">Μεσαία</string>
+    <string name="brightness_high">Υψηλή</string>
+
+    <!-- Card Text -->
+    <string name="brightness_card_low">Χαμηλή\n40%</string>
+    <string name="brightness_card_medium">Μεσαία\n70%</string>
+    <string name="brightness_card_high">Υψηλή\n100%</string>
+    <string name="frequency_low">Αργό</string>
+    <string name="frequency_medium">Μεσαίο</string>
+    <string name="frequency_high">Γρήγορο</string>
+
+    <!-- Color Temperature Options -->
+    <string name="color_pure">Καθαρό λευκό</string>
+    <string name="color_warm">Ζεστό λευκό</string>
+    <string name="color_cold">Ψυχρό λευκό</string>
+
+    <!-- Formatted Text -->
+    <string name="time_to_full">Εκτιμώμενος χρόνος\nμέχρι πλήρη φόρτιση</string>
+    <string name="time_remaining">Εκτιμώμενος\nυπόλοιπος χρόνος</string>
+    <string name="charge_time_under_one_minute">Λιγότερο από 1 λεπτό</string>
+    <string name="charge_time_unavailable">Ο χρόνος πλήρους φόρτισης δεν είναι διαθέσιμος</string>
+
+    <!-- Dynamic Text -->
+    <string name="battery_status_full">Πλήρως φορτισμένο</string>
+    <string name="battery_plugged_usb">Φόρτιση μέσω USB</string>
+    <string name="battery_plugged_ac">Φόρτιση μέσω AC</string>
+    <string name="battery_plugged_wireless">Ασύρματη φόρτιση</string>
+    <string name="battery_charging">Φόρτιση</string>
+    <string name="battery_not_charging">Δεν φορτίζει</string>
+    <string name="please_stop_blink">Παρακαλώ σταματήστε πρώτα το αναβόσβημα</string>
+    <string name="screen_light_started">Το φως οθόνης ξεκίνησε</string>
+    <string name="screen_light_ended">Το φως οθόνης σταμάτησε</string>
+    <string name="at_least_choose_one_light_source">Παρακαλώ επιλέξτε τουλάχιστον μία πηγή φωτός</string>
+    <string name="overheat_reminder">Η θερμοκρασία είναι πολύ υψηλή, παρακαλώ διακόψτε τη χρήση</string>
+    <string name="normal_temperature">Η θερμοκρασία της συσκευής είναι φυσιολογική</string>
+    <string name="hour">ώρα</string>
+    <string name="minute">λεπτό</string>
+    <string name="second">δευτερόλεπτο</string>
+    <string name="times">φορές</string>
+    <string name="brightness">Φωτεινότητα</string>
+    <string name="remember_last_usage">Να θυμάται την τελευταία χρήση</string>
+    <string name="main_page">Να ξεκινά πάντα στην αρχική</string>
+    <string name="most_usage">Έναρξη με τη συχνότερα χρησιμοποιούμενη λειτουργία</string>
+    <string name="remember_last_usage_short">Τελευταία χρήση</string>
+    <string name="main_page_short">Αρχική</string>
+    <string name="most_usage_short">Πιο συχνή χρήση</string>
+    <string name="flashlight_busy">Ο φακός χρησιμοποιείται από άλλη λειτουργία</string>
+
+    <!-- Settings Page -->
+    <string name="basic_settings">Βασικές ρυθμίσεις</string>
+    <string name="setting_auto_off">Αυτόματη απενεργοποίηση</string>
+    <string name="allow_for_ventilation">Επιτρέψτε σωστό αερισμό κατά την παρατεταμένη χρήση</string>
+    <string name="set_auto_off_time">Ορίστε χρόνο αυτόματης απενεργοποίησης για κάθε λειτουργία</string>
+    <string name="setting_startup_mode">Λειτουργία εκκίνησης</string>
+    <string name="set_startup_behaviour">Προεπιλεγμένη συμπεριφορά κατά την εκκίνηση της εφαρμογής</string>
+    <string name="setting_brightness">Προεπιλεγμένη φωτεινότητα</string>
+    <string name="set_brightness">Προεπιλεγμένες ρυθμίσεις φωτεινότητας για κάθε λειτουργία</string>
+    <string name="page_settings">Ρυθμίσεις διεπαφής</string>
+    <string name="language_settings">Ρυθμίσεις γλώσσας</string>
+    <string name="choose_display_language">Επιλέξτε τη γλώσσα εμφάνισης της εφαρμογής</string>
+    <string name="function_setting">Ρυθμίσεις λειτουργιών</string>
+    <string name="setting_vibration">Δόνηση</string>
+    <string name="vibration_feedback">Παρέχει δόνηση κατά τη λειτουργία</string>
+    <string name="setting_sound">Ηχητική ειδοποίηση</string>
+    <string name="sound_feedback">Αναπαραγωγή ηχητικών εφέ κατά τη λειτουργία</string>
+    <string name="eye_protection_mode">Λειτουργία προστασίας ματιών</string>
+    <string name="notification_info">Απαιτείται άδεια τροποποίησης ρυθμίσεων συστήματος.\n\nΕπιτρέψτε την για να ενεργοποιηθεί η αυτόματη φωτεινότητα.</string>
+    <string name="auto_brightness_adjustment">Αυτόματη ρύθμιση φωτεινότητας για προστασία των ματιών</string>
+    <string name="data_management">Διαχείριση δεδομένων</string>
+    <string name="usage_stats">Στατιστικά χρήσης</string>
+    <string name="check_usage_situation">Προβολή στατιστικών χρήσης κάθε λειτουργίας</string>
+    <string name="about_application">Σχετικά με την εφαρμογή</string>
+    <string name="version_info">Πληροφορίες έκδοσης</string>
+    <string name="privacy_policy">πολιτική απορρήτου</string>
+    <string name="FAQ">Συχνές ερωτήσεις</string>
+
+    <!-- Statistics Information -->
+    <string name="battery_health">Κατάσταση μπαταρίας</string>
+    <string name="usage_time">Χρόνος χρήσης</string>
+    <string name="today_usage">Στατιστικά χρήσης σήμερα</string>
+    <string name="total_usage">Συνολικός χρόνος χρήσης</string>
+    <string name="battery_management">Διαχείριση μπαταρίας</string>
+    <string name="low_battery_protection">Προστασία χαμηλής μπαταρίας</string>
+    <string name="intelligent_brightness_adjustment">Έξυπνη ρύθμιση φωτεινότητας</string>
+    <string name="temperature_monitor">Παρακολούθηση θερμοκρασίας</string>
+    <string name="camera_permission_message">Ο φακός απαιτεί άδεια κάμερας για σωστή λειτουργία. Παρακαλώ επιτρέψτε την πρόσβαση.</string>
+    <string name="camera_permission_denied">Η άδεια κάμερας απορρίφθηκε. Ο φακός δεν είναι διαθέσιμος.</string>
+    <string name="camera_permission_settings">Η άδεια κάμερας απορρίφθηκε μόνιμα. Παρακαλώ ενεργοποιήστε την στις Ρυθμίσεις.</string>
+    <string name="flashlight_unavailable">Ο φακός δεν είναι διαθέσιμος</string>
+    <string name="permission_allow">Να επιτρέπεται</string>
+    <string name="permission_cancel">Ακύρωση</string>
+    <string name="go_to_settings">Άνοιγμα ρυθμίσεων</string>
+
+    <!-- Title Text -->
+    <string name="battery_health_critical">κρίσιμο</string>
+    <string name="title_fill_light">Φωτισμός LED</string>
+    <string name="title_flashlight">Φακός</string>
+    <string name="title_screen_light">Φως οθόνης</string>
+    <string name="title_preview">Προεπισκόπηση</string>
+    <string name="title_color">Επιλογή χρώματος</string>
+    <string name="title_blink">Εφέ αναβοσβήματος</string>
+    <string name="title_sos">Σήμα SOS σε εξέλιξη</string>
+    <string name="sos_signal">Σήμα έκτακτης ανάγκης SOS</string>
+    <string name="title_sos_signal">Σήμα κινδύνου SOS</string>
+    <string name="title_morse_code">Κώδικας Morse</string>
+    <string name="morse_code">Τυπικός κώδικας Morse</string>
+    <string name="short_signal">. . .\nΣύντομο σήμα</string>
+    <string name="long_signal">_ _ _\nΜεγάλο σήμα</string>
+    <string name="last_time">Διάρκεια</string>
+    <string name="signal_loop">Κύκλοι σήματος</string>
+    <string name="battery_status">Κατάσταση μπαταρίας</string>
+    <string name="auto_stop_countdown">Αντίστροφη μέτρηση αυτόματης διακοπής</string>
+    <string name="common_blink">Κανονικό αναβόσβημα</string>
+    <string name="blink_frequency">Συχνότητα αναβοσβήματος</string>
+    <string name="light_source_selection">Επιλογή πηγής φωτός</string>
+    <string name="screen">Οθόνη</string>
+    <string name="title_stats">Στατιστικά</string>
+    <string name="title_battery_monitor">Παρακολούθηση μπαταρίας</string>
+    <string name="title_low_battery">Προειδοποίηση χαμηλής μπαταρίας</string>
+    <string name="title_settings">Ρυθμίσεις</string>
+
+    <!-- Other -->
+    <string name="auto_off_time">χρόνος αυτόματης απενεργοποίησης</string>
+    <string name="quick_settings">Γρήγορες ρυθμίσεις</string>
+    <string name="soft_fill_light">Απαλό φως</string>
+    <string name="signal_alert">Ειδοποίηση σήματος</string>
+    <string name="brightness_level">Επίπεδο φωτεινότητας</string>
+    <string name="low_battery_reminder">Ειδοποίηση χαμηλής μπαταρίας</string>
+    <string name="time_remaining_estimate">Εκτιμώμενος υπολειπόμενος χρόνος</string>
+    <string name="low_battery_alert">Η συσκευή θα απενεργοποιηθεί σύντομα</string>
+    <string name="function_restricted_alert">Περιορισμένες λειτουργίες</string>
+    <string name="battery_status_alert">Απαιτείται φόρτιση</string>
+    <string name="energy_saving_tips">Συμβουλές εξοικονόμησης ενέργειας</string>
+    <string name="brightness_automatically_reduced_to_30percent">Η φωτεινότητα μειώθηκε αυτόματα στο 30%</string>
+    <string name="low_power_protection_mode_enabled">Η λειτουργία προστασίας χαμηλής ενέργειας ενεργοποιήθηκε</string>
+    <string name="suggested_to_turn_off_unnecessary_features">Συνιστάται η απενεργοποίηση περιττών λειτουργιών</string>
+    <string name="please_connect_the_charger_as_soon_as_possible">Παρακαλώ συνδέστε τον φορτιστή το συντομότερο δυνατό</string>
+    <string name="flashlight_auto_off">Αυτόματη απενεργοποίηση φακού</string>
+    <string name="screen_auto_off">Αυτόματη απενεργοποίηση φωτός οθόνης</string>
+    <string name="blink_auto_off">Αυτόματη απενεργοποίηση αναβοσβήματος</string>
+    <string name="auto_off_1">1\nλεπτό</string>
+    <string name="auto_off_5">5\nλεπτά</string>
+    <string name="auto_off_10">10\nλεπτά</string>
+    <string name="auto_off_never">Ποτέ\nμην απενεργοποιείς</string>
+    <string name="battery_health_excellent">εξαιρετική</string>
+    <string name="battery_health_good">καλή</string>
+    <string name="battery_health_fair">μέτρια</string>
+    <string name="battery_health_poor">κακή</string>
+</resources>
