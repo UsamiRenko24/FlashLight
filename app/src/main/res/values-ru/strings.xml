@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language">Язык</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Главная</string>
+    <string name="nav_flashlight">Фонарик</string>
+    <string name="nav_blink">Мигание</string>
+    <string name="nav_stats">Статистика</string>
+    <string name="nav_settings">Настройки</string>
+
+    <!-- Button Text -->
+    <string name="btn_on">Вкл</string>
+    <string name="btn_off">Выкл</string>
+    <string name="btn_screen">Запустить свет</string>
+    <string name="btn_sos">Запустить SOS</string>
+    <string name="btn_blink">Запустить мигание</string>
+
+    <!-- Status Toast -->
+    <string name="toast_on">Фонарик включен</string>
+    <string name="toast_off">Фонарик выключен</string>
+    <string name="toast_to_modify">Пожалуйста, измените настройки</string>
+    <string name="toast_failed">Операция не удалась, попробуйте снова</string>
+
+    <!-- Brightness Levels -->
+    <string name="brightness_low">Низкий</string>
+    <string name="brightness_medium">Средний</string>
+    <string name="brightness_high">Высокий</string>
+
+    <!-- Card Text -->
+    <string name="brightness_card_low">Низкий\n40%</string>
+    <string name="brightness_card_medium">Средний\n70%</string>
+    <string name="brightness_card_high">Высокий\n100%</string>
+    <string name="frequency_low">Медленно</string>
+    <string name="frequency_medium">Средне</string>
+    <string name="frequency_high">Быстро</string>
+
+    <!-- Color Temperature Options -->
+    <string name="color_pure">Чисто-белый</string>
+    <string name="color_warm">Тёплый белый</string>
+    <string name="color_cold">Холодный белый</string>
+
+    <!-- Formatted Text -->
+    <string name="time_to_full">Примерное время\nдо полной зарядки</string>
+    <string name="time_remaining">Оставшееся\nпримерное время</string>
+    <string name="charge_time_under_one_minute">Менее 1 минуты</string>
+    <string name="charge_time_unavailable">Время полной зарядки недоступно</string>
+
+    <!-- Dynamic Text -->
+    <string name="battery_status_full">Полностью заряжено</string>
+    <string name="battery_plugged_usb">Зарядка через USB</string>
+    <string name="battery_plugged_ac">Зарядка от сети</string>
+    <string name="battery_plugged_wireless">Беспроводная зарядка</string>
+    <string name="battery_charging">Зарядка</string>
+    <string name="battery_not_charging">Не заряжается</string>
+    <string name="please_stop_blink">Сначала остановите мигание</string>
+    <string name="screen_light_started">Подсветка экрана включена</string>
+    <string name="screen_light_ended">Подсветка экрана выключена</string>
+    <string name="at_least_choose_one_light_source">Пожалуйста, выберите хотя бы один источник света</string>
+    <string name="overheat_reminder">Температура слишком высокая, приостановите использование</string>
+    <string name="normal_temperature">Температура устройства нормальная</string>
+    <string name="hour">час</string>
+    <string name="minute">минута</string>
+    <string name="second">секунда</string>
+    <string name="times">раз</string>
+    <string name="brightness">Яркость</string>
+    <string name="remember_last_usage">Запомнить последнее использование</string>
+    <string name="main_page">Всегда запускать с главной</string>
+    <string name="most_usage">Запускать самый используемый режим</string>
+    <string name="remember_last_usage_short">Последнее использование</string>
+    <string name="main_page_short">Главная</string>
+    <string name="most_usage_short">Часто используемое</string>
+    <string name="flashlight_busy">Фонарик используется другой функцией</string>
+
+    <!-- Settings Page -->
+    <string name="basic_settings">Основные настройки</string>
+    <string name="setting_auto_off">Автовыключение</string>
+    <string name="allow_for_ventilation">Обеспечьте хорошую вентиляцию при длительном использовании</string>
+    <string name="set_auto_off_time">Установите время автовыключения для каждой функции</string>
+    <string name="setting_startup_mode">Режим запуска</string>
+    <string name="set_startup_behaviour">Поведение по умолчанию при запуске приложения</string>
+    <string name="setting_brightness">Яркость по умолчанию</string>
+    <string name="set_brightness">Настройки яркости по умолчанию для каждой функции</string>
+    <string name="page_settings">Настройки интерфейса</string>
+    <string name="language_settings">Настройки языка</string>
+    <string name="choose_display_language">Выберите язык приложения</string>
+    <string name="function_setting">Настройки функций</string>
+    <string name="setting_vibration">Виброотклик</string>
+    <string name="vibration_feedback">Обеспечивает виброотклик при работе</string>
+    <string name="setting_sound">Звуковой отклик</string>
+    <string name="sound_feedback">Воспроизводит звуковые эффекты при работе</string>
+    <string name="eye_protection_mode">Режим защиты глаз</string>
+    <string name="notification_info">Требуется разрешение на изменение системных настроек.\n\nРазрешите это для включения автоматической яркости.</string>
+    <string name="auto_brightness_adjustment">Автоматическая регулировка яркости для защиты зрения</string>
+    <string name="data_management">Управление данными</string>
+    <string name="usage_stats">Статистика использования</string>
+    <string name="check_usage_situation">Просмотр статистики использования каждой функции</string>
+    <string name="about_application">О приложении</string>
+    <string name="version_info">Информация о версии</string>
+    <string name="privacy_policy">политика конфиденциальности</string>
+    <string name="FAQ">FAQ</string>
+
+    <!-- Statistics Information -->
+    <string name="battery_health">Состояние батареи</string>
+    <string name="usage_time">Время использования</string>
+    <string name="today_usage">Статистика использования за сегодня</string>
+    <string name="total_usage">Общее время использования</string>
+    <string name="battery_management">Управление батареей</string>
+    <string name="low_battery_protection">Защита при низком заряде</string>
+    <string name="intelligent_brightness_adjustment">Интеллектуальная регулировка яркости</string>
+    <string name="temperature_monitor">Монитор температуры</string>
+    <string name="camera_permission_message">Для работы фонарика требуется разрешение на использование камеры. Пожалуйста, разрешите доступ к камере.</string>
+    <string name="camera_permission_denied">Разрешение на камеру отклонено. Фонарик недоступен.</string>
+    <string name="camera_permission_settings">Разрешение на камеру было навсегда отклонено. Включите его в настройках.</string>
+    <string name="flashlight_unavailable">Фонарик недоступен</string>
+    <string name="permission_allow">Разрешить</string>
+    <string name="permission_cancel">Отмена</string>
+    <string name="go_to_settings">Открыть настройки</string>
+
+    <!-- Title Text -->
+    <string name="battery_health_critical">критическое</string>
+    <string name="title_fill_light">LED-подсветка</string>
+    <string name="title_flashlight">Фонарик</string>
+    <string name="title_screen_light">Подсветка экрана</string>
+    <string name="title_preview">Предпросмотр</string>
+    <string name="title_color">Выбор цвета</string>
+    <string name="title_blink">Эффект мигания</string>
+    <string name="title_sos">Сигнал SOS выполняется</string>
+    <string name="sos_signal">Экстренный сигнал SOS</string>
+    <string name="title_sos_signal">Сигнал бедствия SOS</string>
+    <string name="title_morse_code">Азбука Морзе</string>
+    <string name="morse_code">Стандартная азбука Морзе</string>
+    <string name="short_signal">. . .\nКороткий сигнал</string>
+    <string name="long_signal">_ _ _\nДлинный сигнал</string>
+    <string name="last_time">Длительность</string>
+    <string name="signal_loop">Циклы сигнала</string>
+    <string name="battery_status">Состояние батареи</string>
+    <string name="auto_stop_countdown">Обратный отсчёт до автоостановки</string>
+    <string name="common_blink">Обычное мигание</string>
+    <string name="blink_frequency">Частота мигания</string>
+    <string name="light_source_selection">Выбор источника света</string>
+    <string name="screen">Экран</string>
+    <string name="title_stats">Статистика</string>
+    <string name="title_battery_monitor">Монитор батареи</string>
+    <string name="title_low_battery">Предупреждение о низком заряде</string>
+    <string name="title_settings">Настройки</string>
+
+    <!-- Other -->
+    <string name="auto_off_time">время автовыключения</string>
+    <string name="quick_settings">Быстрые настройки</string>
+    <string name="soft_fill_light">Мягкий свет</string>
+    <string name="signal_alert">Сигнальное предупреждение</string>
+    <string name="brightness_level">Уровень яркости</string>
+    <string name="low_battery_reminder">Предупреждение о низком заряде</string>
+    <string name="time_remaining_estimate">Примерное оставшееся время</string>
+    <string name="low_battery_alert">Скоро выключится</string>
+    <string name="function_restricted_alert">Функции ограничены</string>
+    <string name="battery_status_alert">Требуется зарядка</string>
+    <string name="energy_saving_tips">Советы по энергосбережению</string>
+    <string name="brightness_automatically_reduced_to_30percent">Яркость автоматически снижена до 30%</string>
+    <string name="low_power_protection_mode_enabled">Режим энергосбережения включён</string>
+    <string name="suggested_to_turn_off_unnecessary_features">Рекомендуется отключить ненужные функции</string>
+    <string name="please_connect_the_charger_as_soon_as_possible">Пожалуйста, подключите зарядное устройство как можно скорее</string>
+    <string name="flashlight_auto_off">Автовыключение фонарика</string>
+    <string name="screen_auto_off">Автовыключение подсветки экрана</string>
+    <string name="blink_auto_off">Автовыключение мигания</string>
+    <string name="auto_off_1">1\nминута</string>
+    <string name="auto_off_5">5\nминут</string>
+    <string name="auto_off_10">10\nминут</string>
+    <string name="auto_off_never">Никогда\nне выключать</string>
+    <string name="battery_health_excellent">отличное</string>
+    <string name="battery_health_good">хорошее</string>
+    <string name="battery_health_fair">удовлетворительное</string>
+    <string name="battery_health_poor">плохое</string>
+</resources>

@@ -23,8 +23,6 @@ class SplashActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySplashBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // 1. 调用系统 SplashScreen API (必须在 super.onCreate 之前)
-        // 这会衔接系统启动动画，并应用我们在 themes.xml 中设置的“透明图标”样式
         installSplashScreen()
         hideSystemUI()
 

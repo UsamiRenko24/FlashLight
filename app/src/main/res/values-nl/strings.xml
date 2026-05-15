@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language">Taal</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_flashlight">Zaklamp</string>
+    <string name="nav_blink">Knipperen</string>
+    <string name="nav_stats">Statistieken</string>
+    <string name="nav_settings">Instellingen</string>
+
+    <!-- Button Text -->
+    <string name="btn_on">Aan</string>
+    <string name="btn_off">Uit</string>
+    <string name="btn_screen">Licht starten</string>
+    <string name="btn_sos">SOS starten</string>
+    <string name="btn_blink">Knipperen starten</string>
+
+    <!-- Status Toast -->
+    <string name="toast_on">Zaklamp ingeschakeld</string>
+    <string name="toast_off">Zaklamp uitgeschakeld</string>
+    <string name="toast_to_modify">Wijzig de instellingen</string>
+    <string name="toast_failed">Bewerking mislukt, probeer opnieuw</string>
+
+    <!-- Brightness Levels -->
+    <string name="brightness_low">Laag</string>
+    <string name="brightness_medium">Gemiddeld</string>
+    <string name="brightness_high">Hoog</string>
+
+    <!-- Card Text -->
+    <string name="brightness_card_low">Laag\n40%</string>
+    <string name="brightness_card_medium">Gemiddeld\n70%</string>
+    <string name="brightness_card_high">Hoog\n100%</string>
+    <string name="frequency_low">Langzaam</string>
+    <string name="frequency_medium">Gemiddeld</string>
+    <string name="frequency_high">Snel</string>
+
+    <!-- Color Temperature Options -->
+    <string name="color_pure">Puur wit</string>
+    <string name="color_warm">Warm wit</string>
+    <string name="color_cold">Koel wit</string>
+
+    <!-- Formatted Text -->
+    <string name="time_to_full">Geschatte tijd\ntot volledig opgeladen</string>
+    <string name="time_remaining">Geschatte\nresterende tijd</string>
+    <string name="charge_time_under_one_minute">Minder dan 1 minuut</string>
+    <string name="charge_time_unavailable">Volledige oplaadtijd niet beschikbaar</string>
+
+    <!-- Dynamic Text -->
+    <string name="battery_status_full">Volledig opgeladen</string>
+    <string name="battery_plugged_usb">Opladen via USB</string>
+    <string name="battery_plugged_ac">Opladen via netstroom</string>
+    <string name="battery_plugged_wireless">Draadloos opladen</string>
+    <string name="battery_charging">Bezig met opladen</string>
+    <string name="battery_not_charging">Niet aan het opladen</string>
+    <string name="please_stop_blink">Stop eerst met knipperen</string>
+    <string name="screen_light_started">Schermlicht gestart</string>
+    <string name="screen_light_ended">Schermlicht gestopt</string>
+    <string name="at_least_choose_one_light_source">Selecteer minimaal één lichtbron</string>
+    <string name="overheat_reminder">De temperatuur is te hoog, pauzeer het gebruik</string>
+    <string name="normal_temperature">De apparaattemperatuur is normaal</string>
+    <string name="hour">uur</string>
+    <string name="minute">minuut</string>
+    <string name="second">seconde</string>
+    <string name="times">keer</string>
+    <string name="brightness">Helderheid</string>
+    <string name="remember_last_usage">Laatste gebruik onthouden</string>
+    <string name="main_page">Altijd starten op home</string>
+    <string name="most_usage">Start met meest gebruikte functie</string>
+    <string name="remember_last_usage_short">Laatste gebruik</string>
+    <string name="main_page_short">Home</string>
+    <string name="most_usage_short">Meest gebruikt</string>
+    <string name="flashlight_busy">Zaklamp wordt gebruikt door een andere functie</string>
+
+    <!-- Settings Page -->
+    <string name="basic_settings">Basisinstellingen</string>
+    <string name="setting_auto_off">Automatisch uitschakelen</string>
+    <string name="allow_for_ventilation">Zorg voor voldoende ventilatie tijdens langdurig gebruik</string>
+    <string name="set_auto_off_time">Stel automatische uitschakeltijd in voor elke functie</string>
+    <string name="setting_startup_mode">Opstartmodus</string>
+    <string name="set_startup_behaviour">Standaardgedrag bij het starten van de app</string>
+    <string name="setting_brightness">Standaard helderheid</string>
+    <string name="set_brightness">Standaard helderheidsinstellingen voor elke functie</string>
+    <string name="page_settings">Interface-instellingen</string>
+    <string name="language_settings">Taalinstellingen</string>
+    <string name="choose_display_language">Selecteer de weergavetaal van de app</string>
+    <string name="function_setting">Functie-instellingen</string>
+    <string name="setting_vibration">Trilfeedback</string>
+    <string name="vibration_feedback">Geeft trilfeedback tijdens bediening</string>
+    <string name="setting_sound">Geluidsfeedback</string>
+    <string name="sound_feedback">Speelt geluidseffecten af tijdens bediening</string>
+    <string name="eye_protection_mode">Oogbeschermingsmodus</string>
+    <string name="notification_info">Toestemming om systeeminstellingen te wijzigen is vereist.\n\nSta dit toe om automatische helderheid in te schakelen.</string>
+    <string name="auto_brightness_adjustment">Automatische helderheidsaanpassing om de ogen te beschermen</string>
+    <string name="data_management">Gegevensbeheer</string>
+    <string name="usage_stats">Gebruiksstatistieken</string>
+    <string name="check_usage_situation">Bekijk gebruiksstatistieken van elke functie</string>
+    <string name="about_application">Over de app</string>
+    <string name="version_info">Versie-informatie</string>
+    <string name="privacy_policy">privacybeleid</string>
+    <string name="FAQ">FAQ</string>
+
+    <!-- Statistics Information -->
+    <string name="battery_health">Batterijstatus</string>
+    <string name="usage_time">Gebruikstijd</string>
+    <string name="today_usage">Gebruiksstatistieken van vandaag</string>
+    <string name="total_usage">Totale gebruiksduur</string>
+    <string name="battery_management">Batterijbeheer</string>
+    <string name="low_battery_protection">Bescherming bij lage batterij</string>
+    <string name="intelligent_brightness_adjustment">Intelligente helderheidsaanpassing</string>
+    <string name="temperature_monitor">Temperatuurmonitor</string>
+    <string name="camera_permission_message">De zaklamp heeft cameratoestemming nodig om correct te werken. Sta cameratoegang toe.</string>
+    <string name="camera_permission_denied">Cameratoestemming geweigerd. Zaklamp niet beschikbaar.</string>
+    <string name="camera_permission_settings">Cameratoestemming is permanent geweigerd. Schakel dit in via Instellingen.</string>
+    <string name="flashlight_unavailable">Zaklamp niet beschikbaar</string>
+    <string name="permission_allow">Toestaan</string>
+    <string name="permission_cancel">Annuleren</string>
+    <string name="go_to_settings">Instellingen openen</string>
+
+    <!-- Title Text -->
+    <string name="battery_health_critical">kritiek</string>
+    <string name="title_fill_light">LED-invullicht</string>
+    <string name="title_flashlight">Zaklamp</string>
+    <string name="title_screen_light">Schermlicht</string>
+    <string name="title_preview">Voorbeeld</string>
+    <string name="title_color">Kleurselectie</string>
+    <string name="title_blink">Knippereffect</string>
+    <string name="title_sos">SOS-signaal actief</string>
+    <string name="sos_signal">Nood-SOS-signaal</string>
+    <string name="title_sos_signal">SOS-noodsignaal</string>
+    <string name="title_morse_code">Morsecode</string>
+    <string name="morse_code">Standaard morsecode</string>
+    <string name="short_signal">. . .\nKort signaal</string>
+    <string name="long_signal">_ _ _\nLang signaal</string>
+    <string name="last_time">Duur</string>
+    <string name="signal_loop">Signaalcycli</string>
+    <string name="battery_status">Batterijstatus</string>
+    <string name="auto_stop_countdown">Aftellen automatisch stoppen</string>
+    <string name="common_blink">Normaal knipperen</string>
+    <string name="blink_frequency">Knipperfrequentie</string>
+    <string name="light_source_selection">Lichtbronselectie</string>
+    <string name="screen">Scherm</string>
+    <string name="title_stats">Statistieken</string>
+    <string name="title_battery_monitor">Batterijmonitor</string>
+    <string name="title_low_battery">Waarschuwing lage batterij</string>
+    <string name="title_settings">Instellingen</string>
+
+    <!-- Other -->
+    <string name="auto_off_time">automatische uitschakeltijd</string>
+    <string name="quick_settings">Snelle instellingen</string>
+    <string name="soft_fill_light">Zacht invullicht</string>
+    <string name="signal_alert">Signaalwaarschuwing</string>
+    <string name="brightness_level">Helderheidsniveau</string>
+    <string name="low_battery_reminder">Waarschuwing lage batterij</string>
+    <string name="time_remaining_estimate">Geschatte resterende tijd</string>
+    <string name="low_battery_alert">Wordt binnenkort uitgeschakeld</string>
+    <string name="function_restricted_alert">Functies beperkt</string>
+    <string name="battery_status_alert">Opladen nodig</string>
+    <string name="energy_saving_tips">Energiebesparingstips</string>
+    <string name="brightness_automatically_reduced_to_30percent">Helderheid automatisch verlaagd naar 30%</string>
+    <string name="low_power_protection_mode_enabled">Energiebesparingsmodus ingeschakeld</string>
+    <string name="suggested_to_turn_off_unnecessary_features">Aanbevolen om onnodige functies uit te schakelen</string>
+    <string name="please_connect_the_charger_as_soon_as_possible">Sluit de oplader zo snel mogelijk aan</string>
+    <string name="flashlight_auto_off">Zaklamp automatisch uitschakelen</string>
+    <string name="screen_auto_off">Schermlicht automatisch uitschakelen</string>
+    <string name="blink_auto_off">Knipperen automatisch uitschakelen</string>
+    <string name="auto_off_1">1\nminuut</string>
+    <string name="auto_off_5">5\nminuten</string>
+    <string name="auto_off_10">10\nminuten</string>
+    <string name="auto_off_never">Nooit\nuitschakelen</string>
+    <string name="battery_health_excellent">uitstekend</string>
+    <string name="battery_health_good">goed</string>
+    <string name="battery_health_fair">redelijk</string>
+    <string name="battery_health_poor">slecht</string>
+</resources>

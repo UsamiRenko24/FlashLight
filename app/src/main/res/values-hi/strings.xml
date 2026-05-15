@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language">भाषा</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">होम</string>
+    <string name="nav_flashlight">टॉर्च</string>
+    <string name="nav_blink">ब्लिंक</string>
+    <string name="nav_stats">आंकड़े</string>
+    <string name="nav_settings">सेटिंग्स</string>
+
+    <!-- Button Text -->
+    <string name="btn_on">चालू</string>
+    <string name="btn_off">बंद</string>
+    <string name="btn_screen">लाइट शुरू करें</string>
+    <string name="btn_sos">SOS शुरू करें</string>
+    <string name="btn_blink">ब्लिंक शुरू करें</string>
+
+    <!-- Status Toast -->
+    <string name="toast_on">टॉर्च चालू हो गई</string>
+    <string name="toast_off">टॉर्च बंद हो गई</string>
+    <string name="toast_to_modify">कृपया सेटिंग्स बदलें</string>
+    <string name="toast_failed">ऑपरेशन विफल हुआ, कृपया पुनः प्रयास करें</string>
+
+    <!-- Brightness Levels -->
+    <string name="brightness_low">कम</string>
+    <string name="brightness_medium">मध्यम</string>
+    <string name="brightness_high">उच्च</string>
+
+    <!-- Card Text -->
+    <string name="brightness_card_low">कम\n40%</string>
+    <string name="brightness_card_medium">मध्यम\n70%</string>
+    <string name="brightness_card_high">उच्च\n100%</string>
+    <string name="frequency_low">धीमा</string>
+    <string name="frequency_medium">मध्यम</string>
+    <string name="frequency_high">तेज़</string>
+
+    <!-- Color Temperature Options -->
+    <string name="color_pure">शुद्ध सफेद</string>
+    <string name="color_warm">गर्म सफेद</string>
+    <string name="color_cold">ठंडा सफेद</string>
+
+    <!-- Formatted Text -->
+    <string name="time_to_full">पूर्ण चार्ज होने का\nअनुमानित समय</string>
+    <string name="time_remaining">अनुमानित\nशेष समय</string>
+    <string name="charge_time_under_one_minute">1 मिनट से कम</string>
+    <string name="charge_time_unavailable">पूर्ण चार्ज समय उपलब्ध नहीं</string>
+
+    <!-- Dynamic Text -->
+    <string name="battery_status_full">पूरी तरह चार्ज</string>
+    <string name="battery_plugged_usb">USB द्वारा चार्ज हो रहा है</string>
+    <string name="battery_plugged_ac">AC द्वारा चार्ज हो रहा है</string>
+    <string name="battery_plugged_wireless">वायरलेस चार्जिंग</string>
+    <string name="battery_charging">चार्ज हो रहा है</string>
+    <string name="battery_not_charging">चार्ज नहीं हो रहा</string>
+    <string name="please_stop_blink">कृपया पहले ब्लिंक बंद करें</string>
+    <string name="screen_light_started">स्क्रीन लाइट शुरू हुई</string>
+    <string name="screen_light_ended">स्क्रीन लाइट बंद हुई</string>
+    <string name="at_least_choose_one_light_source">कृपया कम से कम एक लाइट स्रोत चुनें</string>
+    <string name="overheat_reminder">तापमान बहुत अधिक है, कृपया उपयोग रोकें</string>
+    <string name="normal_temperature">डिवाइस का तापमान सामान्य है</string>
+    <string name="hour">घंटा</string>
+    <string name="minute">मिनट</string>
+    <string name="second">सेकंड</string>
+    <string name="times">बार</string>
+    <string name="brightness">ब्राइटनेस</string>
+    <string name="remember_last_usage">पिछला उपयोग याद रखें</string>
+    <string name="main_page">हमेशा होम से शुरू करें</string>
+    <string name="most_usage">सबसे अधिक उपयोग की गई सुविधा से शुरू करें</string>
+    <string name="remember_last_usage_short">पिछला उपयोग</string>
+    <string name="main_page_short">होम</string>
+    <string name="most_usage_short">सबसे अधिक उपयोग</string>
+    <string name="flashlight_busy">टॉर्च किसी अन्य सुविधा द्वारा उपयोग में है</string>
+
+    <!-- Settings Page -->
+    <string name="basic_settings">मूल सेटिंग्स</string>
+    <string name="setting_auto_off">ऑटो बंद</string>
+    <string name="allow_for_ventilation">लंबे उपयोग के दौरान उचित वेंटिलेशन सुनिश्चित करें</string>
+    <string name="set_auto_off_time">प्रत्येक सुविधा के लिए ऑटो बंद समय सेट करें</string>
+    <string name="setting_startup_mode">स्टार्टअप मोड</string>
+    <string name="set_startup_behaviour">ऐप शुरू होने पर डिफ़ॉल्ट व्यवहार</string>
+    <string name="setting_brightness">डिफ़ॉल्ट ब्राइटनेस</string>
+    <string name="set_brightness">प्रत्येक सुविधा के लिए डिफ़ॉल्ट ब्राइटनेस सेटिंग्स</string>
+    <string name="page_settings">इंटरफ़ेस सेटिंग्स</string>
+    <string name="language_settings">भाषा सेटिंग्स</string>
+    <string name="choose_display_language">ऐप प्रदर्शन भाषा चुनें</string>
+    <string name="function_setting">फंक्शन सेटिंग्स</string>
+    <string name="setting_vibration">वाइब्रेशन फीडबैक</string>
+    <string name="vibration_feedback">ऑपरेशन पर वाइब्रेशन फीडबैक प्रदान करता है</string>
+    <string name="setting_sound">साउंड फीडबैक</string>
+    <string name="sound_feedback">ऑपरेशन पर ध्वनि प्रभाव चलाता है</string>
+    <string name="eye_protection_mode">आंख सुरक्षा मोड</string>
+    <string name="notification_info">सिस्टम सेटिंग्स बदलने की अनुमति आवश्यक है।\n\nऑटो ब्राइटनेस सुविधा सक्षम करने के लिए अनुमति दें।</string>
+    <string name="auto_brightness_adjustment">आंखों की सुरक्षा के लिए स्वचालित ब्राइटनेस समायोजन</string>
+    <string name="data_management">डेटा प्रबंधन</string>
+    <string name="usage_stats">उपयोग आंकड़े</string>
+    <string name="check_usage_situation">प्रत्येक सुविधा के उपयोग आंकड़े देखें</string>
+    <string name="about_application">ऐप के बारे में</string>
+    <string name="version_info">संस्करण जानकारी</string>
+    <string name="privacy_policy">गोपनीयता नीति</string>
+    <string name="FAQ">सामान्य प्रश्न</string>
+
+    <!-- Statistics Information -->
+    <string name="battery_health">बैटरी स्वास्थ्य</string>
+    <string name="usage_time">उपयोग समय</string>
+    <string name="today_usage">आज के उपयोग आंकड़े</string>
+    <string name="total_usage">कुल उपयोग समय</string>
+    <string name="battery_management">बैटरी प्रबंधन</string>
+    <string name="low_battery_protection">कम बैटरी सुरक्षा</string>
+    <string name="intelligent_brightness_adjustment">स्मार्ट ब्राइटनेस समायोजन</string>
+    <string name="temperature_monitor">तापमान मॉनिटर</string>
+    <string name="camera_permission_message">टॉर्च को सही तरीके से काम करने के लिए कैमरा अनुमति की आवश्यकता है। कृपया कैमरा एक्सेस की अनुमति दें।</string>
+    <string name="camera_permission_denied">कैमरा अनुमति अस्वीकृत कर दी गई। टॉर्च उपलब्ध नहीं है।</string>
+    <string name="camera_permission_settings">कैमरा अनुमति स्थायी रूप से अस्वीकृत कर दी गई। कृपया इसे सेटिंग्स में सक्षम करें।</string>
+    <string name="flashlight_unavailable">टॉर्च उपलब्ध नहीं है</string>
+    <string name="permission_allow">अनुमति दें</string>
+    <string name="permission_cancel">रद्द करें</string>
+    <string name="go_to_settings">सेटिंग्स खोलें</string>
+
+    <!-- Title Text -->
+    <string name="battery_health_critical">गंभीर</string>
+    <string name="title_fill_light">LED फिल लाइट</string>
+    <string name="title_flashlight">टॉर्च</string>
+    <string name="title_screen_light">स्क्रीन लाइट</string>
+    <string name="title_preview">पूर्वावलोकन</string>
+    <string name="title_color">रंग चयन</string>
+    <string name="title_blink">ब्लिंक प्रभाव</string>
+    <string name="title_sos">SOS सिग्नल प्रगति पर है</string>
+    <string name="sos_signal">आपातकालीन SOS सिग्नल</string>
+    <string name="title_sos_signal">SOS संकट संकेत</string>
+    <string name="title_morse_code">मॉर्स कोड</string>
+    <string name="morse_code">मानक मॉर्स कोड</string>
+    <string name="short_signal">. . .\nछोटा संकेत</string>
+    <string name="long_signal">_ _ _\nलंबा संकेत</string>
+    <string name="last_time">अवधि</string>
+    <string name="signal_loop">सिग्नल चक्र</string>
+    <string name="battery_status">बैटरी स्थिति</string>
+    <string name="auto_stop_countdown">ऑटो स्टॉप काउंटडाउन</string>
+    <string name="common_blink">सामान्य ब्लिंक</string>
+    <string name="blink_frequency">ब्लिंक आवृत्ति</string>
+    <string name="light_source_selection">लाइट स्रोत चयन</string>
+    <string name="screen">स्क्रीन</string>
+    <string name="title_stats">आंकड़े</string>
+    <string name="title_battery_monitor">बैटरी मॉनिटर</string>
+    <string name="title_low_battery">कम बैटरी चेतावनी</string>
+    <string name="title_settings">सेटिंग्स</string>
+
+    <!-- Other -->
+    <string name="auto_off_time">ऑटो बंद समय</string>
+    <string name="quick_settings">त्वरित सेटिंग्स</string>
+    <string name="soft_fill_light">सॉफ्ट फिल लाइट</string>
+    <string name="signal_alert">सिग्नल अलर्ट</string>
+    <string name="brightness_level">ब्राइटनेस स्तर</string>
+    <string name="low_battery_reminder">कम बैटरी अलर्ट</string>
+    <string name="time_remaining_estimate">अनुमानित शेष समय</string>
+    <string name="low_battery_alert">जल्द बंद होने वाला है</string>
+    <string name="function_restricted_alert">फीचर सीमित हैं</string>
+    <string name="battery_status_alert">चार्ज करने की आवश्यकता है</string>
+    <string name="energy_saving_tips">ऊर्जा बचत सुझाव</string>
+    <string name="brightness_automatically_reduced_to_30percent">ब्राइटनेस स्वचालित रूप से 30% तक कम कर दी गई</string>
+    <string name="low_power_protection_mode_enabled">लो पावर सुरक्षा मोड सक्षम किया गया</string>
+    <string name="suggested_to_turn_off_unnecessary_features">अनावश्यक सुविधाएँ बंद करने की सलाह दी जाती है</string>
+    <string name="please_connect_the_charger_as_soon_as_possible">कृपया जल्द से जल्द चार्जर कनेक्ट करें</string>
+    <string name="flashlight_auto_off">टॉर्च ऑटो बंद</string>
+    <string name="screen_auto_off">स्क्रीन लाइट ऑटो बंद</string>
+    <string name="blink_auto_off">ब्लिंक प्रभाव ऑटो बंद</string>
+    <string name="auto_off_1">1\nमिनट</string>
+    <string name="auto_off_5">5\nमिनट</string>
+    <string name="auto_off_10">10\nमिनट</string>
+    <string name="auto_off_never">कभी\nबंद न करें</string>
+    <string name="battery_health_excellent">उत्कृष्ट</string>
+    <string name="battery_health_good">अच्छा</string>
+    <string name="battery_health_fair">सामान्य</string>
+    <string name="battery_health_poor">खराब</string>
+</resources>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language">Język</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Strona główna</string>
+    <string name="nav_flashlight">Latarka</string>
+    <string name="nav_blink">Miganie</string>
+    <string name="nav_stats">Statystyki</string>
+    <string name="nav_settings">Ustawienia</string>
+
+    <!-- Button Text -->
+    <string name="btn_on">Włącz</string>
+    <string name="btn_off">Wyłącz</string>
+    <string name="btn_screen">Uruchom światło</string>
+    <string name="btn_sos">Uruchom SOS</string>
+    <string name="btn_blink">Uruchom miganie</string>
+
+    <!-- Status Toast -->
+    <string name="toast_on">Latarka została włączona</string>
+    <string name="toast_off">Latarka została wyłączona</string>
+    <string name="toast_to_modify">Proszę zmienić ustawienia</string>
+    <string name="toast_failed">Operacja nie powiodła się, spróbuj ponownie</string>
+
+    <!-- Brightness Levels -->
+    <string name="brightness_low">Niski</string>
+    <string name="brightness_medium">Średni</string>
+    <string name="brightness_high">Wysoki</string>
+
+    <!-- Card Text -->
+    <string name="brightness_card_low">Niski\n40%</string>
+    <string name="brightness_card_medium">Średni\n70%</string>
+    <string name="brightness_card_high">Wysoki\n100%</string>
+    <string name="frequency_low">Wolno</string>
+    <string name="frequency_medium">Średnio</string>
+    <string name="frequency_high">Szybko</string>
+
+    <!-- Color Temperature Options -->
+    <string name="color_pure">Czysta biel</string>
+    <string name="color_warm">Ciepła biel</string>
+    <string name="color_cold">Zimna biel</string>
+
+    <!-- Formatted Text -->
+    <string name="time_to_full">Szacowany czas\ndo pełnego naładowania</string>
+    <string name="time_remaining">Szacowany\npozostały czas</string>
+    <string name="charge_time_under_one_minute">Mniej niż 1 minuta</string>
+    <string name="charge_time_unavailable">Czas pełnego ładowania niedostępny</string>
+
+    <!-- Dynamic Text -->
+    <string name="battery_status_full">W pełni naładowano</string>
+    <string name="battery_plugged_usb">Ładowanie przez USB</string>
+    <string name="battery_plugged_ac">Ładowanie przez AC</string>
+    <string name="battery_plugged_wireless">Ładowanie bezprzewodowe</string>
+    <string name="battery_charging">Ładowanie</string>
+    <string name="battery_not_charging">Nie ładuje się</string>
+    <string name="please_stop_blink">Najpierw zatrzymaj miganie</string>
+    <string name="screen_light_started">Światło ekranu uruchomione</string>
+    <string name="screen_light_ended">Światło ekranu zatrzymane</string>
+    <string name="at_least_choose_one_light_source">Wybierz co najmniej jedno źródło światła</string>
+    <string name="overheat_reminder">Temperatura jest zbyt wysoka, wstrzymaj używanie</string>
+    <string name="normal_temperature">Temperatura urządzenia jest normalna</string>
+    <string name="hour">godzina</string>
+    <string name="minute">minuta</string>
+    <string name="second">sekunda</string>
+    <string name="times">razy</string>
+    <string name="brightness">Jasność</string>
+    <string name="remember_last_usage">Zapamiętaj ostatnie użycie</string>
+    <string name="main_page">Zawsze uruchamiaj stronę główną</string>
+    <string name="most_usage">Uruchom najczęściej używaną funkcję</string>
+    <string name="remember_last_usage_short">Ostatnie użycie</string>
+    <string name="main_page_short">Główna</string>
+    <string name="most_usage_short">Najczęściej używane</string>
+    <string name="flashlight_busy">Latarka jest używana przez inną funkcję</string>
+
+    <!-- Settings Page -->
+    <string name="basic_settings">Podstawowe ustawienia</string>
+    <string name="setting_auto_off">Automatyczne wyłączanie</string>
+    <string name="allow_for_ventilation">Zapewnij odpowiednią wentylację podczas długiego użytkowania</string>
+    <string name="set_auto_off_time">Ustaw czas automatycznego wyłączenia dla każdej funkcji</string>
+    <string name="setting_startup_mode">Tryb uruchamiania</string>
+    <string name="set_startup_behaviour">Domyślne zachowanie przy uruchamianiu aplikacji</string>
+    <string name="setting_brightness">Domyślna jasność</string>
+    <string name="set_brightness">Domyślne ustawienia jasności dla każdej funkcji</string>
+    <string name="page_settings">Ustawienia interfejsu</string>
+    <string name="language_settings">Ustawienia języka</string>
+    <string name="choose_display_language">Wybierz język wyświetlania aplikacji</string>
+    <string name="function_setting">Ustawienia funkcji</string>
+    <string name="setting_vibration">Wibracje</string>
+    <string name="vibration_feedback">Zapewnia wibracje podczas działania</string>
+    <string name="setting_sound">Dźwięki</string>
+    <string name="sound_feedback">Odtwarza efekty dźwiękowe podczas działania</string>
+    <string name="eye_protection_mode">Tryb ochrony oczu</string>
+    <string name="notification_info">Wymagane jest pozwolenie na modyfikację ustawień systemowych.\n\nZezwól na to, aby włączyć automatyczną jasność.</string>
+    <string name="auto_brightness_adjustment">Automatyczna regulacja jasności dla ochrony wzroku</string>
+    <string name="data_management">Zarządzanie danymi</string>
+    <string name="usage_stats">Statystyki użytkowania</string>
+    <string name="check_usage_situation">Wyświetl statystyki użycia każdej funkcji</string>
+    <string name="about_application">O aplikacji</string>
+    <string name="version_info">Informacje o wersji</string>
+    <string name="privacy_policy">polityka prywatności</string>
+    <string name="FAQ">FAQ</string>
+
+    <!-- Statistics Information -->
+    <string name="battery_health">Stan baterii</string>
+    <string name="usage_time">Czas użytkowania</string>
+    <string name="today_usage">Dzisiejsze statystyki użytkowania</string>
+    <string name="total_usage">Całkowity czas użytkowania</string>
+    <string name="battery_management">Zarządzanie baterią</string>
+    <string name="low_battery_protection">Ochrona przy niskim poziomie baterii</string>
+    <string name="intelligent_brightness_adjustment">Inteligentna regulacja jasności</string>
+    <string name="temperature_monitor">Monitor temperatury</string>
+    <string name="camera_permission_message">Latarka wymaga uprawnień do aparatu, aby działać poprawnie. Zezwól na dostęp do aparatu.</string>
+    <string name="camera_permission_denied">Odmówiono dostępu do aparatu. Latarka jest niedostępna.</string>
+    <string name="camera_permission_settings">Dostęp do aparatu został trwale zablokowany. Włącz go w Ustawieniach.</string>
+    <string name="flashlight_unavailable">Latarka niedostępna</string>
+    <string name="permission_allow">Zezwól</string>
+    <string name="permission_cancel">Anuluj</string>
+    <string name="go_to_settings">Otwórz ustawienia</string>
+
+    <!-- Title Text -->
+    <string name="battery_health_critical">krytyczny</string>
+    <string name="title_fill_light">Światło LED</string>
+    <string name="title_flashlight">Latarka</string>
+    <string name="title_screen_light">Światło ekranu</string>
+    <string name="title_preview">Podgląd</string>
+    <string name="title_color">Wybór koloru</string>
+    <string name="title_blink">Efekt migania</string>
+    <string name="title_sos">Trwa sygnał SOS</string>
+    <string name="sos_signal">Awaryjny sygnał SOS</string>
+    <string name="title_sos_signal">Sygnał ratunkowy SOS</string>
+    <string name="title_morse_code">Kod Morse’a</string>
+    <string name="morse_code">Standardowy kod Morse’a</string>
+    <string name="short_signal">. . .\nKrótki sygnał</string>
+    <string name="long_signal">_ _ _\nDługi sygnał</string>
+    <string name="last_time">Czas trwania</string>
+    <string name="signal_loop">Cykle sygnału</string>
+    <string name="battery_status">Stan baterii</string>
+    <string name="auto_stop_countdown">Odliczanie automatycznego zatrzymania</string>
+    <string name="common_blink">Normalne miganie</string>
+    <string name="blink_frequency">Częstotliwość migania</string>
+    <string name="light_source_selection">Wybór źródła światła</string>
+    <string name="screen">Ekran</string>
+    <string name="title_stats">Statystyki</string>
+    <string name="title_battery_monitor">Monitor baterii</string>
+    <string name="title_low_battery">Ostrzeżenie o niskim poziomie baterii</string>
+    <string name="title_settings">Ustawienia</string>
+
+    <!-- Other -->
+    <string name="auto_off_time">czas automatycznego wyłączenia</string>
+    <string name="quick_settings">Szybkie ustawienia</string>
+    <string name="soft_fill_light">Miękkie światło</string>
+    <string name="signal_alert">Alert sygnału</string>
+    <string name="brightness_level">Poziom jasności</string>
+    <string name="low_battery_reminder">Alert niskiego poziomu baterii</string>
+    <string name="time_remaining_estimate">Szacowany pozostały czas</string>
+    <string name="low_battery_alert">Wkrótce wyłączenie</string>
+    <string name="function_restricted_alert">Funkcje ograniczone</string>
+    <string name="battery_status_alert">Wymaga ładowania</string>
+    <string name="energy_saving_tips">Wskazówki oszczędzania energii</string>
+    <string name="brightness_automatically_reduced_to_30percent">Jasność została automatycznie zmniejszona do 30%</string>
+    <string name="low_power_protection_mode_enabled">Włączono tryb oszczędzania energii</string>
+    <string name="suggested_to_turn_off_unnecessary_features">Zaleca się wyłączenie niepotrzebnych funkcji</string>
+    <string name="please_connect_the_charger_as_soon_as_possible">Podłącz ładowarkę tak szybko, jak to możliwe</string>
+    <string name="flashlight_auto_off">Automatyczne wyłączenie latarki</string>
+    <string name="screen_auto_off">Automatyczne wyłączenie światła ekranu</string>
+    <string name="blink_auto_off">Automatyczne wyłączenie migania</string>
+    <string name="auto_off_1">1\nminuta</string>
+    <string name="auto_off_5">5\nminut</string>
+    <string name="auto_off_10">10\nminut</string>
+    <string name="auto_off_never">Nigdy\nnie wyłączaj</string>
+    <string name="battery_health_excellent">doskonały</string>
+    <string name="battery_health_good">dobry</string>
+    <string name="battery_health_fair">średni</string>
+    <string name="battery_health_poor">słaby</string>
+</resources>

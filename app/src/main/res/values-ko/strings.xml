@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language">언어</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">홈</string>
+    <string name="nav_flashlight">손전등</string>
+    <string name="nav_blink">깜빡임</string>
+    <string name="nav_stats">통계</string>
+    <string name="nav_settings">설정</string>
+
+    <!-- Button Text -->
+    <string name="btn_on">켜기</string>
+    <string name="btn_off">끄기</string>
+    <string name="btn_screen">조명 시작</string>
+    <string name="btn_sos">SOS 시작</string>
+    <string name="btn_blink">깜빡임 시작</string>
+
+    <!-- Status Toast -->
+    <string name="toast_on">손전등이 켜졌습니다</string>
+    <string name="toast_off">손전등이 꺼졌습니다</string>
+    <string name="toast_to_modify">설정을 변경해 주세요</string>
+    <string name="toast_failed">작업에 실패했습니다. 다시 시도해 주세요</string>
+
+    <!-- Brightness Levels -->
+    <string name="brightness_low">낮음</string>
+    <string name="brightness_medium">중간</string>
+    <string name="brightness_high">높음</string>
+
+    <!-- Card Text -->
+    <string name="brightness_card_low">낮음\n40%</string>
+    <string name="brightness_card_medium">중간\n70%</string>
+    <string name="brightness_card_high">높음\n100%</string>
+    <string name="frequency_low">느림</string>
+    <string name="frequency_medium">중간</string>
+    <string name="frequency_high">빠름</string>
+
+    <!-- Color Temperature Options -->
+    <string name="color_pure">순백색</string>
+    <string name="color_warm">따뜻한 흰색</string>
+    <string name="color_cold">차가운 흰색</string>
+
+    <!-- Formatted Text -->
+    <string name="time_to_full">완전 충전까지\n예상 시간</string>
+    <string name="time_remaining">예상 남은\n시간</string>
+    <string name="charge_time_under_one_minute">1분 미만</string>
+    <string name="charge_time_unavailable">완전 충전 시간을 사용할 수 없습니다</string>
+
+    <!-- Dynamic Text -->
+    <string name="battery_status_full">완전히 충전됨</string>
+    <string name="battery_plugged_usb">USB로 충전 중</string>
+    <string name="battery_plugged_ac">AC로 충전 중</string>
+    <string name="battery_plugged_wireless">무선 충전 중</string>
+    <string name="battery_charging">충전 중</string>
+    <string name="battery_not_charging">충전 안 됨</string>
+    <string name="please_stop_blink">먼저 깜빡임을 중지해 주세요</string>
+    <string name="screen_light_started">화면 조명이 시작되었습니다</string>
+    <string name="screen_light_ended">화면 조명이 중지되었습니다</string>
+    <string name="at_least_choose_one_light_source">최소 하나의 광원을 선택해 주세요</string>
+    <string name="overheat_reminder">온도가 너무 높습니다. 사용을 잠시 중단해 주세요</string>
+    <string name="normal_temperature">기기 온도가 정상입니다</string>
+    <string name="hour">시간</string>
+    <string name="minute">분</string>
+    <string name="second">초</string>
+    <string name="times">회</string>
+    <string name="brightness">밝기</string>
+    <string name="remember_last_usage">마지막 사용 기억</string>
+    <string name="main_page">항상 홈으로 시작</string>
+    <string name="most_usage">가장 많이 사용한 기능으로 시작</string>
+    <string name="remember_last_usage_short">마지막 사용</string>
+    <string name="main_page_short">홈</string>
+    <string name="most_usage_short">자주 사용</string>
+    <string name="flashlight_busy">손전등이 다른 기능에서 사용 중입니다</string>
+
+    <!-- Settings Page -->
+    <string name="basic_settings">기본 설정</string>
+    <string name="setting_auto_off">자동 끄기</string>
+    <string name="allow_for_ventilation">장시간 사용 시 충분한 환기를 유지하세요</string>
+    <string name="set_auto_off_time">각 기능의 자동 종료 시간을 설정하세요</string>
+    <string name="setting_startup_mode">시작 모드</string>
+    <string name="set_startup_behaviour">앱 시작 시 기본 동작</string>
+    <string name="setting_brightness">기본 밝기</string>
+    <string name="set_brightness">각 기능의 기본 밝기 설정</string>
+    <string name="page_settings">인터페이스 설정</string>
+    <string name="language_settings">언어 설정</string>
+    <string name="choose_display_language">앱 표시 언어 선택</string>
+    <string name="function_setting">기능 설정</string>
+    <string name="setting_vibration">진동 피드백</string>
+    <string name="vibration_feedback">작동 시 진동 피드백 제공</string>
+    <string name="setting_sound">사운드 피드백</string>
+    <string name="sound_feedback">작동 시 효과음 재생</string>
+    <string name="eye_protection_mode">눈 보호 모드</string>
+    <string name="notification_info">시스템 설정을 수정하려면 권한이 필요합니다.\n\n자동 밝기 기능을 활성화하려면 허용해 주세요.</string>
+    <string name="auto_brightness_adjustment">시력 보호를 위한 자동 밝기 조절</string>
+    <string name="data_management">데이터 관리</string>
+    <string name="usage_stats">사용 통계</string>
+    <string name="check_usage_situation">각 기능의 사용 통계 보기</string>
+    <string name="about_application">앱 정보</string>
+    <string name="version_info">버전 정보</string>
+    <string name="privacy_policy">개인정보 처리방침</string>
+    <string name="FAQ">FAQ</string>
+
+    <!-- Statistics Information -->
+    <string name="battery_health">배터리 상태</string>
+    <string name="usage_time">사용 시간</string>
+    <string name="today_usage">오늘의 사용 통계</string>
+    <string name="total_usage">총 사용 시간</string>
+    <string name="battery_management">배터리 관리</string>
+    <string name="low_battery_protection">배터리 부족 보호</string>
+    <string name="intelligent_brightness_adjustment">지능형 밝기 조절</string>
+    <string name="temperature_monitor">온도 모니터</string>
+    <string name="camera_permission_message">손전등이 정상적으로 작동하려면 카메라 권한이 필요합니다. 카메라 접근을 허용해 주세요.</string>
+    <string name="camera_permission_denied">카메라 권한이 거부되었습니다. 손전등을 사용할 수 없습니다.</string>
+    <string name="camera_permission_settings">카메라 권한이 영구적으로 거부되었습니다. 설정에서 활성화해 주세요.</string>
+    <string name="flashlight_unavailable">손전등을 사용할 수 없습니다</string>
+    <string name="permission_allow">허용</string>
+    <string name="permission_cancel">취소</string>
+    <string name="go_to_settings">설정 열기</string>
+
+    <!-- Title Text -->
+    <string name="battery_health_critical">위험</string>
+    <string name="title_fill_light">LED 보조 조명</string>
+    <string name="title_flashlight">손전등</string>
+    <string name="title_screen_light">화면 조명</string>
+    <string name="title_preview">미리보기</string>
+    <string name="title_color">색상 선택</string>
+    <string name="title_blink">깜빡임 효과</string>
+    <string name="title_sos">SOS 신호 진행 중</string>
+    <string name="sos_signal">긴급 SOS 신호</string>
+    <string name="title_sos_signal">SOS 구조 신호</string>
+    <string name="title_morse_code">모스 부호</string>
+    <string name="morse_code">표준 모스 부호</string>
+    <string name="short_signal">. . .\n짧은 신호</string>
+    <string name="long_signal">_ _ _\n긴 신호</string>
+    <string name="last_time">지속 시간</string>
+    <string name="signal_loop">신호 반복 횟수</string>
+    <string name="battery_status">배터리 상태</string>
+    <string name="auto_stop_countdown">자동 종료 카운트다운</string>
+    <string name="common_blink">일반 깜빡임</string>
+    <string name="blink_frequency">깜빡임 빈도</string>
+    <string name="light_source_selection">광원 선택</string>
+    <string name="screen">화면</string>
+    <string name="title_stats">통계</string>
+    <string name="title_battery_monitor">배터리 모니터</string>
+    <string name="title_low_battery">배터리 부족 경고</string>
+    <string name="title_settings">설정</string>
+
+    <!-- Other -->
+    <string name="auto_off_time">자동 종료 시간</string>
+    <string name="quick_settings">빠른 설정</string>
+    <string name="soft_fill_light">부드러운 보조 조명</string>
+    <string name="signal_alert">신호 알림</string>
+    <string name="brightness_level">밝기 수준</string>
+    <string name="low_battery_reminder">배터리 부족 알림</string>
+    <string name="time_remaining_estimate">예상 남은 시간</string>
+    <string name="low_battery_alert">곧 종료됩니다</string>
+    <string name="function_restricted_alert">기능 제한됨</string>
+    <string name="battery_status_alert">충전이 필요합니다</string>
+    <string name="energy_saving_tips">절전 팁</string>
+    <string name="brightness_automatically_reduced_to_30percent">밝기가 자동으로 30%로 감소되었습니다</string>
+    <string name="low_power_protection_mode_enabled">저전력 보호 모드가 활성화되었습니다</string>
+    <string name="suggested_to_turn_off_unnecessary_features">불필요한 기능을 끄는 것이 권장됩니다</string>
+    <string name="please_connect_the_charger_as_soon_as_possible">가능한 빨리 충전기를 연결해 주세요</string>
+    <string name="flashlight_auto_off">손전등 자동 종료</string>
+    <string name="screen_auto_off">화면 조명 자동 종료</string>
+    <string name="blink_auto_off">깜빡임 자동 종료</string>
+    <string name="auto_off_1">1\n분</string>
+    <string name="auto_off_5">5\n분</string>
+    <string name="auto_off_10">10\n분</string>
+    <string name="auto_off_never">끄지\n않음</string>
+    <string name="battery_health_excellent">매우 좋음</string>
+    <string name="battery_health_good">좋음</string>
+    <string name="battery_health_fair">보통</string>
+    <string name="battery_health_poor">나쁨</string>
+</resources>
