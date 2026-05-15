@@ -3,30 +3,25 @@
 
     <string name="app_name">Flashlight</string>
 
-    <string-array name="languages">
-        <item>简体中文</item>
-        <item>English</item>
-    </string-array>
-
     <string name="string_language_english">English</string>
     <string name="string_language_german">Deutsch</string>
-    <string name="string_language_greek">ελληνικά</string>
-    <string name="string_language_spanish">español</string>
+    <string name="string_language_greek">Ελληνικά</string>
+    <string name="string_language_spanish">Español</string>
     <string name="string_language_french">Français</string>
-    <string name="string_language_hindi">हिंदी</string>
-    <string name="string_language_hungarian">magyar</string>
+    <string name="string_language_hindi">हिन्दी</string>
+    <string name="string_language_hungarian">Magyar</string>
     <string name="string_language_italian">Italiano</string>
     <string name="string_language_japanese">日本語</string>
-    <string name="string_language_korean">한국인</string>
+    <string name="string_language_korean">한국어</string>
     <string name="string_language_dutch">Nederlands</string>
     <string name="string_language_polish">Polski</string>
     <string name="string_language_portuguese">Português</string>
     <string name="string_language_russian">Русский</string>
-    <string name="string_language_swedish">svenska</string>
-    <string name="string_language_thai">แบบไทย</string>
+    <string name="string_language_swedish">Svenska</string>
+    <string name="string_language_thai">ไทย</string>
     <string name="string_language_turkish">Türkçe</string>
     <string name="string_language_vietnamese">Tiếng Việt</string>
-    <string name="string_language_traditional_chinese">中文(繁體)</string>
-    <string name="string_language_simplified_chinese">中文(简体)</string>
+    <string name="string_language_traditional_chinese">繁體中文</string>
+    <string name="string_language_simplified_chinese">简体中文</string>
 
 </resources>

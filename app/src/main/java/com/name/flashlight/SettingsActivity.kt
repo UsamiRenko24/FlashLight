@@ -60,9 +60,8 @@ class SettingsActivity : BaseActivity<SettingsBinding>() {
         "th" to "ไทย",
         "tr" to "Türkçe",
         "vi" to "Tiếng Việt",
-        "zh-rTW" to "繁體中文",
-        "fa" to "فارسی",
-        "zh" to "简体中文"
+        "zh" to "繁體中文",
+        "fa" to "فارسی"
     )
 
     override fun createBinding(): SettingsBinding {
@@ -215,7 +214,15 @@ class SettingsActivity : BaseActivity<SettingsBinding>() {
                         "tr" -> Locale("tr")
                         "vi" -> Locale("vi")
                         "fa" -> Locale("fa")
-                        "zh-rTW" -> Locale.TRADITIONAL_CHINESE
+
+                        /**
+                         * 繁体中文
+                         */
+                        "zh-rTW" -> Locale("zh", "TW")
+
+                        /**
+                         * 简体中文
+                         */
                         "zh" -> Locale.SIMPLIFIED_CHINESE
 
                         else -> Locale.ENGLISH
